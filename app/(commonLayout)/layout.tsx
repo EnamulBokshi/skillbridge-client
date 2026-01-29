@@ -1,12 +1,17 @@
+import { getUserSession } from '@/action/user.action'
 import { Navbar } from '@/components/layout/Navbar'
 import React from 'react'
 
-export default function CommonLayout({children}:{children:React.ReactNode}) {
-  
+export default async function CommonLayout({children}:{children:React.ReactNode}) {
+  const {data, error} = await getUserSession();
+  const user = data.user;
+//   console.log(user);
   const isLoggedIn = false
+  const isAssociate = user.isAssociate;
+  
     return (
     <div>
-        <Navbar isLoggedIn = {isLoggedIn}/>
+        <Navbar isLoggedIn = {isLoggedIn} isAssociate = {isAssociate}/>
         {children}
     </div>
   )

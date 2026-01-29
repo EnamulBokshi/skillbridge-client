@@ -1,12 +1,10 @@
 "use client";
 
-import {  Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import {
-  Accordion,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -53,6 +51,7 @@ interface Navbar1Props {
     };
   };
   isLoggedIn: boolean;
+  isAssociate: boolean;
 }
 
 const Navbar = ({
@@ -64,7 +63,7 @@ const Navbar = ({
   },
   menu = [
     { title: "Home", url: "/" },
-    
+
     {
       title: "Blogs",
       url: "/blogs",
@@ -80,7 +79,8 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/signup" },
   },
   className,
-  isLoggedIn=false
+  isLoggedIn = false,
+  isAssociate = false,
 }: Navbar1Props) => {
   return (
     <section className={cn("py-4", className)}>
@@ -107,30 +107,31 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
+
           {/* // auth - login/signup/logout */}
-          
-          
+
+          {!isAssociate && (
+            <Button variant={"outline"}> Complete your registration </Button>
+          )}
+
           <div className="flex gap-2">
             <ModeToggle />
-            {
-              isLoggedIn? (
+            {isLoggedIn ? (
               <>
-              <Button asChild variant="outline" size="sm">
-              <Link href={"#"}>{"Logout"}</Link>
-            </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={"#"}>{"Logout"}</Link>
+                </Button>
               </>
             ) : (
-            <div className="flex gap-2"> 
+              <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm">
-              <Link href={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href={auth.signup.url}>{auth.signup.title}</Link>
-            </Button>
-              </div>)
-
-
-            }
+                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </nav>
 
@@ -171,8 +172,15 @@ const Navbar = ({
                   >
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
-                
-                {/* // auth - login/signup */}
+
+                  {!isAssociate && (
+                    <Button variant={"outline"}>
+                      {" "}
+                      Complete your registration{" "}
+                    </Button>
+                  )}
+
+                  {/* // auth - login/signup */}
                   <div className="flex flex-col gap-3">
                     <ModeToggle />
                     <Button asChild variant="outline">
@@ -193,11 +201,10 @@ const Navbar = ({
 };
 
 const renderMenuItem = (item: MenuItem) => {
-
   return (
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
-      asChild
+        asChild
         className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
       >
         <Link href={item.url}> {item.title}</Link>
@@ -207,15 +214,11 @@ const renderMenuItem = (item: MenuItem) => {
 };
 
 const renderMobileMenuItem = (item: MenuItem) => {
-  
-
   return (
     <Link key={item.title} href={item.url} className="text-md font-semibold">
       {item.title}
     </Link>
   );
 };
-
-
 
 export { Navbar };
