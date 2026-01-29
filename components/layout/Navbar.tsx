@@ -111,8 +111,13 @@ const Navbar = ({
           {/* // auth - login/signup/logout */}
 
           {!isAssociate && (
-            <Button variant={"outline"}> Complete your registration </Button>
-          )}
+                    <Link href={"/complete-registration"}>
+                    <Button variant={"outline"}  className="">
+                      {" "}
+                      Complete your registration{" "}
+                    </Button>
+                    </Link>
+                  )}
 
           <div className="flex gap-2">
             <ModeToggle />
@@ -165,6 +170,14 @@ const Navbar = ({
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
+                  {!isAssociate && (
+                    <Link href={"/complete-registration"}>
+                    <Button variant={"outline"} >
+                      {" "}
+                      Complete your registration{" "}
+                    </Button>
+                    </Link>
+                  )}
                   <Accordion
                     type="single"
                     collapsible
@@ -173,12 +186,7 @@ const Navbar = ({
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
-                  {!isAssociate && (
-                    <Button variant={"outline"}>
-                      {" "}
-                      Complete your registration{" "}
-                    </Button>
-                  )}
+                  
 
                   {/* // auth - login/signup */}
                   <div className="flex flex-col gap-3">
