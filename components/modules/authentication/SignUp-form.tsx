@@ -13,6 +13,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import {useForm} from "@tanstack/react-form"
+import { redirect } from "next/navigation"
 import { toast } from "sonner"
 import * as z from "zod"
 
@@ -49,6 +50,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           return;
         }
         toast.success("User created successfully!!", {id: loading})
+        redirect("/");
 
       } catch (error) {
         toast.error("Someting went wrong!!", {id: loading})

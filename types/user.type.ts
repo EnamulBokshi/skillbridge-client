@@ -22,3 +22,7 @@ export interface TutorRegistration{
     cv?: string;
     expertiseAreas: string[];
 }
+
+export interface IUser {
+    
+}
