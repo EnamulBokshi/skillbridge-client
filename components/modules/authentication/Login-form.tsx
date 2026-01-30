@@ -56,9 +56,9 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card {...props}>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle>Welcome back</CardTitle>
         <CardDescription>
-          Enter your information below to sign-in your account
+          Login to your SkillBridge account
         </CardDescription>
       </CardHeader>
       <CardContent>

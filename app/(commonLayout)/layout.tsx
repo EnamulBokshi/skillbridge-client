@@ -9,6 +9,7 @@ export default async function CommonLayout({children}:{children:React.ReactNode}
   const isLoggedIn = user??false;
   const isAssociate = user?.isAssociate??false;
   
+  
     return (
     <div>
         <Navbar isLoggedIn = {isLoggedIn} isAssociate = {isAssociate}/>

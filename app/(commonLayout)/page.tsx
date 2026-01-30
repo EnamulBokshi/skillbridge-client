@@ -8,6 +8,21 @@ export default async function Home() {
 // // const res = await healthCheck();
 // // console.log(res)
   return (
-    <div>Home</div>
+    <div>
+      <h1>Welcome to SkillBridge</h1>
+      <h1>Todo List</h1>
+      <ul className='list-disc ml-5 shadow-lg p-5'>
+
+        <li>
+          Implement User Authentication (Sign Up, Log In, Log Out) : Completed
+        </li>
+        <li>
+          Create a dashboard for admin and users and implement role-based access control 
+        </li>
+        <li>Work on category creation and subject creation by admin</li>
+        <li> Complete tutor profile creation as it has to show the categories on the profile</li>
+        <></>
+      </ul>
+    </div>
   )
 }
