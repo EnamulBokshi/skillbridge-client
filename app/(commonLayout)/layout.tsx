@@ -4,10 +4,10 @@ import React from 'react'
 
 export default async function CommonLayout({children}:{children:React.ReactNode}) {
   const {data, error} = await getUserSession();
-  const user = data.user;
+  const user = data?.user;
 //   console.log(user);
-  const isLoggedIn = false
-  const isAssociate = user.isAssociate;
+  const isLoggedIn = user??false;
+  const isAssociate = user?.isAssociate??false;
   
     return (
     <div>

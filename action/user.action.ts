@@ -1,7 +1,7 @@
 "use server"
 
 import { userServices } from "@/services/user.service"
-
+import { cookies } from "next/headers";
 export const getUserSession = async()=> {
         return await userServices.getSession();
     }
@@ -11,3 +11,13 @@ export const healthCheck = async() => {
     return res
 }
 
+export const logOutUserAction = async() => {
+
+    const res =  await userServices.logout();
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.getAll();
+    allCookies.forEach(cookie => {
+        cookieStore.delete(cookie.name);
+    });
+    return res;
+}

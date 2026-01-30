@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggler";
+import { toast } from "sonner";
+import { logOutUserAction } from "@/action/user.action";
 
 interface MenuItem {
   title: string;
@@ -82,6 +84,7 @@ const Navbar = ({
   isLoggedIn = false,
   isAssociate = false,
 }: Navbar1Props) => {
+  const renderTheCompleteRegistrationButton = isLoggedIn && !isAssociate;
   return (
     <section className={cn("py-4", className)}>
       <div className="container mx-auto px-4">
@@ -110,20 +113,26 @@ const Navbar = ({
 
           {/* // auth - login/signup/logout */}
 
-          {!isAssociate && (
-                    <Link href={"/complete-registration"}>
-                    <Button variant={"outline"}  className="">
-                      {" "}
-                      Complete your registration{" "}
-                    </Button>
-                    </Link>
-                  )}
+          {/* complete registration button-desktop */}
+          {renderTheCompleteRegistrationButton && (
+            <Link href={"/complete-registration"}>
+              <Button variant={"outline"} className="">
+                {" "}
+                Complete your registration{" "}
+              </Button>
+            </Link>
+          )}
 
           <div className="flex gap-2">
             <ModeToggle />
             {isLoggedIn ? (
               <>
-                <Button asChild variant="outline" size="sm">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  onClick={logoutUser}
+                >
                   <Link href={"#"}>{"Logout"}</Link>
                 </Button>
               </>
@@ -170,14 +179,16 @@ const Navbar = ({
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
-                  {!isAssociate && (
+                  {/* complete registration button-mobile */}
+                  {renderTheCompleteRegistrationButton && (
                     <Link href={"/complete-registration"}>
-                    <Button variant={"outline"} >
-                      {" "}
-                      Complete your registration{" "}
-                    </Button>
+                      <Button variant={"outline"}>
+                        {" "}
+                        Complete your registration{" "}
+                      </Button>
                     </Link>
                   )}
+
                   <Accordion
                     type="single"
                     collapsible
@@ -186,17 +197,30 @@ const Navbar = ({
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
-                  
-
                   {/* // auth - login/signup */}
                   <div className="flex flex-col gap-3">
                     <ModeToggle />
-                    <Button asChild variant="outline">
-                      <Link href={auth.login.url}>{auth.login.title}</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                    </Button>
+                    {isLoggedIn ? (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        onClick={logoutUser}
+                      >
+                        <Link href={"#"}>{"Logout"}</Link>
+                      </Button>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
@@ -229,4 +253,16 @@ const renderMobileMenuItem = (item: MenuItem) => {
   );
 };
 
+const logoutUser = async () => {
+  try {
+    const loading = toast.loading("Logging out...");
+    await logOutUserAction();
+    toast.success("Logged out successfully!");
+    toast.dismiss(loading);
+    // Optionally, you can refresh the page or redirect the user after logout
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+};
 export { Navbar };

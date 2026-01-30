@@ -1,5 +1,6 @@
 "use client"
 
+import { createStudentAction } from "@/action/student.action"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -13,6 +14,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import {useForm} from "@tanstack/react-form"
+import { redirect } from "next/navigation"
 import { toast } from "sonner"
 import * as z from "zod"
 
@@ -44,13 +46,14 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
     onSubmit: async({value} )=>{
       const loading = toast.loading("Profile creation in progress...")
       try {
-        // const {data, error} = await authClient.signIn.email(value);
+        const {data, error} = await createStudentAction(value);
 
-        // if(error){
-        //   toast.error(error.message, {id: loading})
-        //   return;
-        // }
+        if(error){
+          toast.error(error.message, {id: loading})
+          return;
+        } 
         toast.success("Profile created successfully!!", {id: loading})
+        redirect('/')
 
       } catch (error) {
         toast.error("Someting went wrong!!", {id: loading})
@@ -85,6 +88,7 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
+                    placeholder="e.g., Rahim, Karim, Ahmed"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -110,6 +114,7 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
+                    placeholder="e.g., Bokshi, Sardar, Chawdhuri"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -135,7 +140,7 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
-                    placeholder="018xxxxxxxx"
+                    placeholder="e.g., 018xxxxxxxx"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -156,12 +161,13 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
 
                 return(
                   <Field>
-                    <FieldLabel htmlFor={field.name}>email</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                     <Input 
-                    type="email"
+                    type="text"
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
+                    placeholder="e.g., example@example.com"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -187,6 +193,7 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
+                    placeholder="1234 Main St"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -210,11 +217,11 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
                   <Field>
                     <FieldLabel htmlFor={field.name}>Zip Code (postal code)</FieldLabel>
                     <Input 
-                    type="email"
+                    type="text"
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
-                    placeholder="79**"
+                    placeholder="e.g. 1207"
                     onChange={(e)=>field.handleChange(e.target.value)}
                     />
                     {
@@ -230,7 +237,7 @@ export function StudentProfileForm({ ...props }: React.ComponentProps<typeof Car
         </form>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button type="submit" form="studentProfile-form" className="w-full">Submit</Button>
+        <Button type="submit" form="studentProfile-form" className="w-full">Create Student Profile</Button>
         
       </CardFooter>
     </Card>
