@@ -78,13 +78,14 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
                 return(
                   <Field>
-                    <FieldLabel htmlFor={field.name}>email</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Email Address</FieldLabel>
                     <Input 
                     type="email"
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
                     onChange={(e)=>field.handleChange(e.target.value)}
+                    placeholder="Email Address"
                     />
                     {
                       isInvalid && (
@@ -109,6 +110,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                     name={field.name}
                     value={field.state.value}
                     onChange={(e)=>field.handleChange(e.target.value)}
+                    placeholder="Password"
                     />
                     {
                       isInvalid && (

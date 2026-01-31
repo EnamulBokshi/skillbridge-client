@@ -182,14 +182,24 @@ export function AppSidebar({ user, ...props }: { user: IUser } & React.Component
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex mt-10 justify-center">
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <Link href="#">
+              className="data-[slot=sidebar-menu-button]:!p-1.5 flex justify-center items-center w-full "
+             >
+              <Link href="/">
                 <LucideGraduationCap className="!size-5" />
                 <span className="text-base font-semibold">SkillBridge</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem className="mt-6 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700   text-white rounded-md text-center transition-all duration-300 text-base font-semibold">
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5 flex justify-center items-center w-full"
+            >
+              <Link href="/dashboard" className="flex justify-center items-center w-full">
+                <span className="font-semibold">Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

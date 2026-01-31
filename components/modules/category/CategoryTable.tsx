@@ -25,14 +25,13 @@ export function CategoryTable() {
   const fetchCategories = async () => {
     try {
       setIsLoading(true)
-      const { data, error } = await getCategoriesAction()
-        console.log("Fetched categories:", data);
+      const { data, error } = await getCategoriesAction();
       if (error) {
-        toast.error(error.message || "Failed to fetch categories")
-        return
+        toast.error(error.message || "Failed to fetch categories");
+        return;
       }
-
-      setCategories(data || [])
+        const categoriesData: Category[] = data['data']
+      setCategories(categoriesData || [])
     } catch (error) {
       toast.error("Something went wrong while fetching categories")
       console.error(error)
@@ -51,6 +50,7 @@ export function CategoryTable() {
       minute: "2-digit",
     })
   }
+        // console.log("Fetched categories:", categories);
 
   if (isLoading) {
     return (
@@ -59,6 +59,7 @@ export function CategoryTable() {
       </div>
     )
   }
+        // console.log("Fetched categories:", categories);
 
   return (
     <div className="w-full border rounded-lg">

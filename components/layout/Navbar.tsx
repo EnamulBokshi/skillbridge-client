@@ -126,7 +126,10 @@ const Navbar = ({
           <div className="flex gap-2">
             <ModeToggle />
             {isLoggedIn ? (
-              <>
+              <div className="flex  gap-3 items-center">
+                <Button className="bg-violet-600">
+                  <Link href={"/dashboard"}>{"Dashboard"}</Link>
+                </Button>
                 <Button
                   asChild
                   variant="outline"
@@ -135,7 +138,7 @@ const Navbar = ({
                 >
                   <Link href={"#"}>{"Logout"}</Link>
                 </Button>
-              </>
+              </div>
             ) : (
               <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm">
@@ -201,14 +204,19 @@ const Navbar = ({
                   <div className="flex flex-col gap-3">
                     <ModeToggle />
                     {isLoggedIn ? (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        onClick={logoutUser}
-                      >
-                        <Link href={"#"}>{"Logout"}</Link>
-                      </Button>
+                      <div className="flex flex-col gap-3 items-center">
+                        <Button className="bg-violet-600">
+                          <Link href={"/dashboard"}>{"Dashboard"}</Link>
+                        </Button>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          onClick={logoutUser}
+                        >
+                          <Link href={"#"}>{"Logout"}</Link>
+                        </Button>
+                      </div>
                     ) : (
                       <>
                         <Button asChild variant="outline">

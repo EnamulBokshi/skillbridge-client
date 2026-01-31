@@ -1,3 +1,5 @@
+'use server'
+
 import { tutorService } from "@/services/tutor.service";
 import { TutorRegistration } from "@/types/user.type";
 

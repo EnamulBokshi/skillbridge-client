@@ -2,7 +2,6 @@ import { env } from "@/env";
 import { StudentRegistration } from "@/types/user.type";
 import { cookies } from "next/headers";
 const apiBaseUrl = env.NEXT_PUBLIC_API_URL;
-const apiAuthUrl = env.NEXT_PUBLIC_AUTH_URL;
 const studentService = {
     createStudent: async (studentData: StudentRegistration) => {
         try {

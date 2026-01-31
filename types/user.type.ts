@@ -14,7 +14,6 @@ export interface TutorRegistration{
     lastName: string;
     bio: string;
     categoryId: string;
-    userId: string;
     phone  ?: string;
     address? : string;
     email?: string;

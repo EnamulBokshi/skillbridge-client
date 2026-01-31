@@ -12,7 +12,7 @@ export const adminRoutes: SidebarRoute[] = [
       icon: ChartBarStackedIcon,
       items: [
         {
-          title: "Category",
+          title: "Categories",
           url: "/dashboard/admin/categories",
           icon: ChartBarStackedIcon,
           isActive: true,
@@ -26,6 +26,12 @@ export const adminRoutes: SidebarRoute[] = [
         {
           title: "Slots",
           url:"/dashboard/admin/slots",
+          icon: StretchHorizontal ,
+          isActive: false
+        },
+        {
+          title: "bookings",
+          url:"/dashboard/admin/bookings",
           icon: StretchHorizontal ,
           isActive: false
         }

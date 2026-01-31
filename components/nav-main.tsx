@@ -1,8 +1,4 @@
 "use client";
-
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -12,15 +8,15 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarRoute } from "@/types";
-import { useParams, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export function NavMain({ routes }: { routes: SidebarRoute[] }) {
-  const router = useRouter();
-  const param = useParams();
-  console.log("Params in NavMain:", param);
+
   if (!routes || routes.length === 0) {
-    router.push("/");
+    toast.error("No routes available");
+    redirect("/");
   }
   return (
     <>

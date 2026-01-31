@@ -1,16 +1,14 @@
 "use client"
 
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
-import { FieldGroup, FieldLabel } from '../ui/field'
-import { Field } from '@tanstack/react-form'
+import {  FieldLabel } from '../ui/field'
 import { StudentProfileForm } from '../modules/authentication/Student-profile-form'
 import { TutorProfileForm } from '../modules/authentication/TutorProfile-form'
 
 export default function CompleteRegistrationLayout() {
     const [designation, setDesignation] = useState<"student" | "tutor"> ('student')
   return (
-
 
    <Card className='rounded-md p-8 shadow-2xl '>
         <CardHeader>
@@ -32,6 +30,7 @@ export default function CompleteRegistrationLayout() {
                             value="student" 
                             checked={designation === 'student'}
                             onChange={()=> setDesignation('student')}
+                            
                           />
                           <FieldLabel htmlFor="student" className='ml-2'>Student</FieldLabel>
                         </div>

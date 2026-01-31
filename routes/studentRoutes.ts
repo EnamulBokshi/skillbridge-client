@@ -1,43 +1,30 @@
-import { Bot, SquareTerminal } from "lucide-react";
+import {  FileBarChartIcon, Settings2, SquareTerminal } from "lucide-react";
 
 export const studentRoutes = [
     {
-      title: "Blogs",
+      title: "Bookings",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Write Blog",
-          url: "/dashboard/write-blog",
-        },
-        {
-          title: "View Blogs",
-          url: "/dashboard/view-blogs",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Bookings",
+          url: "/dashboard/student/bookings",
+          icon: SquareTerminal
         },
       ],
     },
     {
-      title: "Models",
+      title: "Settings",
       url: "#",
-      icon: Bot,
+      icon: Settings2,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Profile",
+          url: "/dashboard/student/profile",
+          icon: FileBarChartIcon
         },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        
       ],
     },
 ]

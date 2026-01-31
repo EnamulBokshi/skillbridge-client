@@ -1,4 +1,4 @@
-import { Bot, SquareTerminal } from "lucide-react";
+import { Bot, CalendarCheck, DatabaseZap, GalleryThumbnailsIcon, Settings2, SquareArrowDownLeft, SquareArrowOutUpRight, SquareTerminal, UserRoundPen } from "lucide-react";
 
 export const tutorRoutes = [
     {
@@ -8,35 +8,31 @@ export const tutorRoutes = [
       isActive: true,
       items: [
         {
-          title: "Write Blog",
-          url: "/dashboard/write-blog",
+          title: "Availability Slots",
+          url: "/dashboard/availability",
+          icon: CalendarCheck ,
         },
         {
-          title: "View Blogs",
-          url: "/dashboard/view-blogs",
+          title: "Analytics",
+          url: "/dashboard/analytics",
+          icon: DatabaseZap 
         },
         {
           title: "Settings",
-          url: "#",
+          url: "/dashboard/tutor/settings",
+          icon: UserRoundPen,
         },
       ],
     },
     {
-      title: "Models",
+      title: "Controls",
       url: "#",
-      icon: Bot,
-      items: [
+      icon: Settings2,
+      items: [      
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Profile",
+          url: "/dashboard/tutor/profile",
+          icon: GalleryThumbnailsIcon,
         },
       ],
     },

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import buildFetchConfig from "@/helper/buildFetchConfig";
 import { Category } from "@/types/category.type";
 
+// :Promise<TResponse<Category[]|null>>
 
 const categoryService = {
     createCategory:async (data: any, options?: ServiceOption) => {
@@ -31,7 +32,7 @@ const categoryService = {
         return {data: null, error: {message: 'Category creation failed'}};
        }
     },
-    getAllCategories: async (options?: ServiceOption):Promise<TResponse<Category[]|null>> => {
+    getAllCategories: async (options?: ServiceOption) => {
         try {
             const fetchConfig = buildFetchConfig(options);
             const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories`, fetchConfig);

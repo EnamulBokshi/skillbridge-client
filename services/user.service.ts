@@ -1,7 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers"
 const authUrl = env.AUTH_URL;
-const cookieStore = await cookies();
 export const userServices = {
     getSession: async()=>{
         try {
@@ -26,7 +25,7 @@ export const userServices = {
     },
     logout: async()=>{
         try {
-            // const cookieStore = await cookies();
+            const cookieStore = await cookies();
             const res = await fetch(`${authUrl}/signout`, {
                 method: 'POST',
                 headers: {

@@ -12,6 +12,6 @@ export default async function AdminLayout({children}:{children:React.ReactNode} 
         redirect('/')
     }
   return (
-    <div>AdminLayout{children}</div>
+    <div>Admin {children}</div>
   )
 }

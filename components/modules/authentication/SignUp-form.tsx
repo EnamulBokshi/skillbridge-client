@@ -84,6 +84,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     name={field.name}
                     value={field.state.value}
                     onChange={(e)=>field.handleChange(e.target.value)}
+                    placeholder="Name"
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -107,6 +108,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     name={field.name}
                     value={field.state.value}
                     onChange={(e)=>field.handleChange(e.target.value)}
+                    placeholder="Email Address"
                     />
                     {
                       isInvalid && (
@@ -131,6 +133,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     name={field.name}
                     value={field.state.value}
                     onChange={(e)=>field.handleChange(e.target.value)}
+                    placeholder="Password"
                     />
                     {
                       isInvalid && (
