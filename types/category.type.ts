@@ -3,4 +3,6 @@ export interface Category{
     name: string;
     slug: string;
     slotPrice: number;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
 }

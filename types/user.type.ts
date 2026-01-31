@@ -1,3 +1,5 @@
+import { USER_ROLES } from "@/constants";
+
 export interface StudentRegistration{
     firstName?: string;
     lastName?: string;
@@ -24,5 +26,22 @@ export interface TutorRegistration{
 }
 
 export interface IUser {
-    
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+    role: USER_ROLES;
+    status: 'ACTIVE' | 'INACTIVE' | 'BANNED';
+    isAssociate: boolean;
+    id: string;
 }
+
+export interface IUserProps{
+    name: string;
+    email: string;
+    avatar?: string | undefined| null;
+    role: USER_ROLES;
+}
+

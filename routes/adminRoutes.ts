@@ -1,9 +1,11 @@
-import { ChartBarStackedIcon, DatabaseBackup, LucideWholeWord } from "lucide-react";
+import { SidebarRoute } from "@/types";
+import { ChartBarStackedIcon, SquaresIntersect, StretchHorizontal, UserCog, Users2 } from "lucide-react";
 
 
-export const adminRoutes = [
- 
-    
+
+
+
+export const adminRoutes: SidebarRoute[] = [
     {
       title: "Management",
       url: "#",
@@ -12,14 +14,20 @@ export const adminRoutes = [
         {
           title: "Category",
           url: "/dashboard/admin/categories",
+          icon: ChartBarStackedIcon,
+          isActive: true,
         },
         {
           title: "Users",
-          url:"/dashboard/admin/users"
+          url:"/dashboard/admin/users",
+          icon: UserCog,
+          isActive: false
         },
         {
           title: "Slots",
-          url:"/dashboard/admin/slots"
+          url:"/dashboard/admin/slots",
+          icon: StretchHorizontal ,
+          isActive: false
         }
         
       ],

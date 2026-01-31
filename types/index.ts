@@ -23,14 +23,14 @@ export interface SearchParams{
 }
 
 
-export type Route = {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  
-}
+export type SidebarRoute = {
+  title: string;
+  url: string;
+  icon?: React.ComponentType<any>;
+  items?: {
+    title: string;
+    url: string;
+    icon?: React.ComponentType<any>;
+    isActive?: boolean;
+  }[];
+};
