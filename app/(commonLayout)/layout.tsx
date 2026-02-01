@@ -2,6 +2,8 @@ import { getUserSession } from '@/action/user.action'
 import { Navbar } from '@/components/layout/Navbar'
 import React from 'react'
 
+export const dynamic = 'force-dynamic';
+
 export default async function CommonLayout({children}:{children:React.ReactNode}) {
   const {data, error} = await getUserSession();
   const user = data?.user;

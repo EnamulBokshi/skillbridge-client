@@ -18,7 +18,7 @@ export interface TutorRegistration{
     address? : string;
     email?: string;
     zip?: string 
-    
+    profilePicture?: string;
     experienceYears: number;
     cv?: string;
     expertiseAreas: string[];

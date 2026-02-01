@@ -3,6 +3,8 @@ import { USER_ROLES } from '@/constants';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
+export const dynamic = 'force-dynamic';
+
 export default async function StudentDashboardLayout({ children }: { children: React.ReactNode }) {
     const {data, error} = await getUserSession();
     if (error || !data?.user || data.user.role !== USER_ROLES.STUDENT) {

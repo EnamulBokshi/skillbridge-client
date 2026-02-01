@@ -11,6 +11,8 @@ import { IUser, IUserProps } from '@/types/user.type';
 import Link from 'next/link';
 import React from 'react'
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashBoardLayout({
     children,
 }:{
@@ -19,7 +21,7 @@ export default async function DashBoardLayout({
     const {data, error} = await userServices.getSession();
     const user:IUser = data?.user;
     const userRole = user?.role;
-    console.log("User  in Layout:", user);
+    // console.log("User  in Layout:", user);
     const isAssociate = user?.isAssociate;
     if(userRole !== USER_ROLES.ADMIN && !isAssociate){
         return (
@@ -48,15 +50,18 @@ export default async function DashBoardLayout({
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                 {/* Dashboard */}Admin
+                 {
+                  userRole.charAt(0).toUpperCase() + userRole.slice(1)
+                 }
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <BreadcrumbPage></BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">

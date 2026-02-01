@@ -15,31 +15,14 @@ const studentService = {
                 },
                 body: JSON.stringify(studentData)
             })
-            // console.log("Server Response:", response); // Debug log
+            const resonseData = await response.json(); 
+            console.log("Response Data from createStudent:", resonseData); // Debug log
+            
             if (!response.ok) {
-                let errorMessage = 'Failed to create student profile';
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorMessage;
-                } catch {
-                    
-                    errorMessage = `Failed to create student profile (${response.status})`;
-                }
-                return {data: null, error: {message: errorMessage}};
+                
+                return {data: null, error: {message: resonseData.message || 'Failed to create student profile'}};
             }
-            
-            // Check if response has content before parsing
-            const text = await response.text();
-            if (!text) {
-                return {data: null, error: {message: 'Server returned empty response'}};
-            }
-            
-            try {
-                const data = JSON.parse(text);
-                return {data, error: null};
-            } catch {
-                return {data: null, error: {message: 'Invalid JSON response from server'}};
-            }
+            return {data: resonseData.data, error: null};
         } catch (error:any) {
             console.error('Error creating student profile:', error);
             return {data: null, error: {message: 'Student profile creation failed'}};

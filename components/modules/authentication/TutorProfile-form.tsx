@@ -33,6 +33,7 @@ import {
 import { Category } from "@/types/category.type";
 import { getCategoriesAction } from "@/action/category.action";
 import { redirect } from "next/navigation";
+import { Loading } from "@/components/common/Loading";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -40,14 +41,27 @@ const formSchema = z.object({
   bio: z.string().min(10, "Bio must be at least 10 characters"),
   categoryId: z.string().min(1, "Category is required!"),
   phone: z.string().length(11, "Phone number must be 11 digit"),
-  email: z.email(),
-  address: z.string(),
+  profilePicture: z
+    .string()
+    .trim()
+    .refine(
+      (v) => !v || z.url().safeParse(v).success,
+      "Profile picture must be a valid URL or leave it empty",
+    ),
+  email: z.email("Invalid email address"),
+  address: z.string().min(5, "Address is required"),
   zip: z.string().length(4, "Zip code must be 4 digits"),
   experienceYears: z
     .number()
     .min(0, "Experience years must be 0 or greater")
     .max(50, "Experience years seems too high"),
-  cv: z.string(),
+  cv: z
+    .string()
+    .trim()
+    .refine(
+      (v) => !v || z.url().safeParse(v).success,
+      "CV must be a valid URL or leave it empty",
+    ),
   expertiseAreas: z
     .array(z.string())
     .min(1, "At least one expertise area is required"),
@@ -91,6 +105,7 @@ export function TutorProfileForm({
       address: "",
       email: "",
       zip: "",
+      profilePicture: "",
       experienceYears: 0,
       cv: "",
       expertiseAreas: [] as string[],
@@ -100,29 +115,47 @@ export function TutorProfileForm({
     },
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Profile creation in progress...");
-      try {
+      
         console.log("Form data to send:", value);
 
         const { data, error } = await createTutorAction(value);
         console.log("Server response:", data, error);
-        if (data.success) {
-          console.log("Tutor profile created successfully:", data);
-          toast.success("Profile created successfully!!", { id: loading });
-          redirect('/dashboard');
-        }
         if (error) {
-          toast.error(error.message || "Something went wrong!!", { id: loading });
-          return;
+          console.error("Error creating tutor profile:", error);
+          toast.error(error.message || "Something went wrong!!", {
+            id: loading,
+          });
+         
         }
-        if (!data.ok) throw new Error("Failed to create profile");
 
-        toast.success("Profile created successfully!!", { id: loading });
-      } catch (error) {
-        console.error("Error creating tutor profile:", error);
-        toast.error("Something went wrong!!", { id: loading });
-      }
+        if (!error) {
+          console.log("Tutor profile created successfully:", data);
+          toast.success(data.message || "Profile created successfully!!", {
+            id: loading,
+          });
+          redirect("/dashboard");
+
+        }
+        if (data) {
+          toast.success("Profile created successfully!!", { id: loading });
+          redirect("/dashboard");
+         
+        }
+        toast.success("", { id: loading });
+      
     },
   });
+  if (isLoading) {
+    return (
+      <Loading
+        title="Tutor Profile"
+        description="Loading tutor profile form..."
+        sections={4}
+        showFooter={true}
+        {...props}
+      />
+    );
+  }
   return (
     <Card {...props}>
       <CardHeader className="p-4 ">
@@ -141,6 +174,7 @@ export function TutorProfileForm({
         >
           <FieldGroup>
             {/* Personal Information Section */}
+
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Personal Information</h3>
 
@@ -442,7 +476,31 @@ export function TutorProfileForm({
                   );
                 }}
               />
-
+              <form.Field
+                name="profilePicture"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>
+                        Profile Picture URL
+                      </FieldLabel>
+                      <Input
+                        type="text"
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="https://example.com/profile.jpg"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
               <form.Field
                 name="expertiseAreas"
                 children={(field) => {

@@ -19,7 +19,8 @@ const tutorService = {
                 throw new Error(errorData.message || 'Failed to create tutor profile');
             }
             const data = await response.json();
-            return {data, error: null};
+            console.log("Response Data from createTutor:", data); // Debug log
+            return {data: data.data, error: null};
         } catch (error:any) {
             console.error('Error creating tutor profile:', error);
            return {data: null, error: {message: error.message || 'Tutor profile creation failed'}};

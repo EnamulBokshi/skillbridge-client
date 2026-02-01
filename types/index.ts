@@ -34,3 +34,10 @@ export type SidebarRoute = {
     isActive?: boolean;
   }[];
 };
+
+export interface ServerResponse{
+  success: boolean;
+    data: any | null;
+    error: any| null;
+    message: string;
+}

@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { env } from "@/env"
 import { authClient } from "@/lib/auth-client"
+import { IconBrandGoogle } from "@tabler/icons-react"
 import {useForm} from "@tanstack/react-form"
 import { redirect } from "next/navigation"
 import { toast } from "sonner"
@@ -25,15 +27,29 @@ const formSchema = z.object({
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   const handleGoogleLogin = async ()=> {
-    const data = await authClient.signIn.social({
+    
+    try {
+      const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:3000"
+      callbackURL: env.NEXT_PUBLIC_APP_URL
     });
+    
+    if(data) {
+      toast.success("Google sign-up successful!!");
+      // redirect("/");
+      redirect("/");
+    }
+    
+      
+    } catch (error) {
+      console.log("Google sign-up error:", error);
+      toast.error("Google sign-up failed. Please try again.");
+    }
   };
 
   const form = useForm({
     defaultValues:{
-      name:"",
+      name: "",
       email: "",
       password: ""
     },
@@ -42,7 +58,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
     onSubmit: async({value} )=>{
       const loading = toast.loading("Please wait")
-      try {
+      
         const {data, error} = await authClient.signUp.email(value)
 
         if(error){
@@ -52,9 +68,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         toast.success("User created successfully!!", {id: loading})
         redirect("/");
 
-      } catch (error) {
-        toast.error("Someting went wrong!!", {id: loading})
-      }
+      
     }
   })
   return (
@@ -101,7 +115,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
                 return(
                   <Field>
-                    <FieldLabel htmlFor={field.name}>email</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                     <Input 
                     type="email"
                     id={field.name}
@@ -149,7 +163,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardContent>
       <CardFooter className="flex flex-col">
         <Button type="submit" form="signup-form" className="w-full">Register</Button>
-        <Button variant="outline" type="button" onClick={()=> handleGoogleLogin()} className="w-full mt-3" > Continue with Google</Button>
+        <Button variant="outline" type="button" onClick={()=> handleGoogleLogin()} className="w-full mt-3" > Continue with Google <IconBrandGoogle className="inline"/></Button>
       </CardFooter>
     </Card>
   )
