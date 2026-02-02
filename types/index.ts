@@ -12,7 +12,7 @@ export type TResponse<T>={
     error: {message:string} | null;
 };
 
-export interface SearchParams{
+export interface GeneralSearchParams{
     isFeatured?: boolean;
     search?: string;
     page?: string;

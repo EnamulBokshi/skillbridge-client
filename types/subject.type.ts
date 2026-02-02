@@ -15,3 +15,18 @@ export interface OSubject {
     description: string;
     isActive: boolean;
 }
+
+export interface SubjectWithCategory {
+  id: string;
+  name: string;
+  creditHours: number;
+  slug: string;
+  description: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  category: {
+    id: string;
+    name: string;
+  };
+}

@@ -1,8 +1,9 @@
 import { logOutUserAction } from "@/action/user.action";
 import { toast } from "sonner";
-
 const logoutUser = async () => {
+
   try {
+   
     const loading = toast.loading("Logging out...");
     await logOutUserAction();
     toast.success("Logged out successfully!");

@@ -4,8 +4,6 @@ import { cookies } from "next/headers";
 import buildFetchConfig from "@/helper/buildFetchConfig";
 import { Category } from "@/types/category.type";
 
-// :Promise<TResponse<Category[]|null>>
-
 const categoryService = {
     createCategory:async (data: any, options?: ServiceOption) => {
        try {
@@ -35,7 +33,9 @@ const categoryService = {
     getAllCategories: async (options?: ServiceOption) => {
         try {
             const fetchConfig = buildFetchConfig(options);
-            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories`, fetchConfig);
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories`, {
+                next: {tags: ['categories']},
+            });
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(errorData.message || 'Failed to fetch categories');
@@ -61,6 +61,51 @@ const categoryService = {
         } catch (error) {
             console.error("Error fetching category by slug:", error);
             return {data: null, error: {message: 'Failed to fetch category'}};
+        }
+    },
+
+    updateCategory: async (data: Partial<Category>): Promise<TResponse<Category | null>> => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories/${data.id}`,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(data),
+            });
+             if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Failed to update category');
+            }
+            const updatedCategory = await res.json();
+            return {data: updatedCategory, error: null};
+        } catch (error) {
+            console.error("Error updating category:", error);
+            return {data: null, error: {message: 'Failed to update category'}};
+        }
+    },
+
+    deleteCategory: async(categoryId:string)=>{
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories/${categoryId}`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieStore.toString(),
+                }
+            });
+             if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Failed to delete category');
+            }
+            const deletedCategory = await res.json();
+            return {data: deletedCategory, error: null};
+        } catch (error) {
+            console.error("Error deleting category:", error);
+            return {data: null, error: {message: 'Failed to delete category'}};
         }
     }
 

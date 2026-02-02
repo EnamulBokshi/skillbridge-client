@@ -28,9 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/types/category.type";
-import { IconBrandGoogle } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
-import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -40,10 +38,9 @@ const formSchema = z.object({
   creditHours: z.number().min(1, "Credit hours must be at least 1"),
   categoryId: z.string().min(1, "Category ID is required"),
   description: z.string().min(1, "Description is required"),
-    slug: z.string().min(1, "Slug is required"),
+  slug: z.string().min(1, "Slug is required"),
 });
 export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const [slug, setSlug] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const form = useForm({
@@ -59,31 +56,21 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Please wait");
-      try {
-        const slug = value.name.toLowerCase().replace(/\s+/g, "-");
-        value = { ...value, slug };
-        const { data, error } = await createSubjectAction(value);
 
-        if (error) {
-          toast.error(error.message, { id: loading });
-          return;
-        }
-        toast.success("Subject created successfully!!", { id: loading });
-        redirect("/");
-      } catch (error) {
-        toast.error("Someting went wrong!!", { id: loading });
+      const slug = value.name.toLowerCase().replace(/\s+/g, "-");
+      value = { ...value, slug };
+      const { data, error } = await createSubjectAction(value);
+
+      if (error) {
+        toast.error(error.message, { id: loading });
+        return;
       }
+      toast.success("Subject created successfully!!", { id: loading });
+      form.reset();
     },
   });
+ 
 
-  const slugify = (name: string) => {
-    setSlug(
-      name
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-    );
-    // return name.toLowerCase().replace(/\s+/g, "-");
-  };
 
   useEffect(() => {
     fetchCategories();
@@ -128,7 +115,7 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
-          id="signup-form"
+          id="subject-form"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
@@ -142,16 +129,22 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Title *</FieldLabel>
                     <Input
                       type="text"
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => {
-                        field.handleChange(e.target.value);
-                        slugify(e.target.value);
-                      }}
+                      onChange={(e) => 
+                        {
+                        const name = e.target.value;
+                        field.handleChange(name);
+                        form.setFieldValue(
+                          "slug",
+                          name.toLowerCase().replace(/\s+/g, "-"),
+                        );
+                      }
+                      }
                       placeholder="e.g., Mathematics, Physics, Web Engineering"
                     />
                     {isInvalid && (
@@ -161,26 +154,31 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
                 );
               }}
             />
-            <form.Field 
-            name="slug"
-            children={(field) => {
+            <form.Field
+              name="slug"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Slug *</FieldLabel>
                     <Input
                       type="text"
                       id={field.name}
                       name={field.name}
-                      value={slug}
-                      onChange={(e) => {
-                        field.handleChange(e.target.value);
-                        slugify(e.target.value);
-                      }}
+                      value={field.state.value}
+                      
+                      readOnly
                       placeholder="subject-slug"
                     />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
                 );
-            }}
+              }}
             />
 
-            
             <form.Field
               name="creditHours"
               children={(field) => {
@@ -225,7 +223,7 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
                     return (
                       <Field>
                         <FieldLabel htmlFor={field.name}>
-                          Select your expertise area *
+                          Select subject category *
                         </FieldLabel>
                         <Select
                           onValueChange={(value) => field.handleChange(value)}
@@ -283,7 +281,7 @@ export function SubjectForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button type="submit" form="signup-form" className="w-full">
+        <Button type="submit" form="subject-form" className="w-full">
           Create Subject
         </Button>
       </CardFooter>

@@ -1,12 +1,30 @@
-import { SubjectForm } from '@/components/modules/subject/CreateSubjectForm'
-import React from 'react'
+import { getSubjectsAction } from '@/action/subject.action';
+import { SubjectForm } from '@/components/modules/subject/CreateSubjectForm';
+import { SubjectTableWrapper } from '@/components/modules/subject/SubjectTableWrapper';
+import { SubjectWithCategory } from '@/types/subject.type';
+import React from 'react';
 
-export default function SubjectsPageAdmin() {
+export default async function SubjectsPageAdmin() {
+  const { data, error } = await getSubjectsAction();
+  
+
   return (
-    <div>
-        <h1>Subjects Page - Admin View</h1>
-        <p>Manage subjects here.</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Subjects</h1>
+          <p className="text-muted-foreground">
+            Manage your course subjects
+          </p>
+        </div>
+      </div>
+
+      <SubjectTableWrapper subjects={data || []} />
+
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Create New Subject</h2>
         <SubjectForm />
+      </div>
     </div>
-  )
+  );
 }

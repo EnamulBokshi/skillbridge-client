@@ -2,7 +2,8 @@ export interface Category{
     id?: string;
     name: string;
     slug: string;
-    slotPrice: number;
+    description: string;
+    isActive?: boolean;
     createdAt?: string | Date;
     updatedAt?: string | Date;
 }

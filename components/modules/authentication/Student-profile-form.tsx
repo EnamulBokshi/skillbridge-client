@@ -70,6 +70,7 @@ export function StudentProfileForm({
 
       if (data) {
         toast.success("Profile created successfully!!", { id: loading });
+        form.reset();
         redirect("/");
       }
     },

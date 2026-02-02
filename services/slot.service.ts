@@ -1,0 +1,60 @@
+import { env } from "@/env";
+import handleParams from "@/helper/handleSearchParams";
+import { ServerResponse } from "@/types";
+import { ICreateSlotPayload, SlotSearchParams } from "@/types/slot.type";
+import { cookies } from "next/headers";
+
+const slotService = {
+  createSlot: async (payload: ICreateSlotPayload) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/slots`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(payload),
+      });
+        const result: ServerResponse = await response.json();
+        return {data: result.data, error: result.error, success: result.success, message: result.message};
+    } catch (error) {
+      console.error("Error creating slot:", error);
+      return {
+        data: null,
+        error,
+        success: false,
+        message: "Failed to create slot",
+      };
+    }
+  },
+  getSlots: async(params?: SlotSearchParams) =>{
+    try {
+        const cookieStore = await cookies();
+        const base = `${env.NEXT_PUBLIC_API_URL}/slots`;
+        const url = handleParams(base, params);
+        console.log("Fetch slots with URL:", url);
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+            cache: "no-store",
+            next: {tags: ['slots']}
+        });
+        const result = await response.json();
+        return {data: result.data, pagination: result.pagination, error: result.error, success: result.success, message: result.message};
+    } catch (error) {
+        console.error("Error fetching slots:", error);
+        return {
+            data: null,
+            error,
+            success: false,
+            message: "Failed to fetch slots",
+        };
+    }
+  }
+};
+
+export default slotService;

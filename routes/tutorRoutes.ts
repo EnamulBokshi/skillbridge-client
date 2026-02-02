@@ -9,12 +9,12 @@ export const tutorRoutes = [
       items: [
         {
           title: "Availability Slots",
-          url: "/dashboard/availability",
+          url: "/dashboard/tutor/slots",
           icon: CalendarCheck ,
         },
         {
           title: "Analytics",
-          url: "/dashboard/analytics",
+          url: "/dashboard/tutor/analytics",
           icon: DatabaseZap 
         },
         {

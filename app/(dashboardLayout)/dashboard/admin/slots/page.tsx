@@ -1,7 +1,10 @@
+import { AdminSlotList } from '@/components/modules/slot'
 import React from 'react'
 
 export default function SlotPage() {
   return (
-    <div>SlotPage</div>
+    <div>
+      <AdminSlotList />
+    </div>
   )
 }

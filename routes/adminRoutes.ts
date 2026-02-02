@@ -1,5 +1,5 @@
 import { SidebarRoute } from "@/types";
-import { ChartBarStackedIcon, SquaresIntersect, StretchHorizontal, UserCog, Users2 } from "lucide-react";
+import { BookCopy, ChartBarStackedIcon, SquaresIntersect, StretchHorizontal, UserCog, Users2 } from "lucide-react";
 
 
 
@@ -33,6 +33,12 @@ export const adminRoutes: SidebarRoute[] = [
           title: "bookings",
           url:"/dashboard/admin/bookings",
           icon: StretchHorizontal ,
+          isActive: false
+        },
+        {
+          title: "subjects",
+          url:"/dashboard/admin/subjects",
+          icon: BookCopy ,
           isActive: false
         }
         

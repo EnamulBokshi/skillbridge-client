@@ -115,33 +115,24 @@ export function TutorProfileForm({
     },
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Profile creation in progress...");
-      
-        console.log("Form data to send:", value);
-
+    
         const { data, error } = await createTutorAction(value);
-        console.log("Server response:", data, error);
+        // console.log("Server response:", data, error);
+
         if (error) {
           console.error("Error creating tutor profile:", error);
           toast.error(error.message || "Something went wrong!!", {
             id: loading,
           });
-         
+          return;
         }
 
-        if (!error) {
-          console.log("Tutor profile created successfully:", data);
-          toast.success(data.message || "Profile created successfully!!", {
-            id: loading,
-          });
-          redirect("/dashboard");
-
-        }
         if (data) {
           toast.success("Profile created successfully!!", { id: loading });
+          localStorage.setItem("tutor",JSON.stringify(data))
           redirect("/dashboard");
-         
+          
         }
-        toast.success("", { id: loading });
       
     },
   });

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,70 +8,57 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { createCategoryAction } from "@/action/category.action"
-import { useForm } from "@tanstack/react-form"
-import { toast } from "sonner"
-import * as z from "zod"
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { createCategoryAction } from "@/action/category.action";
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import generateSlug from "@/helper/generateSlug";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(1, "Category name is required"),
-//   slotPrice: z.coerce.number().min(0, "Slot price must be a positive number"),
-    slotPrice: z.string().refine((val) => {
-    const numberVal = parseFloat(val);
-    return !isNaN(numberVal) && numberVal >= 0;
-  }, {
-    message: "Slot price must be a positive number",
-  }),
-})
-
-function generateSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-}
+  description: z.string().min(1, "Description is required"),
+  slug: z.string().min(1, "Slug is required"),
+});
 
 export function CategoryForm({ ...props }: React.ComponentProps<typeof Card>) {
   const form = useForm({
     defaultValues: {
       name: "",
-      slotPrice: "",
+      description: "",
+      slug: "",
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const loading = toast.loading("Creating category...")
+      const loading = toast.loading("Creating category...");
       try {
-        const slug = generateSlug(value.name)
-        const categoryData = {
-          name: value.name,
-          slug: slug,
-          slotPrice: Number(value.slotPrice),
-        }
-
-        const { data, error } = await createCategoryAction(categoryData)
+        const { data, error } = await createCategoryAction(value);
 
         if (error) {
           toast.error(error.message || "Failed to create category", {
             id: loading,
-          })
-          return
+          });
+          return;
         }
 
-        toast.success("Category created successfully!", { id: loading })
-        form.reset()
+        toast.success("Category created successfully!", { id: loading });
+        form.reset();
       } catch (error) {
-        toast.error("Something went wrong!", { id: loading })
-        console.error(error)
+        toast.error("Something went wrong!", { id: loading });
+        console.error(error);
       }
     },
-  })
+  });
 
   return (
     <Card {...props}>
@@ -85,8 +72,8 @@ export function CategoryForm({ ...props }: React.ComponentProps<typeof Card>) {
         <form
           id="category-form"
           onSubmit={(e) => {
-            e.preventDefault()
-            form.handleSubmit()
+            e.preventDefault();
+            form.handleSubmit();
           }}
         >
           <FieldGroup>
@@ -94,57 +81,86 @@ export function CategoryForm({ ...props }: React.ComponentProps<typeof Card>) {
               name="name"
               children={(field) => {
                 const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
+                  field.state.meta.isTouched && !field.state.meta.isValid;
 
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Category Name
-                    </FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Category Name</FieldLabel>
                     <Input
                       type="text"
                       id={field.name}
                       name={field.name}
                       placeholder="e.g., Web Development"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => {
+                        const name = e.target.value;
+                        field.handleChange(name);
+                        const slug = generateSlug(name);
+                        form.setFieldValue("slug", slug);
+                      }}
                       onBlur={field.handleBlur}
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
-                )
+                );
               }}
             />
 
             <form.Field
-              name="slotPrice"
+              name="slug"
               children={(field) => {
                 const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
+                  field.state.meta.isTouched && !field.state.meta.isValid;
 
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Slot Price
-                    </FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Slug</FieldLabel>
+                    <CardDescription>
+                      The slug is auto-generated from the category name and
+                      cannot be edited
+                    </CardDescription>
+
                     <Input
-                      type="number"
+                      type="text"
                       id={field.name}
                       name={field.name}
-                      placeholder="0.00"
-                      step="0.01"
-                      min="0"
+                      placeholder="e.g., web-development"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
                       onBlur={field.handleBlur}
+                      readOnly
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
-                )
+                );
+              }}
+            />
+
+            <form.Field
+              name="description"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Description *</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Brief description about the subject"
+                      rows={4}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
               }}
             />
           </FieldGroup>
@@ -156,5 +172,5 @@ export function CategoryForm({ ...props }: React.ComponentProps<typeof Card>) {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

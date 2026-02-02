@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggler";
-import { toast } from "sonner";
-import { logOutUserAction } from "@/action/user.action";
+import logoutUser from "@/helper/logout";
+import { useConfirm } from "../modules/common/ConfirmDialog";
 
 interface MenuItem {
   title: string;
@@ -67,14 +67,18 @@ const Navbar = ({
     { title: "Home", url: "/" },
 
     {
-      title: "Blogs",
-      url: "/blogs",
+      title: "Explore Sessions",
+      url: "/sessions",
     },
-
+    {
+      title: "Tutors",
+      url: "/tutors",
+    },
     {
       title: "About",
-      url: "/about",
+      url: "/about-us",
     },
+
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -84,6 +88,18 @@ const Navbar = ({
   isLoggedIn = false,
   isAssociate = false,
 }: Navbar1Props) => {
+  const { confirm } = useConfirm();
+  const handleLogout = async () => {
+    const ok = await confirm({
+      title: "Logout?",
+      description: "You will need to login again.",
+      confirmText: "Logout",
+      destructive: true,
+    });
+    if (!ok) return;
+    await logoutUser();
+  };
+
   const renderTheCompleteRegistrationButton = isLoggedIn && !isAssociate;
   return (
     <section className={cn("py-4", className)}>
@@ -134,7 +150,7 @@ const Navbar = ({
                   asChild
                   variant="outline"
                   size="sm"
-                  onClick={logoutUser}
+                  onClick={handleLogout}
                 >
                   <Link href={"#"}>{"Logout"}</Link>
                 </Button>
@@ -212,7 +228,7 @@ const Navbar = ({
                           asChild
                           variant="outline"
                           size="sm"
-                          onClick={logoutUser}
+                          onClick={handleLogout}
                         >
                           <Link href={"#"}>{"Logout"}</Link>
                         </Button>
@@ -261,16 +277,4 @@ const renderMobileMenuItem = (item: MenuItem) => {
   );
 };
 
-const logoutUser = async () => {
-  try {
-    const loading = toast.loading("Logging out...");
-    await logOutUserAction();
-    toast.success("Logged out successfully!");
-    toast.dismiss(loading);
-    // Optionally, you can refresh the page or redirect the user after logout
-    window.location.href = "/";
-  } catch (error) {
-    console.error("Error logging out:", error);
-  }
-};
 export { Navbar };
