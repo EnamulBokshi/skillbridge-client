@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { IReview, ServerResponse } from "@/types";
 import { StudentRegistration } from "@/types/user.type";
 import { get } from "http";
 import { cookies } from "next/headers";
@@ -57,6 +58,8 @@ const studentService = {
       console.error("Error fetching student profile:", error);
       return {
         data: null,
+        success: false,
+        message: "Fetching student profile failed",
         error: { message: "Fetching student profile failed" },
       };
     }
@@ -86,6 +89,8 @@ const studentService = {
       console.error("Error updating student profile:", error);
       return {
         data: null,
+        success: false,
+        message: "Updating student profile failed",
         error: { message: "Updating student profile failed" },
       };
     }
@@ -111,7 +116,9 @@ const studentService = {
       console.error("Error deleting student profile:", error);
       return {
         data: null,
-        error: { message: "Deleting student profile failed" },
+        success: false,
+        message: "Deleting student profile failed",
+        error: error.message ? { message: error.message } : { message: "Deleting student profile failed" },
       };
     }
   },
@@ -128,7 +135,7 @@ const studentService = {
           },
         },
       );
-      const responseData = await response.json();
+      const responseData : ServerResponse = await response.json();
       return {
         data: responseData.data,
         success: responseData.success,
@@ -139,6 +146,8 @@ const studentService = {
       console.error("Error fetching student stats:", error);
       return {
         data: null,
+        success: false,
+        message: "Fetching student stats failed",
         error: { message: "Fetching student stats failed" },
       };
     }
@@ -169,6 +178,8 @@ const studentService = {
       console.error("Error fetching completed sessions:", error);
       return {
         data: null,
+        success: false,
+        message: "Fetching completed sessions failed",
         error: { message: "Fetching completed sessions failed" },
       };
     }
@@ -199,7 +210,38 @@ const studentService = {
       console.error("Error fetching upcoming sessions:", error);
       return {
         data: null,
+        success: false,
+        message: "Fetching upcoming sessions failed",
         error: { message: "Fetching upcoming sessions failed" },
+      };
+    }
+  },
+  createReview: async (payload: IReview) => {
+    try {
+      const cookieStore = await cookies();
+      const {studentId, tutorId, rating, comment} = payload;
+      const response = await fetch(`${apiBaseUrl}/reviews/${studentId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify({ tutorId, rating, comment }),
+      });
+      const responseData = await response.json();
+      return {
+        data: responseData.data,
+        success: responseData.success,
+        message: responseData.message,
+        error: responseData.error,
+      };
+    } catch (error: any) {
+      console.error("Error creating review:", error);
+      return {
+        data: null,
+        success: false,
+        message: "Creating review failed",
+        error: { message: "Creating review failed" },
       };
     }
   }

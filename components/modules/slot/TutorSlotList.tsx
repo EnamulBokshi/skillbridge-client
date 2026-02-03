@@ -67,12 +67,12 @@ export function TutorSlotList({ initialData }: TutorSlotListProps) {
 
   return (
     <SlotList
-      // initialSlots={data.slots}
-      // initialPagination={data.pagination}
-      // editable={true}
-      // showTutorFilter={false} // Hide tutor filter for tutors
-      // tutorId={tutorId}
-      // onFiltersChange={fetchSlots}
+      initialSlots={data.slots}
+      initialPagination={data.pagination}
+      editable={true}
+      showTutorFilter={false} // Hide tutor filter for tutors
+      tutorId={tutorId}
+      onFiltersChange={fetchSlots}
     />
   );
 }

@@ -35,6 +35,9 @@ export function SlotCard({
   onEdit,
   onDelete,
 }: SlotCardProps) {
+
+  
+
   const startTime = new Date(slot.startTime);
   const endTime = new Date(slot.endTime);
   const slotDate = new Date(slot.date);
@@ -52,7 +55,8 @@ export function SlotCard({
   const tutorInitials = slot.tutorProfile
     ? `${slot.tutorProfile.firstName[0]}${slot.tutorProfile.lastName[0]}`
     : "TU";
-
+const isPastSlot = new Date(slot.endTime) < new Date();
+const isBookable = !editable && !slot.isBooked && !isPastSlot;
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
       {/* Featured Badge */}
@@ -169,7 +173,7 @@ export function SlotCard({
         </CardFooter>
       )}
 
-      {!editable && !slot.isBooked && (
+      {isBookable && (
         <CardFooter className="pt-4 border-t">
           <Button className="w-full">Book Now</Button>
         </CardFooter>

@@ -1,10 +1,114 @@
 'use server'
 
 import { tutorService } from "@/services/tutor.service";
-import { TutorRegistration } from "@/types/user.type";
+import {
+  CreateTutorPayload,
+  UpdateTutorPayload,
+  UpdateBookingStatusPayload,
+} from "@/types/tutor.type";
 
-const createTutorAction = async (tutorData: TutorRegistration) => {
+/**
+ * CREATE TUTOR PROFILE
+ * Creates a new tutor profile
+ */
+export const createTutorAction = async (tutorData: CreateTutorPayload) => {
   return await tutorService.createTutor(tutorData);
 };
 
-export { createTutorAction };
+/**
+ * UPDATE TUTOR PROFILE
+ * Updates an existing tutor profile
+ */
+export const updateTutorAction = async (
+  tutorId: string,
+  tutorData: UpdateTutorPayload
+) => {
+  return await tutorService.updateTutor(tutorId, tutorData);
+};
+
+/**
+ * GET TUTOR BY ID
+ * Fetches a tutor profile by ID
+ */
+export const getTutorByIdAction = async (tutorId: string) => {
+  return await tutorService.getTutorById(tutorId);
+};
+
+/**
+ * DELETE TUTOR
+ * Deletes a tutor profile
+ */
+export const deleteTutorAction = async (tutorId: string) => {
+  return await tutorService.deleteTutor(tutorId);
+};
+
+/**
+ * GET DASHBOARD STATS
+ * Fetches tutor dashboard statistics
+ */
+export const getTutorDashboardStatsAction = async (tutorId: string) => {
+  return await tutorService.getDashboardStats(tutorId);
+};
+
+/**
+ * GET UPCOMING BOOKINGS
+ * Fetches upcoming bookings for a tutor
+ */
+export const getTutorUpcomingBookingsAction = async (tutorId: string) => {
+  return await tutorService.getUpcomingBookings(tutorId);
+};
+
+/**
+ * GET COMPLETED BOOKINGS
+ * Fetches completed bookings for a tutor
+ */
+export const getTutorCompletedBookingsAction = async (tutorId: string) => {
+  return await tutorService.getCompletedBookings(tutorId);
+};
+
+/**
+ * GET TUTOR REVIEWS
+ * Fetches all reviews for a tutor
+ */
+export const getTutorReviewsAction = async (tutorId: string) => {
+  return await tutorService.getTutorReviews(tutorId);
+};
+
+/**
+ * GET TUTOR SLOTS
+ * Fetches all slots for a tutor
+ */
+export const getTutorSlotsAction = async (tutorId: string) => {
+  return await tutorService.getTutorSlots(tutorId);
+};
+
+/**
+ * DELETE TUTOR SLOT
+ * Deletes a specific slot for a tutor
+ */
+export const deleteTutorSlotAction = async (
+  tutorId: string,
+  slotId: string
+) => {
+  return await tutorService.deleteTutorSlot(tutorId, slotId);
+};
+
+/**
+ * UPDATE BOOKING STATUS
+ * Updates the status of a booking
+ */
+export const updateBookingStatusAction = async (
+  tutorId: string,
+  bookingId: string,
+  statusData: UpdateBookingStatusPayload
+) => {
+  return await tutorService.updateBookingStatus(tutorId, bookingId, statusData);
+};
+
+/**
+ * GET ALL TUTOR BOOKINGS
+ * Fetches all bookings for a tutor (all statuses)
+ */
+export const getAllTutorBookingsAction = async (tutorId: string) => {
+  return await tutorService.getAllTutorBookings(tutorId);
+};
