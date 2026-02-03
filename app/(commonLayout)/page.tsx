@@ -1,12 +1,13 @@
-import { getUserSession, healthCheck } from '@/action/user.action';
+import BookingSuccessToast from '@/components/modules/booking/BookingSuccessToast';
 import { PublicSlotList } from '@/components/modules/slot';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
 
 export default async function Home() {
   return (
     <div className="min-h-screen">
+      <BookingSuccessToast />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         {/* Background Decorative Elements */}

@@ -67,6 +67,66 @@ export interface TutorProfile {
   updatedAt: string;
 }
 
+export interface TutorDetailedProfile {
+  id: string;
+  tid: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  isFeatured: boolean;
+  profilePicture: string | null;
+  bio: string;
+  completedSessions: number;
+  experienceYears: number;
+  cv: string | null;
+  expertiseAreas: string[];
+  categoryId: string;
+  avgRating: number;
+  totalReviews: number;
+  totalEarned: number;
+  phone: string | null;
+  address: string | null;
+  email: string | null;
+  zip: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    status: string | null;
+    email: string;
+    image: string | null;
+  };
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  slot: {
+    id: string;
+    date: Date;
+    startTime: Date;
+    endTime: Date;
+    subjectId: string;
+    slotPrice: number;
+    isBooked: boolean;
+    isFeatured: boolean;
+    isFree: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
+  reviews: {
+    id: string;
+    rating: number;
+    comment: string;
+    createdAt: Date;
+    student: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+    };
+  }[];
+}
+
 export interface TutorStats {
   totalEarnings: number;
   totalBookings: number;
@@ -128,4 +188,22 @@ export interface ApiResponse<T> {
   statusCode: number;
   message: string;
   data: T;
+}
+
+// ============================================
+// QUERY PARAMETERS
+// ============================================
+
+export interface GetTutorsParams {
+  page?: number;
+  limit?: number;
+  isFeatured?: boolean;
+  search?: string;
+  categoryId?: string;
+  minRating?: number;
+  maxRating?: number;
+  minExperience?: number;
+  maxExperience?: number;
+  sortBy?: string;
+  orderBy?: 'asc' | 'desc';
 }

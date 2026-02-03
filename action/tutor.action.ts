@@ -5,6 +5,7 @@ import {
   CreateTutorPayload,
   UpdateTutorPayload,
   UpdateBookingStatusPayload,
+  GetTutorsParams,
 } from "@/types/tutor.type";
 
 /**
@@ -14,6 +15,14 @@ import {
 export const createTutorAction = async (tutorData: CreateTutorPayload) => {
   return await tutorService.createTutor(tutorData);
 };
+
+/**
+ * GET ALL TUTORS
+ * Fetches all tutors with optional filtering, sorting, and pagination
+ */
+export const getTutorsAction = async (params?: GetTutorsParams) => {
+  return await tutorService.getTutors(params);
+}
 
 /**
  * UPDATE TUTOR PROFILE
