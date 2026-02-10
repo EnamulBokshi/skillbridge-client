@@ -11,7 +11,11 @@ import {
   CreateReviewPayload,
   StudentReview,
   ApiResponse,
+  BookingStatus,
 } from "@/types/student.type";
+import { PaginatedResponse, SessionSearchParams } from "@/types";
+import { SlotSearchParams } from "@/types/slot.type";
+import handleParams from "@/helper/handleSearchParams";
 
 const apiBaseUrl = env.NEXT_PUBLIC_API_URL;
 
@@ -138,6 +142,30 @@ export const getCompletedSessions = async (
   return (await response.json()) as ApiResponse<StudentBooking[]>;
 };
 
+export const getAllSessions = async (
+  studentId: string,
+  params?: SessionSearchParams
+):Promise<PaginatedResponse<StudentBooking[]>> => {
+  const url = new URL(`${apiBaseUrl}/students/${studentId}/sessions`);
+  const paramUrl = handleParams(url.toString(),params)
+  console.log("Fetching all sessions with URL:", paramUrl);
+  
+  const cookieStore = await cookies();
+  const response = await fetch(
+    paramUrl,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+      next: {tags: [`student-sessions-${studentId}`]}
+    }
+  );
+
+  return (await response.json()) as Promise<PaginatedResponse<StudentBooking[]>>;
+};
 
 export const getUpcomingSessions = async (
   studentId: string
@@ -177,19 +205,17 @@ export const createReview = async (
 
 /**
  * Cancels a booking
- * @param studentId - The student's ID
  * @param bookingId - The booking's ID
  * @returns Promise<ApiResponse<StudentBooking>>
  */
 export const cancelBooking = async (
-  studentId: string,
   bookingId: string
 ): Promise<ApiResponse<StudentBooking>> => {
   const cookieStore = await cookies();
   const response = await fetch(
-    `${apiBaseUrl}/students/${studentId}/bookings/${bookingId}/cancel`,
+    `${apiBaseUrl}/students/sessions/${bookingId}/cancel`,
     {
-      method: "PATCH",
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Cookie: cookieStore.toString(),

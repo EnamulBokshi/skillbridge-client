@@ -35,6 +35,8 @@ export interface IUser {
     status: 'ACTIVE' | 'INACTIVE' | 'BANNED';
     isAssociate: boolean;
     id: string;
+    student?: {id:string; name: string} ;
+    tutor?: {id:string; name: string} ;
 }
 
 export interface IUserProps{

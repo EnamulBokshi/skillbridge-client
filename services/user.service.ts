@@ -23,6 +23,25 @@ export const userServices = {
             return {data: null, error: error.message}
         }
     },
+    getUser: async(userId:string) => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+                headers: {
+                    Cookie: cookieStore.toString()
+                },
+                cache: 'no-store'
+            });
+            const response = await res.json();
+            return {
+                data: response.data,
+                error: null,
+                message: response.message
+            }
+        } catch (error) {
+            return {data:null, error}
+        }
+    },
     logout: async()=>{
         try {
             const cookieStore = await cookies();

@@ -213,7 +213,7 @@ const tutorService = {
     try {
       const cookieStore = await cookies();
       const response = await fetch(
-        `${apiBaseUrl}/tutors/dashboard/stats/${tutorId}`,
+        `${apiBaseUrl}/tutors/${tutorId}/dashboard`,
         {
           method: "GET",
           headers: {
@@ -222,15 +222,15 @@ const tutorService = {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Failed to fetch dashboard stats"
-        );
-      }
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(
+      //     errorData.message || "Failed to fetch dashboard stats"
+      //   );
+      // }
 
       const data: ApiResponse<TutorStats> = await response.json();
-      return { data: data.data, error: null };
+      return { data: data.data, error: null, message: data.message};
     } catch (error: any) {
       console.error("Error fetching dashboard stats:", error);
       return {

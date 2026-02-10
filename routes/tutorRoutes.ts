@@ -2,7 +2,7 @@ import { Bot, CalendarCheck, DatabaseZap, GalleryThumbnailsIcon, Settings2, Squa
 
 export const tutorRoutes = [
     {
-      title: "Blogs",
+      title: "Management",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
@@ -18,8 +18,8 @@ export const tutorRoutes = [
           icon: DatabaseZap 
         },
         {
-          title: "Settings",
-          url: "/dashboard/tutor/settings",
+          title: "Sessions",
+          url: "/dashboard/tutor/sessions",
           icon: UserRoundPen,
         },
       ],

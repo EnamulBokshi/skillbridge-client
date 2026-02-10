@@ -1,5 +1,6 @@
 "use server";
 
+import { PaginatedResponse, SessionSearchParams } from "@/types";
 import {
   createStudent,
   getStudentProfile,
@@ -10,6 +11,7 @@ import {
   getUpcomingSessions,
   createReview,
   cancelBooking,
+  getAllSessions,
 } from "../services/student.service";
 
 
@@ -23,7 +25,9 @@ import {
   StudentBooking,
   StudentReview,
   ApiResponse,
+  BookingStatus,
 } from "@/types/student.type";
+import { SlotSearchParams } from "@/types/slot.type";
 
 /**
  * Creates a new student
@@ -104,6 +108,14 @@ export const getUpcomingSessionsAction = async (
   return await getUpcomingSessions(studentId);
 };
 
+export const getAllSesssionAction = async (
+  studentId: string,
+  params?: SessionSearchParams
+):Promise<PaginatedResponse<StudentBooking[]>> => {
+  return await getAllSessions(studentId, params);
+}
+  
+
 /**
  * Creates a review for a tutor
  * @param studentId - The student's ID
@@ -124,8 +136,7 @@ export const createReviewAction = async (
  * @returns Promise<ApiResponse<StudentBooking>>
  */
 export const cancelBookingAction = async (
-  studentId: string,
   bookingId: string
 ): Promise<ApiResponse<StudentBooking>> => {
-  return await cancelBooking(studentId, bookingId);
+  return await cancelBooking( bookingId);
 };

@@ -17,6 +17,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { updateStudentProfile } from "@/services/student.service";
+import { StudentProfile } from "@/types/student.type";
 import { useForm } from "@tanstack/react-form";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
@@ -42,27 +44,27 @@ const formSchema = z.object({
   address: z.string().min(5, "Address is required"),
   zip: z.string().length(4, "Zip code must be 4 digits"),
 });
-export function StudentProfileForm({
+export function StudentProfileUpdateForm({profile,
   ...props
-}: React.ComponentProps<typeof Card>) {
-  
+}: {profile: StudentProfile}&React.ComponentProps<typeof Card>) {
+  console.log("Profile in form:", profile);
   const form = useForm({
     defaultValues: {
-      profilePicture: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
-      address: "",
-      email: "",
-      zip: "",
+      profilePicture: profile?.profilePicture ?? "",
+      firstName: profile?.firstName ?? "",
+      lastName: profile?.lastName ?? "",
+      phone: profile?.phone ?? "",
+      address: profile?.address ?? "",
+      email: profile?.email ?? "",
+      zip: profile?.zip ?? "",
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const loading = toast.loading("Profile creation in progress...");
+      const loading = toast.loading("Profile update in progress...");
 
-      const { data, error } = await createStudentAction(value);
+      const { data, error } = await updateStudentProfile(profile.id,value);
 
       if (error) {
         toast.error("Something went wrong!", { id: loading });
@@ -70,7 +72,7 @@ export function StudentProfileForm({
       }
 
       if (data) {
-        toast.success("Profile created successfully!!", { id: loading });
+        toast.success("Profile updated successfully!!", { id: loading });
         form.reset();
         redirect("/");
       }
@@ -81,7 +83,7 @@ export function StudentProfileForm({
       <CardHeader className="p-4 ">
         <CardTitle>Student Profile</CardTitle>
         <CardDescription>
-          Enter your information below to create your profile
+          Enter your information below to update your profile
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -275,7 +277,7 @@ export function StudentProfileForm({
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button type="submit" form="studentProfile-form" className="w-full">
-          Create Student Profile
+         Update Profile
         </Button>
       </CardFooter>
     </Card>

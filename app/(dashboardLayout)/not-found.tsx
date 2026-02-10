@@ -1,9 +1,10 @@
 import NotFoundComponent from '@/components/layout/NotFound'
-import Link from 'next/link'
+import React from 'react'
 
 export default function NotFound() {
   return (
-    
-       <NotFoundComponent />
+    <div>
+        <NotFoundComponent />
+    </div>
   )
 }

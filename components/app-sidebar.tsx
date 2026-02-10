@@ -43,6 +43,7 @@ import { USER_ROLES } from "@/constants"
 import { adminRoutes } from "@/routes/adminRoutes"
 import { studentRoutes } from "@/routes/studentRoutes"
 import { tutorRoutes } from "@/routes/tutorRoutes"
+import { usePathname } from "next/navigation"
 
 const data = {
   user: {
@@ -162,7 +163,7 @@ const data = {
 }
 
 export function AppSidebar({ user, ...props }: { user: IUser } & React.ComponentProps<typeof Sidebar>) {
-  
+
   let routes:SidebarRoute[] = []
   switch(user.role){
     case USER_ROLES.ADMIN:

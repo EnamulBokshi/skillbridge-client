@@ -1,11 +1,21 @@
+import { getSlotsAction } from '@/action/slot.action';
+import SlotHistory from '@/components/layout/SlotHistory';
 import { PublicSlotList } from '@/components/modules/slot'
+import FilterController from '@/components/ui/filter-controller';
+import { PaginationController } from '@/components/ui/pagination-controller';
+import { SlotSearchParams } from '@/types/slot.type';
 import React from 'react'
 
-export default function Session() {
+export default async function Session({searchParams}: {searchParams:Promise<SlotSearchParams>}) {
+  const {page,limit,search} = await searchParams;
+  const {data,error} = await getSlotsAction({page,limit,search})
+  console.log(data.data)
+  const pagination = data.pagination;
+  // console.log({pagination});
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-linear-to-br from-primary/10 via-background to-secondary/10 py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center space-y-6">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -91,8 +101,13 @@ export default function Session() {
 
       {/* Sessions List */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
-        <PublicSlotList />
+        {/* <PublicSlotList /> */}
+        <FilterController />
+        <SlotHistory data={data.data}/>
+        <PaginationController pagination={pagination}/>
       </section>
+
+
     </div>
   )
 }

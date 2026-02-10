@@ -65,6 +65,8 @@ export interface StudentDetailedProfile extends StudentProfile {
     image: string | null;
     createdAt: string;
     updatedAt: string;
+    role: 'STUDENT' | 'TUTOR' | 'ADMIN';
+    status: StudentStatus;
   };
   reviews: {
     id: string;
@@ -107,6 +109,8 @@ export interface StudentDetailedProfile extends StudentProfile {
 
 export interface StudentStats {
   totalBookings: number;
+  totalUpcomingBookings: number;
+  totalCompletedBookings: number;
   latestBooking: {
     id: string;
     studentId: string;
@@ -115,12 +119,18 @@ export interface StudentStats {
     createdAt: string;
     updatedAt: string;
     slot: {
+      tutorProfile: {
+        id: string;
+        firstName: string;
+        lastName: string;
+      }
       id: string;
       date: string;
+      slotPrice: number;
       startTime: string;
       endTime: string;
     };
-  } | null;
+  } [] | null;
   totalReviews: number;
 }
 
@@ -141,8 +151,17 @@ export interface StudentBooking {
     endTime: string;
     tutorId: string;
     slotPrice: number;
+    tutorProfile: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      profilePicture: string | null;
+    };
   };
+  
 }
+
 
 export interface CreateReviewPayload {
   tutorId: string;
@@ -162,7 +181,7 @@ export interface StudentReview {
 
 export interface ApiResponse<T> {
   success: boolean;
-  statusCode: number;
+  error: any | null;
   message: string;
   data: T;
 }

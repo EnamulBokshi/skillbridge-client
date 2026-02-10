@@ -1,6 +1,7 @@
 // app/(dashboardLayout)/page.tsx
 "use server"
 
+import { Loading } from "@/components/common/Loading";
 import AdminDashboard from "@/components/modules/dashboard/AdminDashboard";
 import StudentDashboard from "@/components/modules/dashboard/StudentDashboard";
 import TutorDashboard from "@/components/modules/dashboard/TutorDashboard";
@@ -9,9 +10,14 @@ import { userServices } from "@/services/user.service";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const { data, error } = await userServices.getSession();
-  const user = data?.user;
-
+  const { data:userData, error } = await userServices.getSession();
+  const user = userData?.user;
+  if(!user){
+    return <Loading />
+  }
+  const {data:profile} = await userServices.getUser(user.id)
+ 
+  console.log(profile)
   if (error || !user) {
     redirect("/login");
   }
@@ -19,11 +25,11 @@ export default async function DashboardPage() {
   // Role-based rendering
   switch (user.role) {
     case USER_ROLES.ADMIN:
-      return <AdminDashboard user={user} />;
+      return <AdminDashboard profile={profile} />;
     case USER_ROLES.STUDENT:
-      return <StudentDashboard user={user} />;
+      return <StudentDashboard profile={profile} />;
     case USER_ROLES.TUTOR:
-      return <TutorDashboard user={user} />;
+      return <TutorDashboard profile={profile} />;
     default:
       return <div>Invalid role</div>;
   }

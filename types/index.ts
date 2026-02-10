@@ -47,3 +47,64 @@ export interface IReview {
   rating: number;
   comment?: string;
 }
+export interface ApiResponse<T> {
+  success: boolean;
+  error: any | null;
+  message: string;
+  data: T;
+}
+
+export interface PaginatedData<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalRecords: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  error: any | null;
+  message: string;
+  data: PaginatedData<T>;
+}
+
+export interface PaginationType {
+  page: string | number;
+  limit: string | number;
+  totalRecords: string | number;
+  totalPages: string | number;
+}
+
+
+export interface UserProfileType{
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  role: string;
+  status: string;
+  isAssociate: boolean;
+  student?: {
+      id: string;
+      lastName: string;
+      firstName: string;
+  } | null;
+  tutorProfile?: {
+    id: string;
+    lastName: string;
+    firstName: string;
+  } | null;
+}
+  
+
+export interface SessionSearchParams {
+  status?: string;
+  page?: number | string;
+  limit?: number | string;
+}

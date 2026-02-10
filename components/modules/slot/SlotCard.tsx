@@ -21,6 +21,7 @@ import {
   Tag,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 interface SlotCardProps {
   slot: ISlotResponse;
@@ -41,7 +42,7 @@ export function SlotCard({
   const startTime = new Date(slot.startTime);
   const endTime = new Date(slot.endTime);
   const slotDate = new Date(slot.date);
-
+  const tutorId = slot.tutorId;
   // Calculate duration in hours
   const durationMs = endTime.getTime() - startTime.getTime();
   const durationHours = durationMs / (1000 * 60 * 60);
@@ -57,12 +58,19 @@ export function SlotCard({
     : "TU";
 const isPastSlot = new Date(slot.endTime) < new Date();
 const isBookable = !editable && !slot.isBooked && !isPastSlot;
+
+  const router = useRouter()
+ const handleBookSlot = (slotId: string) => {
+
+    // Redirect to confirm booking page with slot and tutor details
+    router.push(`/confirm-booking?slotId=${slotId}&tutorId=${tutorId}`);
+  };
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
       {/* Featured Badge */}
       {slot.isFeatured && (
         <div className="absolute top-2 right-2 z-10">
-          <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+          <Badge className="bg-linear-to-r from-yellow-500 to-orange-500 text-white">
             <Star className="w-3 h-3 mr-1 fill-white" />
             Featured
           </Badge>
@@ -175,7 +183,7 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
 
       {isBookable && (
         <CardFooter className="pt-4 border-t">
-          <Button className="w-full">Book Now</Button>
+          <Button className="w-full" onClick={()=> handleBookSlot(slot.id)}>Book Now</Button>
         </CardFooter>
       )}
     </Card>

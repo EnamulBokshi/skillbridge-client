@@ -56,6 +56,7 @@ export const deleteTutorAction = async (tutorId: string) => {
  * Fetches tutor dashboard statistics
  */
 export const getTutorDashboardStatsAction = async (tutorId: string) => {
+  console.log("Fetching dashboard stats for tutor ID:", tutorId);
   return await tutorService.getDashboardStats(tutorId);
 };
 

@@ -8,12 +8,18 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarRoute } from "@/types";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 
 export function NavMain({ routes }: { routes: SidebarRoute[] }) {
-
+  const pathName = usePathname();
+  const isMatched = (url:string) =>{
+    const urlLastSegment = url.split("/").filter(Boolean).pop()
+    const pathLastSegment = pathName.split("/").filter(Boolean).pop()
+    return urlLastSegment === pathLastSegment;
+  }
+  const activeItem = pathName.split("/").pop();
   if (!routes || routes.length === 0) {
     toast.error("No routes available");
     redirect("/");
@@ -29,11 +35,13 @@ export function NavMain({ routes }: { routes: SidebarRoute[] }) {
                 <SidebarMenuItem key={subItem.title}>
                   <SidebarMenuButton
                     tooltip={subItem.title}
-                    className={
-                      subItem.isActive
-                        ? "bg-accent/50 text-accent-foreground"
-                        : ""
-                    }
+                    // className={
+                    //   // subItem.title === activeItem
+                    //   //   ? "bg-accent/50 text-accent-foreground"
+                    //   //   : ""
+
+                    // }
+                    isActive={isMatched(subItem.url)}
                   >
                     <Link href={subItem.url}>
                     {subItem.icon && <subItem.icon className = "inline mr-2"/>}
