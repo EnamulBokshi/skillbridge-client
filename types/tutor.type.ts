@@ -6,7 +6,7 @@ export enum BookingStatus {
   PENDING = "PENDING",
   CONFIRMED = "CONFIRMED",
   CANCELLED = "CANCELLED",
-  COMPLETED = "COMPLETED"
+  COMPLETED = "COMPLETED",
 }
 
 // ============================================
@@ -30,41 +30,38 @@ export interface CreateTutorPayload {
 }
 
 export interface UpdateTutorPayload {
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  bio: string;
+  categoryId: string;
+  userId: string;
   phone?: string;
-  bio?: string;
-  expertise?: string;
-  experience?: number;
-  hourlyRate?: number;
-  education?: string;
-  languages?: string[];
-  certifications?: string[];
-  profilePicture?: string;
+  address?: string;
+  email: string;
+  zip?: string;
   isFeatured?: boolean;
+  experienceYears: number;
+  cv?: string;
+  expertiseAreas: string[];
+  profilePicture?: string;
 }
 
 export interface TutorProfile {
   id: string;
-  tid: string;
-  userId: string;
   firstName: string;
   lastName: string;
+  bio: string;
+  categoryId: string;
+  userId: string;
+  phone?: string;
+  address?: string;
   email: string;
-  phone: string | null;
-  bio: string | null;
-  expertise: string | null;
-  experience: number | null;
-  hourlyRate: number | null;
-  education: string | null;
-  languages: string[];
-  certifications: string[];
-  profilePicture: string | null;
-  isFeatured: boolean;
-  totalEarned: number;
-  avgRating: number;
-  createdAt: string;
-  updatedAt: string;
+  zip?: string;
+  isFeatured?: boolean;
+  experienceYears: number;
+  cv?: string;
+  expertiseAreas: string[];
+  profilePicture?: string;
 }
 
 export interface TutorDetailedProfile {
@@ -205,5 +202,5 @@ export interface GetTutorsParams {
   minExperience?: number;
   maxExperience?: number;
   sortBy?: string;
-  orderBy?: 'asc' | 'desc';
+  orderBy?: "asc" | "desc";
 }

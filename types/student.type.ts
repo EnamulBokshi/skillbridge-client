@@ -134,7 +134,7 @@ export interface StudentStats {
   totalReviews: number;
 }
 
-export interface StudentBooking {
+export interface Bookings {
   id: string;
   status: BookingStatus;
   studentId: string;
@@ -142,6 +142,7 @@ export interface StudentBooking {
   createdAt: string;
   updatedAt: string;
   student: {
+    id: string;
     firstName: string | null;
     lastName: string | null;
   };

@@ -1,6 +1,4 @@
 "use client";
-
-import { createStudentAction } from "@/action/student.action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,7 +45,7 @@ const formSchema = z.object({
 export function StudentProfileUpdateForm({profile,
   ...props
 }: {profile: StudentProfile}&React.ComponentProps<typeof Card>) {
-  console.log("Profile in form:", profile);
+  // console.log("Profile in form:", profile);
   const form = useForm({
     defaultValues: {
       profilePicture: profile?.profilePicture ?? "",

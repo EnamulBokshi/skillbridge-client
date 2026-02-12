@@ -7,9 +7,16 @@ import { SlotSearchParams } from '@/types/slot.type';
 import React from 'react'
 
 export default async function Session({searchParams}: {searchParams:Promise<SlotSearchParams>}) {
-  const {page,limit,search} = await searchParams;
-  const {data,error} = await getSlotsAction({page,limit,search})
-  console.log(data.data)
+  const {page,limit,search,isFeatured, isFree} = await searchParams;
+  const Params: SlotSearchParams = { }
+  if(page) Params.page = page;
+  if(limit) Params.limit = limit;
+  if(search) Params.search = search;
+  if(isFeatured !== undefined) Params.isFeatured = isFeatured ? true : false;
+  if(isFree !== undefined) Params.isFree = isFree ? true : false;
+
+  const {data,error} = await getSlotsAction(Params);
+  // console.log(data.data)
   const pagination = data.pagination;
   // console.log({pagination});
   return (

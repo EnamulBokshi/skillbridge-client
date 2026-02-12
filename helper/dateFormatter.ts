@@ -37,3 +37,42 @@ export const calculateDuration = (startTimeString: string, endTimeString: string
       : `${minutes}m`;
   return durationText;
 }
+
+
+
+export function formatDateForInput(isoString?: string): string {
+  if (!isoString) return "";
+  try {
+    // Handle ISO date-time string: "2026-02-03T00:00:00.000Z"
+    const date = new Date(isoString);
+    return date.toISOString().split("T")[0]; // Returns "2026-02-03"
+  } catch {
+    return "";
+  }
+}
+
+export function formatTimeForInput(isoString?: string): string {
+  if (!isoString) return "";
+  try {
+    // Handle ISO date-time string: "2026-02-03T14:30:00.000Z"
+    const date = new Date(isoString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`; // Returns "14:30"
+  } catch {
+    return "";
+  }
+}
+
+export function convertToISODateTime(date: string, time: string): string {
+  if (!date || !time) return "";
+  try {
+    // Combine date (yyyy-MM-dd) and time (HH:mm) into ISO string
+    const isoString = `${date}T${time}:00.000Z`;
+    // Validate it's a valid date
+    new Date(isoString);
+    return isoString;
+  } catch {
+    return "";
+  }
+}

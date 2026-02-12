@@ -27,13 +27,14 @@ export interface ICreateSlotPayload {
 }
 
 export interface IUpdateSlotPayload {
+
     date?: string;
     startTime?: string;
     endTime?: string;
     slotPrice?: number;
-    isBooked?: boolean;
     isFeatured?: boolean;
     isFree?: boolean;
+    subjectId?: string; 
 }
 
 export interface ISlotResponse {
@@ -78,7 +79,7 @@ export interface SlotSearchParams{
     tutorId?: string;
     subjectId?: string;
     sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
+    orderBy?: 'asc' | 'desc';
     startDate? : string;
     endDate?: string;
     date?: string;

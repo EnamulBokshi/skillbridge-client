@@ -3,6 +3,7 @@ import { getStudentUpcomingsAction } from "@/action/student.action copy";
 import { getUserSession } from "@/action/user.action";
 import BookingTable from "@/components/modules/booking/BookingTable";
 import { Button } from "@/components/ui/button";
+import { PaginationController } from "@/components/ui/pagination-controller";
 import { userServices } from "@/services/user.service";
 import Link from "next/link";
 
@@ -37,7 +38,8 @@ export default async function BookingsStudent() {
     console.log("Upcoming sessions data:", upcomingsSessions);
   const { data: completedSessions } =
     await getCompletedSessionsAction(user.id);
-
+  const completedSessionsData = (completedSessions?.data).flat() || [];
+  const completedSessionsPagination = completedSessions?.pagination || null;
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -76,6 +78,8 @@ export default async function BookingsStudent() {
             <BookingTable
               bookings={upcomingsSessions}
               caption="Your upcoming sessions"
+              role="STUDENT"
+              isBulkData={true}
             />
           )}
         </div>
@@ -92,8 +96,8 @@ export default async function BookingsStudent() {
           </p>
         </div>
 
-        {/* <div className="p-4">
-          {!completedSessions || completedSessions.length === 0 ? (
+        <div className="p-4">
+          {!completedSessionsData || completedSessionsData.length === 0 ? (
             <div className="text-center py-10 space-y-2">
               <p className="text-muted-foreground">
                 No completed sessions yet.
@@ -106,12 +110,18 @@ export default async function BookingsStudent() {
               </Link>
             </div>
           ) : (
+            <>
             <BookingTable
-              bookings={completedSessions}
+              bookings={completedSessionsData}
               caption="Your completed sessions"
+              role="STUDENT"
             />
+            <div className="mt-4">
+              <PaginationController pagination={completedSessionsPagination} />
+            </div>
+            </>
           )}
-        </div> */}
+        </div>
       </section>
 
       {/* all sessions */}

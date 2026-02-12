@@ -26,7 +26,6 @@ export function CategoryTableWrapper({ categories }: CategoryTableWrapperProps) 
       // TODO: Implement update category action
       // await updateCategoryAction(updatedCategory);
       
-      console.log("Update category:", updatedCategory);
       router.refresh();
     } catch (error) {
       throw error;

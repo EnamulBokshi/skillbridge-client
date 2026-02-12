@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { CalendarOff } from "lucide-react";
 import { SlotFilters } from "./SlotFilters";
+import { useConfirm } from "../common/ConfirmDialog";
 
 interface SlotListProps {
   initialSlots: ISlotResponse[];
@@ -58,6 +59,7 @@ export function SlotList({
 
   // Use ref to track debounce timer
   const searchTimerRef = useRef<NodeJS.Timeout | null>(null);
+
 
   // Handle search with debouncing
   const handleSearchChange = useCallback(
@@ -119,6 +121,16 @@ export function SlotList({
   );
 
   const handleDelete = async (slotId: string) => {
+      const  {confirm} = useConfirm();
+      const ok = await confirm({
+        title: "Delete slot?",
+        description: "Are you sure you want to delete this slot? This action cannot be undone.",
+        confirmText: "Yes, Delete it",
+        destructive: true,
+      });
+      if (!ok) {
+        return;
+      }
     try {
       // TODO: Implement delete action
       // await deleteSlotAction(slotId);

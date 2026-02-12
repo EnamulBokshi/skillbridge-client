@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface SlotCardProps {
   slot: ISlotResponse;
@@ -38,7 +39,7 @@ export function SlotCard({
 }: SlotCardProps) {
 
   
-
+  const [isEditing, setIsEditing] = useState(false);
   const startTime = new Date(slot.startTime);
   const endTime = new Date(slot.endTime);
   const slotDate = new Date(slot.date);
@@ -186,6 +187,7 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
           <Button className="w-full" onClick={()=> handleBookSlot(slot.id)}>Book Now</Button>
         </CardFooter>
       )}
+      
     </Card>
   );
 }

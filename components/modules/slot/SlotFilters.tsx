@@ -92,18 +92,23 @@ useEffect(() => {
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 my-1 p-2">
       {/* Search and Filter Toggle */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <div>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search by subject, tutor, or category..."
             value={searchValue}
-            onChange={(e) => handleSearchInput(e.target.value)}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="pl-9"
           />
+          </div>
+          <Button variant="outline" onClick={() => onSearchChange(searchValue)} className="absolute right-1 top-1/2 -translate-y-1/2 gap-2">
+            <Search className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Filter Controls */}
@@ -300,9 +305,9 @@ useEffect(() => {
               <div className="space-y-2">
                 <Label>Sort Order</Label>
                 <Select
-                  value={filters.sortOrder || "asc"}
+                  value={filters.orderBy || "asc"}
                   onValueChange={(value: "asc" | "desc") =>
-                    handleFilterChange("sortOrder", value)
+                    handleFilterChange("orderBy", value)
                   }
                 >
                   <SelectTrigger>

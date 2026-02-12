@@ -16,7 +16,7 @@ export default async function StudentDashboard({
   );
   // const slot = stats?.latestBooking?.slot;
 
-  console.log({ stats, error });
+  // console.log({ stats, error });
   return (
     <div className="p-4 ">
       <h1 className="text-2xl font-bold">

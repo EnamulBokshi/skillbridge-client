@@ -1,12 +1,16 @@
 'use server'
 
 import { tutorService } from "@/services/tutor.service";
+import { ApiResponse, PaginatedResponse, SessionSearchParams, TResponse } from "@/types";
+import { ISlotResponse, IUpdateSlotPayload, SlotSearchParams } from "@/types/slot.type";
+import { Bookings } from "@/types/student.type";
 import {
   CreateTutorPayload,
   UpdateTutorPayload,
   UpdateBookingStatusPayload,
   GetTutorsParams,
 } from "@/types/tutor.type";
+import { updateTag } from "next/dist/server/web/spec-extension/revalidate";
 
 /**
  * CREATE TUTOR PROFILE
@@ -88,19 +92,25 @@ export const getTutorReviewsAction = async (tutorId: string) => {
  * GET TUTOR SLOTS
  * Fetches all slots for a tutor
  */
-export const getTutorSlotsAction = async (tutorId: string) => {
-  return await tutorService.getTutorSlots(tutorId);
+export const getTutorSlotsAction = async (tutorId: string, params?: SlotSearchParams): Promise<PaginatedResponse<ISlotResponse[]>> => {
+  return await tutorService.getTutorSlots(tutorId, params);
 };
+
+export const updateSlotAction = async(slotId:string, payload:Partial<IUpdateSlotPayload>): Promise<TResponse<ISlotResponse>>=>{
+    const result = await tutorService.updateTutorSlot(slotId, payload);
+    updateTag('slots');
+    return result;
+}
 
 /**
  * DELETE TUTOR SLOT
  * Deletes a specific slot for a tutor
  */
 export const deleteTutorSlotAction = async (
-  tutorId: string,
+  // tutorId: string,
   slotId: string
 ) => {
-  return await tutorService.deleteTutorSlot(tutorId, slotId);
+  return await tutorService.deleteTutorSlot(slotId);
 };
 
 /**
@@ -122,3 +132,19 @@ export const updateBookingStatusAction = async (
 export const getAllTutorBookingsAction = async (tutorId: string) => {
   return await tutorService.getAllTutorBookings(tutorId);
 };
+
+export const getSessionsAction = async(tutorId: string, params?: SessionSearchParams): Promise<PaginatedResponse<Bookings[]>> => {
+  return await tutorService.getAllSessions(tutorId, params);
+}
+
+export const confirmBookingAction = async (bookingId: string): Promise<TResponse<Bookings>> => {
+  return await tutorService.confirmBooking(bookingId);
+}
+
+export const cancelBookingAction = async (bookingId: string): Promise<TResponse<Bookings>> => { 
+  return await tutorService.cancelBooking(bookingId);
+}
+
+export const markAsCompletedAction = async (bookingId: string): Promise<TResponse<Bookings>> => {
+  return await tutorService.markAsCompleted(bookingId);
+}

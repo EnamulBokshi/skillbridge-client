@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { BookingStatus } from "./student.type";
 
 export interface ServiceOption {
   cache?: RequestCache;
@@ -104,7 +105,10 @@ export interface UserProfileType{
   
 
 export interface SessionSearchParams {
-  status?: string;
+  status?: BookingStatus;
+  date?: string;
+  search?: string;
   page?: number | string;
   limit?: number | string;
 }
+

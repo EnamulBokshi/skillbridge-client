@@ -1,10 +1,20 @@
 import { getAllUserAction } from '@/action/admin.action';
+import UserList from '@/components/modules/users/UserList';
+import { PaginationController } from '@/components/ui/pagination-controller';
 import React from 'react'
 
 export default async function UserPage() {
   const {data, error} = await getAllUserAction();
-  // console.log("All users data:", data, error);
+  console.log("All users data:", data, error);
   return (
-    <div>UserPage</div>
+    <div>
+      <h1 className='text-2xl font-bold mb-4'>All Users</h1>
+      <div className='w-full bg-white rounded-lg shadow-md p-6'>
+        {data && <UserList users={data.data} />}
+        {!data && <p className='text-gray-500'>No users found.</p>}
+        <PaginationController pagination={data.pagination} />
+      </div>
+
+    </div>
   )
 }

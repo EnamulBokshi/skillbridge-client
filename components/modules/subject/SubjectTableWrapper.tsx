@@ -26,7 +26,7 @@ export function SubjectTableWrapper({ subjects }: SubjectTableWrapperProps) {
       // TODO: Implement update subject action
       // await updateSubjectAction(updatedSubject);
       
-      console.log("Update subject:", updatedSubject);
+      // console.log("Update subject:", updatedSubject);
       router.refresh();
     } catch (error) {
       throw error;
@@ -38,7 +38,7 @@ export function SubjectTableWrapper({ subjects }: SubjectTableWrapperProps) {
       // TODO: Implement delete subject action
       // await deleteSubjectAction(subjectId);
       
-      console.log("Delete subject:", subjectId);
+      // console.log("Delete subject:", subjectId);
       toast.success("Subject deleted successfully");
       router.refresh();
     } catch (error) {

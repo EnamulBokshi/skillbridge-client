@@ -25,10 +25,8 @@ export function PaginationController({
   pagination: PaginationType;
 }) {
   const { page, limit, totalPages, totalRecords } = pagination;
-    const currentPage = Number(page);
-    const itemPerPage = Number(limit);
-    const pages = Number(totalPages);
-    const total = Number(totalRecords)
+  const currentPage = Number(page);
+  const pages = Number(totalPages);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -43,7 +41,7 @@ export function PaginationController({
   };
 
   const handleNavigation = (nextPage: number) => {
-    if (nextPage < 1 || nextPage > (pages)) return;
+    if (nextPage < 1 || nextPage > pages) return;
     updateParams({ page: nextPage.toString() });
   };
 
@@ -81,7 +79,9 @@ export function PaginationController({
             <PaginationPrevious
               onClick={() => handleNavigation(currentPage - 1)}
               aria-disabled={currentPage === 1}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
             />
           </PaginationItem>
 

@@ -1,8 +1,9 @@
-import { ApiResponse, PaginatedResponse } from "@/types";
+import { ApiResponse, PaginatedResponse, TResponse } from "@/types";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import { IUser } from "@/types/user.type";
-import { StudentBooking } from "@/types/student.type";
+import { AdminDashboardStats } from "@/types/admin-dashboard.type";
+
 const getAllUser = async (): Promise<PaginatedResponse<IUser>> => {
     try {
         const cookieStore = await cookies();
@@ -84,9 +85,34 @@ const confirmBooking = async ( bookingId: string) => {
         }
     }
 }
+const getDashboardStats = async():Promise<TResponse<AdminDashboardStats>>=> {
+     const cookieStore = await cookies();
+     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
+         method: "GET",
+         headers: {
+             "Content-Type": "application/json",
+             Cookie: cookieStore.toString(),
+         },
+     });
+     return  (await response.json()) as TResponse<AdminDashboardStats>;
+}
+
+const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TResponse<IUser>> => {
+    const cookieStore = await cookies();
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(payload),
+    });
+    return (await response.json()) as TResponse<IUser>;
+}
 export const adminService = {
     getAllUser,
     cancelBooking,
-    confirmBooking
-
+    confirmBooking,
+    getDashboardStats,
+    updateUser
 }

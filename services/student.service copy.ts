@@ -18,7 +18,7 @@ const studentService = {
         body: JSON.stringify(studentData),
       });
       const resonseData = await response.json();
-      console.log("Response Data from createStudent:", resonseData); // Debug log
+      // console.log("Response Data from createStudent:", resonseData); // Debug log
 
       if (!response.ok) {
         return {

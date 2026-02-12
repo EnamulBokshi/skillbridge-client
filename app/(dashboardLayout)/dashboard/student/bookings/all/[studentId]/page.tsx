@@ -34,8 +34,8 @@ export default async function StudentAllBookings({
   });
   const data = (bookings?.data || []).flat();
   const pagination = bookings?.pagination || {};
-  console.log("Bookings data:", data);
-  console.log("Pagination info:", pagination);
+//   console.log("Bookings data:", data);
+//   console.log("Pagination info:", pagination);
 
   return (
     <div>
@@ -45,6 +45,7 @@ export default async function StudentAllBookings({
         <BookingTable
           bookings={data}
           caption="All bookings you have engaged so far!"
+          role="STUDENT"
         />
         <PaginationController pagination={pagination} />
       </div>

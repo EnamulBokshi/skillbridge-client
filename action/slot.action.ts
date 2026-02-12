@@ -14,3 +14,4 @@ export const getSlotsAction = async(params?:SlotSearchParams) => {
     const result = await slotService.getSlots(params);
     return result;
 }
+

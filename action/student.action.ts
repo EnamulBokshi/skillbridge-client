@@ -22,7 +22,7 @@ import {
   StudentProfile,
   StudentDetailedProfile,
   StudentStats,
-  StudentBooking,
+  Bookings,
   StudentReview,
   ApiResponse,
   BookingStatus,
@@ -93,7 +93,7 @@ export const getStudentStatsAction = async (
  */
 export const getCompletedSessionsAction = async (
   studentId: string
-): Promise<ApiResponse<StudentBooking[]>> => {
+): Promise<PaginatedResponse<Bookings[]>> => {
   return await getCompletedSessions(studentId);
 };
 
@@ -104,14 +104,14 @@ export const getCompletedSessionsAction = async (
  */
 export const getUpcomingSessionsAction = async (
   studentId: string
-): Promise<ApiResponse<StudentBooking[]>> => {
+): Promise<ApiResponse<Bookings[]>> => {
   return await getUpcomingSessions(studentId);
 };
 
 export const getAllSesssionAction = async (
   studentId: string,
   params?: SessionSearchParams
-):Promise<PaginatedResponse<StudentBooking[]>> => {
+):Promise<PaginatedResponse<Bookings[]>> => {
   return await getAllSessions(studentId, params);
 }
   
@@ -137,6 +137,6 @@ export const createReviewAction = async (
  */
 export const cancelBookingAction = async (
   bookingId: string
-): Promise<ApiResponse<StudentBooking>> => {
+): Promise<ApiResponse<Bookings>> => {
   return await cancelBooking( bookingId);
 };

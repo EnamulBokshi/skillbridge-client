@@ -1,6 +1,7 @@
 "use client";
 
-import { cancelBookingAction } from "@/action/student.action";
+import { cancelBookingAction } from "@/action/tutor.action";
+import { confirmBookingAction } from "@/action/tutor.action";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,23 +13,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dateFormatter } from "@/helper/dateFormatter";
-import { BookingStatus, StudentBooking } from "@/types/student.type";
+import { BookingStatus, Bookings } from "@/types/student.type";
 import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useConfirm } from "../common/ConfirmDialog";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function BookingTable({
   bookings,
   caption,
+  role,
+  handleSessionComplete,
+  handleApprove,
+  isBulkData = false,
 }: {
-  bookings: StudentBooking[];
+  bookings: Bookings[] ;
   caption?: string;
+  role: "STUDENT" | "TUTOR" | "ADMIN";
+  handleSessionComplete?: (bookingId: string) => void;
+  handleApprove?: (bookingId: string) => void;
+  isBulkData?: boolean
 }) {
-  console.log("Received bookings in BookingTable:", bookings);
-
+  // console.log("Received bookings in BookingTable:", bookings);
+const {confirm} = useConfirm();
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
 
   const paginatedBookings = useMemo(() => {
@@ -54,10 +64,25 @@ export default function BookingTable({
   };
 
   const handleSessionCancel = async (bookingId: string) => {
-    const { data, error } = await cancelBookingAction(bookingId);
-    console.log(`Cancel booking with ID: ${bookingId}`);
+    const ok = await confirm({
+      title: "Cancel/Reject booking?",
+      description: "This action cannot be undone. Are you sure you want to proceed?",
+      confirmText: "Yes, Cancel it",
+      destructive: true,
+    });
+    if (ok) {
+      const loadingToast = toast.loading("Cancelling booking...");
+      const { data, error, message} = await cancelBookingAction(bookingId);
+      console.log(`Cancel booking with ID: ${bookingId}`);
+      if (error) {
+        toast.error("Failed to cancel booking. Please try again.", { id: loadingToast });
+      } else {
+        toast.success(message, { id: loadingToast });
+      }
+      toast.dismiss(loadingToast);
+    }
   };
-  const handleSessionJoin = (
+  const handleSessionJoin = async (
     bookingId: string,
     startDate: string,
     endDate: string,
@@ -80,18 +105,86 @@ export default function BookingTable({
       );
       return;
     }
-    const ok = confirm(
-      "You are about to join the session. Make sure to be on time. Proceed?",
-    );
+    const ok = await confirm({
+      title: "Join session?",
+      description: "You are about to join the session. Do you want to proceed?",
+      confirmText: "Yes, Join it",
+    })
     if (ok) {
+      toast.success("Joining session...", { id: loading });
+      toast.info(`Session will end at ${endDateObj.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`, { id: loading });
+      toast.success("Session joined successfully!", { id: loading });
+      toast.success("Funny! 😄", { id: loading });
+      toast.success("This feature is coming soon!", { id: loading });
+
       console.log(`Joining session for booking ID: ${bookingId}`);
     }
     loading && toast.dismiss(loading);
   };
-  const handleSessionComplete = (bookingId: string) => {
-    const ok = confirm("Mark this session as completed?");
+  // const handleSessionComplete = async (bookingId: string) => {
+  //   const ok = confirm("Mark this session as completed?");
+  //   if (ok){
+  //     setLoading(true);
+  //     const loadingToast = toast.loading("Marking session as completed...");
+  //     const {data, error, message} = await cancelBookingAction(bookingId) ;
+  //     console.log(`Mark session as completed for booking ID: ${bookingId}`, data, error, message);
+  //     if(error){
+  //       toast.error(message, {id: loadingToast});
+  //     } else {
+  //       toast.success(message, {id: loadingToast});
+  //     }
+  //     setLoading(false);
+  //     toast.dismiss(loadingToast);
+  //   }
+  // };
+
+  const handleApproveBooking = async (bookingId: string) => {
+    const ok = await confirm({
+      title: "Confirm/Approve booking?",
+      description: "Are you sure you want to confirm this booking?",
+      confirmText: "Yes, Confirm it",
+    })
     if (ok)
-      console.log(`Mark session as completed for booking ID: ${bookingId}`);
+    {
+      setLoading(true);
+      const loadingToast = toast.loading("Confirming booking...");
+      const {data, error, message} = await confirmBookingAction(bookingId) ;
+      console.log(`Approve/Confirm booking with ID: ${bookingId}`, data, error, message);
+      if(error){
+        toast.error("Failed to approve booking. Please try again.", {id: loadingToast});
+      } else {
+        toast.success("Booking approved successfully!", {id: loadingToast});
+      }
+      setLoading(false);
+      toast.dismiss(loadingToast);
+
+    }
+  };
+  
+  const handleCancelBooking = async (bookingId: string) => {  
+    const ok = await confirm({
+      title: "Cancel/Reject booking?",
+      description: "This action cannot be undone. Are you sure you want to proceed?",
+      confirmText: "Yes, Cancel it",
+      destructive: true,
+    })
+    if (ok)
+    {
+      setLoading(true);
+      const loadingToast = toast.loading("Cancelling booking...");
+      const {data, error, message} = await cancelBookingAction(bookingId) ;
+      console.log(`Cancel/Reject booking with ID: ${bookingId}`, data, error, message);
+      if(error){
+        toast.error("Failed to cancel booking. Please try again.", {id: loadingToast});
+      } else {
+        toast.success("Booking cancelled successfully!", {id: loadingToast});
+      }
+      setLoading(false);
+      toast.dismiss(loadingToast);
+    }
   };
   return (
     <div className="space-y-3">
@@ -153,7 +246,7 @@ export default function BookingTable({
                       new Date() > new Date(booking.slot.endTime) ? (
                         <button
                           className="text-green-600 hover:underline"
-                          onClick={() => handleSessionComplete(booking.id)}
+                          onClick={() => handleSessionComplete && handleSessionComplete(booking.id)}
                         >
                           Mark as Completed
                         </button>
@@ -169,10 +262,20 @@ export default function BookingTable({
                     }
                   </div>
                 )}
-                {booking.status === "COMPLETED" && (
+                {role !== "TUTOR"&&booking.status === "COMPLETED" && (
                   <Button className="ml-auto" size="sm" variant="outline">
                     Write a review
                   </Button>
+                )}
+                {role === "TUTOR" && booking.status === "PENDING" && (
+                  <>
+                  <Button className="ml-auto" size="sm" variant="outline" onClick={()=> handleApproveBooking(booking.id)} >
+                    Confirm/Accept
+                  </Button>
+                  <Button className="ml-auto" size="sm" variant="outline" onClick={()=> handleCancelBooking(booking.id)}>
+                    Cancel/Reject
+                  </Button>
+                  </>
                 )}
               </TableHead>
             </TableRow>
@@ -191,7 +294,7 @@ export default function BookingTable({
       </Table>
 
       {/* Pagination */}
-      {bookings.length > ITEMS_PER_PAGE && (
+      {isBulkData && bookings.length > ITEMS_PER_PAGE && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Page {currentPage} of {totalPages}

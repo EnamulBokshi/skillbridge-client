@@ -35,14 +35,17 @@ export interface IUser {
     status: 'ACTIVE' | 'INACTIVE' | 'BANNED';
     isAssociate: boolean;
     id: string;
-    student?: {id:string; name: string} ;
-    tutor?: {id:string; name: string} ;
+    student?: {id:string; firstName: string; lastName: string, profilePicture?: string} ;
+    tutor?: {id:string; firstName: string; lastName: string, profilePicture?: string} ;
 }
 
-export interface IUserProps{
-    name: string;
+
+export interface UpdateUserPayload {
     email: string;
-    avatar?: string | undefined| null;
+    password: string;
     role: USER_ROLES;
+    status: 'ACTIVE' | 'INACTIVE' | 'BANNED';
+    isAssociate: boolean;
+    image: string | null;
 }
 

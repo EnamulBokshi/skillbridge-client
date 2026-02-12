@@ -42,8 +42,9 @@ export function NavMain({ routes }: { routes: SidebarRoute[] }) {
 
                     // }
                     isActive={isMatched(subItem.url)}
+                    className={isMatched(subItem.url)? 'text-violet-400' :''}
                   >
-                    <Link href={subItem.url}>
+                    <Link href={subItem.url} >
                     {subItem.icon && <subItem.icon className = "inline mr-2"/>}
                     <span>{subItem.title}</span>
                     </Link>

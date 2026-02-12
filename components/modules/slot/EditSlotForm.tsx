@@ -29,15 +29,19 @@ import { getSubjectsAction } from "@/action/subject.action";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { Loading } from "@/components/common/Loading";
-import { createSlotAction } from "@/action/slot.action";
+import { IUpdateSlotPayload } from "@/types/slot.type";
+import { updateSlotAction } from "@/action/tutor.action";
+import {
+  convertToISODateTime,
+  formatDateForInput,
+  formatTimeForInput,
+} from "@/helper/dateFormatter";
 
-// --------------------
-// Schema
-// --------------------
+//  zod schema
 const today = new Date();
 const todayISO = today.toISOString().split("T")[0];
 
-const createSlotSchema = z
+const SlotSchema = z
   .object({
     subjectId: z.string().min(1, "Subject is required"),
     date: z
@@ -62,10 +66,23 @@ type Subject = {
   name: string;
 };
 
+type EditSlotFormProps = {
+  slotId: string;
+  initialValues: IUpdateSlotPayload;
+  tutorId: string;
+  role: "TUTOR" | "STUDENT" | "ADMIN";
+  onClose?: () => void;
+};
+
 // --------------------
-// Component
-// --------------------
-export function CreateSlotForm() {
+export function EditSlotForm({
+  slotId,
+  initialValues,
+  tutorId,
+  role,
+  onClose,
+
+}: EditSlotFormProps) {
   const [subjects, setSubjects] = React.useState<Subject[] | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -86,53 +103,61 @@ export function CreateSlotForm() {
 
   const form = useForm({
     defaultValues: {
-      subjectId: "",
-      date: "",
-      startTime: "",
-      endTime: "",
-      slotPrice: 0,
-      isFree: false,
+      subjectId: initialValues.subjectId || "",
+      date: formatDateForInput(initialValues.date),
+      startTime: formatTimeForInput(initialValues.startTime),
+      endTime: formatTimeForInput(initialValues.endTime),
+      slotPrice: initialValues.slotPrice || 0,
+      isFree: initialValues.isFree || false,
     },
     validators: {
-      onChange: createSlotSchema,
-    // onSubmit: createSlotSchema, --- IGNORE ---
+      onChange: SlotSchema,
+      // onSubmit: createSlotSchema, --- IGNORE ---
     },
     onSubmit: async ({ value }) => {
-        const loadingToast = toast.loading("Creating slot...");
+      const loadingToast = toast.loading("Creating slot...");
       try {
-        const tutorData = localStorage.getItem("tutor");
-        if (!tutorData) {
-          toast.error("Tutor information not found. Please log in again.", {id: loadingToast});
-          return;
-        }
-        // console.log("tutorData", tutorData);
-        const tutor = JSON.parse(tutorData);
+        const dateISO =
+          convertToISODateTime(value.date, value.startTime).split("T")[0] +
+          "T00:00:00.000Z";
+        const startTimeISO = convertToISODateTime(value.date, value.startTime);
+        const endTimeISO = convertToISODateTime(value.date, value.endTime);
+
         const payload = {
-          tutorId: tutor.id,
+          tutorId: tutorId,
           subjectId: value.subjectId,
-          date: value.date,
-          startTime: value.startTime,
-          endTime: value.endTime,
+          date: dateISO,
+          startTime: startTimeISO,
+          endTime: endTimeISO,
           slotPrice: value.slotPrice,
           isBooked: false,
           isFree: value.slotPrice === 0 ? true : false,
         };
 
         // console.log("CREATE SLOT", payload);
-       
-        const {data, error, message} = await createSlotAction(payload)
+
+        const { data, error, message } = await updateSlotAction(
+          slotId,
+          payload,
+        );
         if (error) {
-          toast.error(message || "Failed to create slot. Please try again.", {id: loadingToast});
+          toast.error(message || "Failed to create slot. Please try again.", {
+            id: loadingToast,
+          });
           return;
         }
-        toast.success("Slot created successfully!",{id: loadingToast});
+        toast.success("Slot created successfully!", { id: loadingToast });
         toast.dismiss(loadingToast);
         // console.log("Slot created:", data);
         // Reset form
         form.reset();
+        onClose && onClose();
+
       } catch (error) {
         console.error("Failed to create slot:", error);
-        toast.error("Failed to create slot. Please try again.", {id: loadingToast});
+        toast.error("Failed to create slot. Please try again.", {
+          id: loadingToast,
+        });
       }
     },
   });
@@ -151,7 +176,7 @@ export function CreateSlotForm() {
   return (
     <Card className="max-w-2xl mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl">Create Slot</CardTitle>
+        <CardTitle className="text-2xl">Edit Slot</CardTitle>
         <CardDescription>
           Define your availability, subject, and pricing for this session slot
         </CardDescription>
@@ -176,7 +201,13 @@ export function CreateSlotForm() {
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name}>
-                      <SelectValue placeholder="Select a subject" />
+                      <SelectValue
+                        placeholder={
+                          subjects?.filter(
+                            (sub) => sub.id === field.state.value,
+                          )[0]?.name || "Select a subject"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {subjects?.map((subject: Subject) => (
@@ -253,7 +284,9 @@ export function CreateSlotForm() {
             {(field) => (
               <Field>
                 <FieldLabel htmlFor={field.name}>Slot Price (৳) *</FieldLabel>
-                <CardDescription>Set the price for the slot. Set 0 for a free slot.</CardDescription>
+                <CardDescription>
+                  Set the price for the slot. Set 0 for a free slot.
+                </CardDescription>
                 <FieldGroup>
                   <Input
                     id={field.name}
@@ -276,7 +309,7 @@ export function CreateSlotForm() {
               className="w-full"
               disabled={form.state.isSubmitting}
             >
-              {form.state.isSubmitting ? "Creating..." : "Create Slot"}
+              {form.state.isSubmitting ? "Updating..." : "Update Slot"}
             </Button>
           </CardFooter>
         </form>

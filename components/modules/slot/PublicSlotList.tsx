@@ -32,7 +32,7 @@ export function PublicSlotList({ initialData, showFilter = true }: PublicSlotLis
         sortOrder: filters?.sortOrder || "asc",
       };
       
-      console.log("Fetching slots with params:", params);
+      // console.log("Fetching slots with params:", params);
       const result = await getSlotsAction(params);
       
       if (result.data) {
