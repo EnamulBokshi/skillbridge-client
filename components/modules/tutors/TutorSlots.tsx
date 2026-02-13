@@ -7,11 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, DollarSign } from "lucide-react";
+import Link from "next/link";
 
 interface TutorSlotsProps {
   slots: TutorDetailedProfile["slot"];
   tutorId: string;
 }
+
+const MAX_SLOTS_TO_SHOW = 20;
 
 export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
   const router = useRouter();
@@ -61,6 +64,7 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
     );
   }
 
+
   return (
     <Card>
       <CardHeader>
@@ -68,14 +72,20 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {Object.entries(slotsByDate).map(([date, dateSlots]) => (
+          {Object.entries(slotsByDate).slice(0, MAX_SLOTS_TO_SHOW).map(([date, dateSlots]) => (
             <div key={date}>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 {date}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {dateSlots.map((slot) => {
+                {
+                dateSlots.length > MAX_SLOTS_TO_SHOW && (
+                  <div className="col-span-full text-sm text-muted-foreground">
+                    Showing first {MAX_SLOTS_TO_SHOW} of {dateSlots.length} slots
+                  </div>
+                )}
+                {dateSlots.slice(0, MAX_SLOTS_TO_SHOW).map((slot) => {
                   const isPastSlot = isSlotInPast(slot.endTime);
                   const startTime = new Date(slot.startTime).toLocaleTimeString(
                     "en-US",
@@ -91,7 +101,10 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
                       minute: "2-digit",
                     }
                   );
-
+                 if (isPastSlot) {
+                    return null;
+                 }
+                      
                   return (
                     <div
                       key={slot.id}
@@ -153,6 +166,11 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
               </div>
             </div>
           ))}
+          <Button>
+            <Link href={`/sessions?tutorId=${tutorId}`}>
+              View All Slots
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>

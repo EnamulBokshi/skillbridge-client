@@ -11,15 +11,28 @@ import {
   Briefcase,
   Award,
 } from "lucide-react";
+import { getTutorByIdAction } from "@/action/tutor.action";
+import Link from "next/link";
 
 interface TutorInfoProps {
   tutor: TutorDetailedProfile;
 }
 
-export default function TutorInfo({ tutor }: TutorInfoProps) {
+export default  async function TutorDetails({ tutorId }: { tutorId: string }) {
+    const {data: tutor, error} = await getTutorByIdAction(tutorId);
+    if(error || !tutor) {
+        return <div className="text-center text-gray-500">Failed to load tutor details.</div>
+    }
+
   return (
     <div className="space-y-6">
       {/* Profile Header Card */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold mb-4">Tutor Details</h2>
+        <Link href={`/dashboard/admin/users/${tutor.user.id}/tutor/${tutor.id}`} className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
+          Edit Profile
+        </Link>
+      </div>
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-6">
@@ -29,7 +42,7 @@ export default function TutorInfo({ tutor }: TutorInfoProps) {
                 src={tutor.profilePicture || undefined}
                 alt={`${tutor.firstName} ${tutor.lastName}`}
               />
-              <AvatarFallback className="text-3xl">
+              <AvatarFallback className="text-3xl p-2">
                 {tutor.firstName.charAt(0)}
                 {tutor.lastName.charAt(0)}
               </AvatarFallback>
@@ -42,10 +55,15 @@ export default function TutorInfo({ tutor }: TutorInfoProps) {
                   <h1 className="text-3xl font-bold">
                     {tutor.firstName} {tutor.lastName}
                   </h1>
-                  {tutor.isFeatured && (
+                  {tutor.isFeatured ?  (
                     <Badge variant="secondary">
                       <Award className="h-3 w-3 mr-1" />
                       Featured
+                    </Badge>
+                  ):(
+                    <Badge variant="outline">
+                      <Award className="h-3 w-3 mr-1" />
+                      Regular
                     </Badge>
                   )}
                 </div>
@@ -131,6 +149,8 @@ export default function TutorInfo({ tutor }: TutorInfoProps) {
           </CardContent>
         </Card>
       )}
+
+
     </div>
   );
 }

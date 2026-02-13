@@ -208,7 +208,7 @@ export function AppSidebar({ user, ...props }: { user: IUser } & React.Component
       </SidebarHeader>
       <SidebarContent>
         <NavMain routes={routes} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

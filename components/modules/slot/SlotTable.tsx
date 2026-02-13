@@ -22,17 +22,22 @@ import { SlotFilters } from "./SlotFilters";
 import { useRouter } from "next/navigation";
 import { useConfirm } from "../common/ConfirmDialog";
 import { deleteTutorSlotAction } from "@/action/tutor.action";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function SlotTable({
   slots,
   caption,
   role,
   tutorId,
+  isEditable = false,
+  emptyStateCaption,
 }: {
-  role: "TUTOR" | "STUDENT" | "ADMIN";
+  role: "TUTOR" | "STUDENT" | "ADMIN" | "VISITOR";
   slots: ISlotResponse[];
   caption?: string;
-  tutorId: string;
+  tutorId?: string;
+  isEditable?: boolean;
+  emptyStateCaption?: string;
 }) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editingSlot, setEditingSlot] =
@@ -107,7 +112,7 @@ export default function SlotTable({
                 <SlotCard
                   key={slot.id}
                   slot={slot}
-                  editable
+                  editable={isEditable}
                   onEdit={() =>
                     handleEdit(
                       {
@@ -145,7 +150,7 @@ export default function SlotTable({
             </DialogDescription>
           </DialogHeader>
 
-          {editingSlot && slotId && (
+          {editingSlot && slotId && tutorId && (
             <div className="py-2">
               <EditSlotForm
                 initialValues={editingSlot}
@@ -168,11 +173,4 @@ export default function SlotTable({
   );
 }
 
-function EmptyState({ title, caption }: { title: string; caption?: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed rounded-lg">
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 max-w-sm text-sm text-muted-foreground">{caption}</p>
-    </div>
-  );
-}
+

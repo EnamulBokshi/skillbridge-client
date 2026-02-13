@@ -70,7 +70,7 @@ export interface ISlotResponse {
 }
 
 export interface SlotSearchParams{
-    
+    isBookable?: boolean;
     isFeatured?: boolean;
     isFree?: boolean;
     search?: string;

@@ -12,7 +12,7 @@ export default async function UserPage() {
       <div className='w-full bg-white rounded-lg shadow-md p-6'>
         {data && <UserList users={data.data} />}
         {!data && <p className='text-gray-500'>No users found.</p>}
-        <PaginationController pagination={data.pagination} />
+        <PaginationController pagination={data?.pagination || { page: 1, totalPages: 1, totalRecords: 0 }} />
       </div>
 
     </div>

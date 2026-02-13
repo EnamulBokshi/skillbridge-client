@@ -9,6 +9,7 @@ import { SlotSearchParams } from "@/types/slot.type";
 
 type SlotProps = {
   params: Promise<SlotSearchParams>;
+  
 };
 export default async function Slots({ searchParams }: {
   searchParams: Promise<SlotSearchParams>
@@ -22,6 +23,9 @@ export default async function Slots({ searchParams }: {
   const user = session.user;
   const userId = user.id;
   const userDetails = await userServices.getUser(userId);
+  if (!userDetails.data || !userDetails.data.tutorProfile) {
+    return <div>You must have a tutor profile to manage slots.</div>;
+  }
   const {
     data: slotsResponse,
     error: slotError,
@@ -56,7 +60,8 @@ export default async function Slots({ searchParams }: {
         <SlotTable
           slots={slots}
           role="TUTOR"
-          tutorId={userDetails.data.tutorProfile.id}
+          tutorId={userDetails?.data?.tutorProfile?.id}
+          isEditable={true}
         />
 
         <PaginationController pagination={pagination} />

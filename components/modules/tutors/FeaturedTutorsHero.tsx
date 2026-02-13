@@ -67,14 +67,14 @@ export default function FeaturedTutorsHero({ tutors }: FeaturedTutorsHeroProps) 
 
               <CardContent className="space-y-4">
                 {/* Expertise */}
-                {tutor.expertise && (
+                {tutor.expertiseAreas && tutor.expertiseAreas.length > 0 && (
                   <div>
                     <p className="text-sm font-medium mb-1 flex items-center gap-1">
                       <BookOpen className="h-3.5 w-3.5" />
                       Expertise
                     </p>
                     <p className="text-sm text-muted-foreground line-clamp-2">
-                      {tutor.expertise}
+                      {tutor.expertiseAreas.join(", ")}
                     </p>
                   </div>
                 )}
@@ -88,33 +88,18 @@ export default function FeaturedTutorsHero({ tutors }: FeaturedTutorsHeroProps) 
 
                 {/* Stats */}
                 <div className="flex flex-wrap gap-2 pt-2">
-                  {tutor.experience !== null && (
+                  {tutor.experienceYears !== null && (
                     <Badge variant="outline" className="gap-1">
                       <GraduationCap className="h-3 w-3" />
-                      {tutor.experience}+ years
+                      {tutor.experienceYears}+ years
                     </Badge>
                   )}
-                  {tutor.hourlyRate !== null && (
-                    <Badge variant="outline">
-                      ${tutor.hourlyRate}/hr
-                    </Badge>
-                  )}
-                  {tutor.languages && tutor.languages.length > 0 && (
-                    <Badge variant="secondary">
-                      {tutor.languages[0]}
-                      {tutor.languages.length > 1 && ` +${tutor.languages.length - 1}`}
-                    </Badge>
-                  )}
+                  
+                 
                 </div>
 
                 {/* Certifications */}
-                {tutor.certifications && tutor.certifications.length > 0 && (
-                  <div className="pt-2">
-                    <p className="text-xs text-muted-foreground mb-1">
-                      {tutor.certifications.length} Certification{tutor.certifications.length !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                )}
+               
               </CardContent>
             </Card>
             </Link>

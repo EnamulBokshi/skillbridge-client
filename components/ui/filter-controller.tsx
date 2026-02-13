@@ -13,34 +13,59 @@ import {
   CardHeader,
   CardTitle,
 } from "./card";
-import { Label } from "./label"; // ✅ use your own Label, not recharts
+import { Label } from "./label";
+import { getSubjectsAction } from "@/action/subject.action";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+import { OSubject } from "@/types/subject.type";
 
 export default function FilterController() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [isSubjectsLoading, setIsSubjectsLoading] = useState(false);
+  const [subjects, setSubjects] = useState<OSubject[]>([]);
   /* ---------------------- UI State ---------------------- */
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   /* -------------------- Filter State -------------------- */
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<{
+    isFree?: string;
+    isFeatured?: string;
     date?: string;
     startDate?: string;
     endDate?: string;
     subjectId?: string;
   }>({});
 
+  const getSubjects = async ()=> {
+    setIsSubjectsLoading(true);
+    const {data, error} = await getSubjectsAction();
+    setIsSubjectsLoading(false);
+    if(!error && data) {
+      setSubjects(data);
+    }
+  }
+
   /* ------------------ Sync from URL ------------------ */
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
 
     setFilters({
+      isFree: searchParams.get("isFree") || undefined,
+      isFeatured: searchParams.get("isFeatured") || undefined,
       date: searchParams.get("date") || undefined,
       startDate: searchParams.get("startDate") || undefined,
       endDate: searchParams.get("endDate") || undefined,
       subjectId: searchParams.get("subjectId") || undefined,
     });
+    getSubjects();
   }, [searchParams]);
 
   /* ------------------ URL Helper ------------------ */
@@ -174,18 +199,24 @@ export default function FilterController() {
               {/* Subject */}
               <div className="space-y-2">
                 <Label>Subject</Label>
-                {/* TODO:
-                    - Fetch subjects via server action
-                    - Replace Input with Select
-                    - Value should be subjectId
-                */}
-                <Input
-                  placeholder="Subject ID (temporary)"
+                <Select
                   value={filters.subjectId || ""}
-                  onChange={(e) =>
-                    handleFilterChange("subjectId", e.target.value)
+                  onValueChange={(value) =>
+                    handleFilterChange("subjectId", value)
                   }
-                />
+                  disabled={isSubjectsLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subjects.map((subject) => (
+                      <SelectItem key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

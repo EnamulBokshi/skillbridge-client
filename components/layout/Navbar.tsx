@@ -23,6 +23,7 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggler";
 import logoutUser from "@/helper/logout";
 import { useConfirm } from "../modules/common/ConfirmDialog";
+import { usePathname } from "next/navigation";
 
 interface MenuItem {
   title: string;
@@ -88,6 +89,7 @@ const Navbar = ({
   isLoggedIn = false,
   isAssociate = false,
 }: Navbar1Props) => {
+
   const { confirm } = useConfirm();
   const handleLogout = async () => {
     const ok = await confirm({
@@ -99,6 +101,13 @@ const Navbar = ({
     if (!ok) return;
     await logoutUser();
   };
+ 
+const pathName = usePathname();
+  const isMatched = (url:string) =>{
+    const urlLastSegment = url.split("/").filter(Boolean).pop()
+    const pathLastSegment = pathName.split("/").filter(Boolean).pop()
+    return urlLastSegment === pathLastSegment;
+  }
 
   const renderTheCompleteRegistrationButton = isLoggedIn && !isAssociate;
   return (
@@ -121,7 +130,19 @@ const Navbar = ({
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
+                  {
+                  menu.map((item) => 
+                  
+                  <NavigationMenuItem key={item.title}>
+                      <NavigationMenuLink
+                        asChild
+                        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+                      active={isMatched(item.url)}
+                      >
+                        <Link href={item.url} > {item.title}</Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>)
+                  }
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
@@ -256,18 +277,11 @@ const Navbar = ({
   );
 };
 
-const renderMenuItem = (item: MenuItem) => {
-  return (
-    <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        asChild
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
-      >
-        <Link href={item.url}> {item.title}</Link>
-      </NavigationMenuLink>
-    </NavigationMenuItem>
-  );
-};
+// const renderMenuItem = (item: MenuItem) => {
+//   return (
+    
+//   );
+// };
 
 const renderMobileMenuItem = (item: MenuItem) => {
   return (

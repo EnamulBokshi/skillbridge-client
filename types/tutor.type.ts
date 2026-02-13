@@ -46,22 +46,46 @@ export interface UpdateTutorPayload {
   profilePicture?: string;
 }
 
+// export interface TutorProfile {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   bio: string;
+//   categoryId: string;
+//   userId: string;
+//   phone?: string;
+//   address?: string;
+//   email: string;
+//   zip?: string;
+//   isFeatured?: boolean;
+//   experienceYears: number;
+//   cv?: string;
+//   expertiseAreas: string[];
+//   profilePicture?: string;
+// }
+
 export interface TutorProfile {
   id: string;
+  tid: string;
   firstName: string;
   lastName: string;
-  bio: string;
-  categoryId: string;
-  userId: string;
-  phone?: string;
-  address?: string;
   email: string;
-  zip?: string;
-  isFeatured?: boolean;
-  experienceYears: number;
-  cv?: string;
+  phone: string;
+  bio: string;
   expertiseAreas: string[];
-  profilePicture?: string;
+  experienceYears: number;
+  avgRating: number;
+  totalEarned: number;
+  profilePicture: string | null;
+  isFeatured: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
 }
 
 export interface TutorDetailedProfile {

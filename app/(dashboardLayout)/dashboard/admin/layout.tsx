@@ -15,12 +15,9 @@ export default async function AdminLayout({children}:{children:React.ReactNode} 
     }
   return (
     <div>
-      <div className='p-5 rounded-md bg-gray-100'> 
-        <div className='flex flex-col items-center justify-center'>
-          <h1>Admin Dashboard</h1>
-          <p>Manage the platform settings and users from here.</p>
-        </div>
-      </div>
+      
+      {/* <div className='py-1 shadow border-2 border-white/50 '></div> */}
+
       <div className='mt-5'>
         {children}
       </div>

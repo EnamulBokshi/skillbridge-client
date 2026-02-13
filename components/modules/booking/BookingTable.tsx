@@ -17,6 +17,14 @@ import { BookingStatus, Bookings } from "@/types/student.type";
 import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useConfirm } from "../common/ConfirmDialog";
+import WriteReview from "@/components/review/WriteReview";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@radix-ui/react-dialog";
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -28,25 +36,28 @@ export default function BookingTable({
   handleApprove,
   isBulkData = false,
 }: {
-  bookings: Bookings[] ;
+  bookings: Bookings[];
   caption?: string;
   role: "STUDENT" | "TUTOR" | "ADMIN";
   handleSessionComplete?: (bookingId: string) => void;
   handleApprove?: (bookingId: string) => void;
-  isBulkData?: boolean
+  isBulkData?: boolean;
 }) {
   // console.log("Received bookings in BookingTable:", bookings);
-const {confirm} = useConfirm();
+  const { confirm } = useConfirm();
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
   const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
-
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const paginatedBookings = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     return bookings?.slice(startIndex, endIndex);
   }, [bookings, currentPage]);
-
+  const [reviewData, setReviewData] = useState<{
+    tutorId: string;
+    studentId: string;
+  } | null>(null);
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString([], {
@@ -66,16 +77,19 @@ const {confirm} = useConfirm();
   const handleSessionCancel = async (bookingId: string) => {
     const ok = await confirm({
       title: "Cancel/Reject booking?",
-      description: "This action cannot be undone. Are you sure you want to proceed?",
+      description:
+        "This action cannot be undone. Are you sure you want to proceed?",
       confirmText: "Yes, Cancel it",
       destructive: true,
     });
     if (ok) {
       const loadingToast = toast.loading("Cancelling booking...");
-      const { data, error, message} = await cancelBookingAction(bookingId);
+      const { data, error, message } = await cancelBookingAction(bookingId);
       console.log(`Cancel booking with ID: ${bookingId}`);
       if (error) {
-        toast.error("Failed to cancel booking. Please try again.", { id: loadingToast });
+        toast.error("Failed to cancel booking. Please try again.", {
+          id: loadingToast,
+        });
       } else {
         toast.success(message, { id: loadingToast });
       }
@@ -109,13 +123,16 @@ const {confirm} = useConfirm();
       title: "Join session?",
       description: "You are about to join the session. Do you want to proceed?",
       confirmText: "Yes, Join it",
-    })
+    });
     if (ok) {
       toast.success("Joining session...", { id: loading });
-      toast.info(`Session will end at ${endDateObj.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`, { id: loading });
+      toast.info(
+        `Session will end at ${endDateObj.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
+        { id: loading },
+      );
       toast.success("Session joined successfully!", { id: loading });
       toast.success("Funny! 😄", { id: loading });
       toast.success("This feature is coming soon!", { id: loading });
@@ -146,45 +163,62 @@ const {confirm} = useConfirm();
       title: "Confirm/Approve booking?",
       description: "Are you sure you want to confirm this booking?",
       confirmText: "Yes, Confirm it",
-    })
-    if (ok)
-    {
+    });
+    if (ok) {
       setLoading(true);
       const loadingToast = toast.loading("Confirming booking...");
-      const {data, error, message} = await confirmBookingAction(bookingId) ;
-      console.log(`Approve/Confirm booking with ID: ${bookingId}`, data, error, message);
-      if(error){
-        toast.error("Failed to approve booking. Please try again.", {id: loadingToast});
+      const { data, error, message } = await confirmBookingAction(bookingId);
+      console.log(
+        `Approve/Confirm booking with ID: ${bookingId}`,
+        data,
+        error,
+        message,
+      );
+      if (error) {
+        toast.error("Failed to approve booking. Please try again.", {
+          id: loadingToast,
+        });
       } else {
-        toast.success("Booking approved successfully!", {id: loadingToast});
+        toast.success("Booking approved successfully!", { id: loadingToast });
       }
       setLoading(false);
       toast.dismiss(loadingToast);
-
     }
   };
-  
-  const handleCancelBooking = async (bookingId: string) => {  
+
+  const handleCancelBooking = async (bookingId: string) => {
     const ok = await confirm({
       title: "Cancel/Reject booking?",
-      description: "This action cannot be undone. Are you sure you want to proceed?",
+      description:
+        "This action cannot be undone. Are you sure you want to proceed?",
       confirmText: "Yes, Cancel it",
       destructive: true,
-    })
-    if (ok)
-    {
+    });
+    if (ok) {
       setLoading(true);
       const loadingToast = toast.loading("Cancelling booking...");
-      const {data, error, message} = await cancelBookingAction(bookingId) ;
-      console.log(`Cancel/Reject booking with ID: ${bookingId}`, data, error, message);
-      if(error){
-        toast.error("Failed to cancel booking. Please try again.", {id: loadingToast});
+      const { data, error, message } = await cancelBookingAction(bookingId);
+      console.log(
+        `Cancel/Reject booking with ID: ${bookingId}`,
+        data,
+        error,
+        message,
+      );
+      if (error) {
+        toast.error("Failed to cancel booking. Please try again.", {
+          id: loadingToast,
+        });
       } else {
-        toast.success("Booking cancelled successfully!", {id: loadingToast});
+        toast.success("Booking cancelled successfully!", { id: loadingToast });
       }
       setLoading(false);
       toast.dismiss(loadingToast);
     }
+  };
+
+  const handleWriteReview = (tutorId: string, studentId: string) => {
+    setReviewData({ tutorId, studentId });
+    setShowReviewForm(true);
   };
   return (
     <div className="space-y-3">
@@ -246,7 +280,10 @@ const {confirm} = useConfirm();
                       new Date() > new Date(booking.slot.endTime) ? (
                         <button
                           className="text-green-600 hover:underline"
-                          onClick={() => handleSessionComplete && handleSessionComplete(booking.id)}
+                          onClick={() =>
+                            handleSessionComplete &&
+                            handleSessionComplete(booking.id)
+                          }
                         >
                           Mark as Completed
                         </button>
@@ -262,19 +299,39 @@ const {confirm} = useConfirm();
                     }
                   </div>
                 )}
-                {role !== "TUTOR"&&booking.status === "COMPLETED" && (
-                  <Button className="ml-auto" size="sm" variant="outline">
+                {role !== "TUTOR" && booking.status === "COMPLETED" && (
+                  <Button
+                    className="ml-auto"
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      handleWriteReview(
+                        booking.slot.tutorProfile.id,
+                        booking.studentId,
+                      )
+                    }
+                  >
                     Write a review
                   </Button>
                 )}
                 {role === "TUTOR" && booking.status === "PENDING" && (
                   <>
-                  <Button className="ml-auto" size="sm" variant="outline" onClick={()=> handleApproveBooking(booking.id)} >
-                    Confirm/Accept
-                  </Button>
-                  <Button className="ml-auto" size="sm" variant="outline" onClick={()=> handleCancelBooking(booking.id)}>
-                    Cancel/Reject
-                  </Button>
+                    <Button
+                      className="ml-auto"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleApproveBooking(booking.id)}
+                    >
+                      Confirm/Accept
+                    </Button>
+                    <Button
+                      className="ml-auto"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleCancelBooking(booking.id)}
+                    >
+                      Cancel/Reject
+                    </Button>
                   </>
                 )}
               </TableHead>
@@ -317,6 +374,39 @@ const {confirm} = useConfirm();
               Next
             </button>
           </div>
+        </div>
+      )}
+      {showReviewForm && reviewData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <Dialog open={showReviewForm} onOpenChange={setShowReviewForm} >
+            <DialogContent className="sm:max-w-lg bg-white p-4 rounded-md" >
+              <DialogHeader>
+                <DialogTitle >How was your session?</DialogTitle>
+                <DialogDescription>
+                  Please provide your feedback for the tutor.
+                </DialogDescription>
+              </DialogHeader>
+
+              {showReviewForm && (
+                <div className="py-2">
+                  <WriteReview
+                    tutorId={reviewData.tutorId}
+                    studentId={reviewData.studentId}
+                    onClose={() => setShowReviewForm(false)}
+                  />
+                </div>
+              )}
+
+              <DialogFooter className="gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowReviewForm(false)}
+                >
+                  Cancel
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>

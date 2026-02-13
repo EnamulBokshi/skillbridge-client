@@ -52,16 +52,16 @@ export function UserCard({
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            router.push(`/dashboard/${user.role.toLowerCase()}/profile`)
-          }
-        >
-          <User className="mr-1 h-4 w-4" />
-          View Profile
-        </Button>
+        {user.role !== "ADMIN" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/dashboard/admin/users/${user.id}`)}
+          >
+            <User className="mr-1 h-4 w-4" />
+            View Profile
+          </Button>
+        )}
       </CardHeader>
 
       {/* Content */}
@@ -100,7 +100,7 @@ export function UserCard({
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
-            {user.status !== "BANNED" &&(
+            {user.status !== "BANNED" && (
               <DropdownMenuItem
                 className="text-warning "
                 onClick={() => onBan && onBan(user.id)}
@@ -109,9 +109,7 @@ export function UserCard({
                 Ban
               </DropdownMenuItem>
             )}
-            {
-                user.status === "BANNED"  &&
-             (
+            {user.status === "BANNED" && (
               <DropdownMenuItem
                 className="text-warning "
                 onClick={() => onUnban && onUnban(user.id)}
@@ -120,14 +118,16 @@ export function UserCard({
                 Unban
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem
-              onClick={() =>
-                router.push(`/dashboard/${user.role.toLowerCase()}/profile`)
-              }
-            >
-              <User className="mr-2 h-4 w-4" />
-              View Profile
-            </DropdownMenuItem>
+            {user.role !== "ADMIN" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push(`/dashboard/admin/users/${user.id}`)}
+              >
+                <User className="mr-1 h-4 w-4" />
+                View Profile
+              </Button>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </CardFooter>

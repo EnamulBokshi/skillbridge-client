@@ -70,7 +70,7 @@ type EditSlotFormProps = {
   slotId: string;
   initialValues: IUpdateSlotPayload;
   tutorId: string;
-  role: "TUTOR" | "STUDENT" | "ADMIN";
+  role: "TUTOR" | "STUDENT" | "ADMIN" | "VISITOR";
   onClose?: () => void;
 };
 

@@ -41,7 +41,7 @@ export interface UpdateStudentPayload {
 
 export interface StudentProfile {
   id: string;
-  sid: string;
+  sid?: string;
   userId: string;
   firstName: string | null;
   lastName: string | null;
@@ -51,9 +51,9 @@ export interface StudentProfile {
   address: string | null;
   email: string | null;
   zip: string | null;
-  completedSessions: number;
-  createdAt: string;
-  updatedAt: string;
+  completedSessions?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface StudentDetailedProfile extends StudentProfile {

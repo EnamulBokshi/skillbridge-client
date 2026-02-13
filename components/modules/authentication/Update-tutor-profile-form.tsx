@@ -33,6 +33,7 @@ import { Category } from "@/types/category.type";
 import { getCategoriesAction } from "@/action/category.action";
 import { Loading } from "@/components/common/Loading";
 import { TutorProfile, UpdateTutorPayload } from "@/types/tutor.type";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -72,6 +73,7 @@ export function TutorProfileUpdateForm({
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expertiseInput, setExpertiseInput] = useState("");
+      const router = useRouter();
     
   useEffect(() => {
     fetchCategories();
@@ -130,23 +132,18 @@ export function TutorProfileUpdateForm({
             expertiseAreas: value.expertiseAreas,
             userId: tutorProfile.userId,
         } 
-        const { data, error } = await updateTutorAction(tutorProfile.id, payload);
+        const { data, error,message } = await updateTutorAction(tutorProfile.id, payload);
         // console.log("Server response:", data, error);
 
-        if (error) {
-          console.error("Error updating tutor profile:", error);
-          toast.error(error.message || "Something went wrong!!", {
-            id: loading,
-          });
-          return;
-        }
-
-        // if (data) {
-        //   toast.success("Profile created successfully!!", { id: loading });
-        //   localStorage.setItem("tutor",JSON.stringify(data))
-        //   redirect("/dashboard");
-          
-        // }
+         if (error) {
+         toast.error("Something went wrong!", { id: loading });
+         return;
+       }
+ 
+       
+         toast.success(message, { id: loading });
+         form.reset();
+         router.back();
       
     },
   });

@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { IUser } from "@/types/user.type";
 import { cookies } from "next/headers"
 const authUrl = env.AUTH_URL;
 export const userServices = {
@@ -23,7 +24,7 @@ export const userServices = {
             return {data: null, error: error.message}
         }
     },
-    getUser: async(userId:string) => {
+    getUser: async(userId:string):Promise<{data: IUser | null, error: any, message?: string}> => {
         try {
             const cookieStore = await cookies();
             const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
@@ -38,8 +39,8 @@ export const userServices = {
                 error: null,
                 message: response.message
             }
-        } catch (error) {
-            return {data:null, error}
+        } catch (error:any) {
+            return {data:null, error: error.message, message: error.message}
         }
     },
     logout: async()=>{
@@ -59,7 +60,7 @@ export const userServices = {
             return {data: {success: true}, error: null};
         } catch (error:any) {
             console.error(error);
-            return {data: null, error: error.message}
+            return {data: null, error: error.message, message: error.message};
         }
     }
 }

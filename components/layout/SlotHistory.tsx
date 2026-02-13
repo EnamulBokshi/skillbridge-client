@@ -13,6 +13,10 @@ export default function SlotHistory({ data }: { data: ISlotResponse[] }) {
   const setDeleteSlotId = () => {
     console.log("set delete slot id");
   };
+  const isPastSlot = (endTime: string) => new Date(endTime) < new Date();
+  const isBookable = (slot: { isBooked: boolean; endTime: string }) => {
+    return !editable && !slot.isBooked && !isPastSlot(slot.endTime);
+  }
   return (
     <div>
       {data?.length === 0 ? (
@@ -25,15 +29,20 @@ export default function SlotHistory({ data }: { data: ISlotResponse[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.map((slot) => (
-            <SlotCard
-              key={slot.id}
-              slot={slot}
-              editable={editable}
-              onEdit={handleEdit}
-              onDelete={setDeleteSlotId}
-            />
-          ))}
+          {data?.map((slot) => {
+            if(!isBookable({isBooked: slot.isBooked, endTime: slot.endTime})) {
+              return null;
+            }
+            return (
+              <SlotCard
+                key={slot.id}
+                slot={slot}
+                editable={editable}
+                onEdit={handleEdit}
+                onDelete={setDeleteSlotId}
+              />
+            );
+          })}
         </div>
       )}
     </div>

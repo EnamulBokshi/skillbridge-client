@@ -1,5 +1,6 @@
 import BookingSuccessToast from '@/components/modules/booking/BookingSuccessToast';
 import { PublicSlotList } from '@/components/modules/slot';
+import HomeSlotList from '@/components/modules/slot/HomeSlotList';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React from 'react';
@@ -271,7 +272,8 @@ export default async function Home() {
             </p>
           </div>
           
-          <PublicSlotList showFilter={false} />
+          {/* <PublicSlotList showFilter={false} /> */}
+          <HomeSlotList />
         </div>
       </section>
 
@@ -284,7 +286,7 @@ export default async function Home() {
             </p>
           </div>
           
-          <PublicSlotList showFilter={false} />
+          {/* <PublicSlotList showFilter={false} /> */}
         </div>
     </section>
 

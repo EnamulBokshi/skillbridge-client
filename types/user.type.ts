@@ -36,7 +36,7 @@ export interface IUser {
     isAssociate: boolean;
     id: string;
     student?: {id:string; firstName: string; lastName: string, profilePicture?: string} ;
-    tutor?: {id:string; firstName: string; lastName: string, profilePicture?: string} ;
+    tutorProfile?: {id:string; firstName: string; lastName: string, profilePicture?: string} ;
 }
 
 

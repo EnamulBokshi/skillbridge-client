@@ -27,7 +27,7 @@ export function BookingsStatusChart({
       <CardHeader>
         <CardTitle>Bookings by Status</CardTitle>
       </CardHeader>
-      <CardContent className="h-[300px]">
+      <CardContent className="h-75">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <XAxis dataKey="name" />

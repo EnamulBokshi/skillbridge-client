@@ -7,8 +7,11 @@ import { SlotSearchParams } from '@/types/slot.type';
 import React from 'react'
 
 export default async function Session({searchParams}: {searchParams:Promise<SlotSearchParams>}) {
-  const {page,limit,search,isFeatured, isFree} = await searchParams;
+  const {tutorId,page,limit,search,isFeatured, isFree, subjectId} = await searchParams;
   const Params: SlotSearchParams = { }
+  Params.isBookable = true;
+  if(tutorId) Params.tutorId = tutorId;
+  if(subjectId) Params.subjectId = subjectId;
   if(page) Params.page = page;
   if(limit) Params.limit = limit;
   if(search) Params.search = search;

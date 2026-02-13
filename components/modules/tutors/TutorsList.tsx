@@ -169,14 +169,14 @@ const [pagination, setPagination] = useState({
 
                     <CardContent className="space-y-4">
                       {/* Expertise */}
-                      {tutor.expertise && (
+                      {tutor.expertiseAreas && (
                         <div>
                           <p className="text-sm font-medium mb-1 flex items-center gap-1">
                             <BookOpen className="h-3.5 w-3.5" />
                             Expertise
                           </p>
                           <p className="text-sm text-muted-foreground line-clamp-2">
-                            {tutor.expertise}
+                            {tutor.expertiseAreas.join(", ")}
                           </p>
                         </div>
                       )}
@@ -190,22 +190,10 @@ const [pagination, setPagination] = useState({
 
                       {/* Stats */}
                       <div className="flex flex-wrap gap-2 pt-2">
-                        {tutor.experience !== null && (
+                        {tutor.experienceYears !== null && (
                           <Badge variant="outline" className="gap-1">
                             <GraduationCap className="h-3 w-3" />
-                            {tutor.experience}+ years
-                          </Badge>
-                        )}
-                        {tutor.hourlyRate !== null && (
-                          <Badge variant="outline">
-                            ${tutor.hourlyRate}/hr
-                          </Badge>
-                        )}
-                        {tutor.languages && tutor.languages.length > 0 && (
-                          <Badge variant="secondary">
-                            {tutor.languages[0]}
-                            {tutor.languages.length > 1 &&
-                              ` +${tutor.languages.length - 1}`}
+                            {tutor.experienceYears}+ years
                           </Badge>
                         )}
                       </div>

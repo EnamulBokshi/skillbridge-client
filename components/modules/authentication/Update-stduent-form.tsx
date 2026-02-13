@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { updateStudentProfile } from "@/services/student.service";
 import { StudentProfile } from "@/types/student.type";
 import { useForm } from "@tanstack/react-form";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -46,6 +46,8 @@ export function StudentProfileUpdateForm({profile,
   ...props
 }: {profile: StudentProfile}&React.ComponentProps<typeof Card>) {
   // console.log("Profile in form:", profile);
+  const router = useRouter();
+  
   const form = useForm({
     defaultValues: {
       profilePicture: profile?.profilePicture ?? "",
@@ -62,18 +64,28 @@ export function StudentProfileUpdateForm({profile,
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Profile update in progress...");
 
-      const { data, error } = await updateStudentProfile(profile.id,value);
-
-      if (error) {
-        toast.error("Something went wrong!", { id: loading });
-        return;
-      }
-
-      if (data) {
-        toast.success("Profile updated successfully!!", { id: loading });
+     try {
+       const { data, error, message } = await updateStudentProfile(profile.id,value);
+ 
+       if (error) {
+         toast.error("Something went wrong!", { id: loading });
+         return;
+       }
+ 
+       
+         toast.success(message, { id: loading });
+         form.reset();
+         router.back();
+      
+     } catch (error) {
+        toast.error("An unexpected error occurred. Please try again.", { id: loading });
+        
+     }
+     finally{
+        toast.dismiss(loading);
         form.reset();
-        redirect("/");
-      }
+        router.back();
+     }
     },
   });
   return (
