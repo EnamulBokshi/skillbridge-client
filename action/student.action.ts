@@ -22,11 +22,12 @@ import {
   StudentProfile,
   StudentDetailedProfile,
   StudentStats,
-  Bookings,
+  
   StudentReview,
   ApiResponse,
   BookingStatus,
 } from "@/types/student.type";
+import { Bookings } from "@/types/bookings.type";
 import { SlotSearchParams } from "@/types/slot.type";
 
 /**

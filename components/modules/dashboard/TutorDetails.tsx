@@ -19,11 +19,15 @@ interface TutorInfoProps {
 }
 
 export default  async function TutorDetails({ tutorId }: { tutorId: string }) {
-    const {data: tutor, error} = await getTutorByIdAction(tutorId);
+  console.log("Fetching details for tutor ID: ", tutorId);
+    const {data: tutor, error, message} = await getTutorByIdAction(tutorId);
+console.log("Tutor details fetched: ", tutor, error, message);
+
     if(error || !tutor) {
+      console.error("Error fetching tutor details: ", message);
         return <div className="text-center text-gray-500">Failed to load tutor details.</div>
     }
-
+    // console.log("Tutor details: ", tutor);
   return (
     <div className="space-y-6">
       {/* Profile Header Card */}

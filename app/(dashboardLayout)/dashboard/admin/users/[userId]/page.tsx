@@ -29,7 +29,7 @@ export default async function UserProfile({params}:{params: Promise<{userId: str
       <div>
         {
           userDetails?.student ? (<StudentDetails studentId={userDetails?.student?.id || ""}/>) :
-          userDetails?.tutorProfile ? (<TutorDetails tutorId={userDetails?.tutorProfile?.id || ""}/>) :
+          userDetails?.tutorProfile ? (<TutorDetails tutorId={userDetails?.tutorProfile?.id || ""} />) :
           (<div>Admin details</div>)
         }
       </div>

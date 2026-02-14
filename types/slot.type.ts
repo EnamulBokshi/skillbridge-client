@@ -35,6 +35,7 @@ export interface IUpdateSlotPayload {
     isFeatured?: boolean;
     isFree?: boolean;
     subjectId?: string; 
+    
 }
 
 export interface ISlotResponse {

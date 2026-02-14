@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import handleParams from "@/helper/handleSearchParams";
 import { PaginatedResponse, SessionSearchParams, TResponse } from "@/types";
-import { Bookings } from "@/types/student.type";
+import { Bookings } from "@/types/bookings.type";
 import {
   CreateTutorPayload,
   UpdateTutorPayload,
@@ -141,13 +141,8 @@ const tutorService = {
         body: JSON.stringify(tutorData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update tutor profile");
-      }
-
       const data: ApiResponse<TutorProfile> = await response.json();
-      return { data: data.data, error: null };
+      return { data: data.data, error: null, message: data.message };
     } catch (error: any) {
       console.error("Error updating tutor profile:", error);
       return {
@@ -166,23 +161,24 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorDetailedProfile>> => {
     try {
+      console.log("Fetching tutor details for tutor ID (service):", tutorId);
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}`, {
         method: "GET",
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
         cache: "no-store",
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch tutor");
-      }
-
       const data: ApiResponse<TutorDetailedProfile> = await response.json();
-      return { data: data.data, error: null };
+      return { data: data.data, error: null, message: data.message };
     } catch (error: any) {
       console.error("Error fetching tutor:", error);
       return {
         data: null,
-        error: { message: error.message || "Failed to fetch tutor" },
+        error: error,
+        message: error.message || "Failed to fetch tutor details",
       };
     }
   },

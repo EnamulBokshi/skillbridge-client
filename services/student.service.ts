@@ -7,14 +7,13 @@ import {
   StudentProfile,
   StudentDetailedProfile,
   StudentStats,
-  Bookings,
   CreateReviewPayload,
   StudentReview,
   ApiResponse,
   BookingStatus,
 } from "@/types/student.type";
+import { Bookings } from "@/types/bookings.type";
 import { PaginatedResponse, SessionSearchParams } from "@/types";
-import { SlotSearchParams } from "@/types/slot.type";
 import handleParams from "@/helper/handleSearchParams";
 
 const apiBaseUrl = env.NEXT_PUBLIC_API_URL;

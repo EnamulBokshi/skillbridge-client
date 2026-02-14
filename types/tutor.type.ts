@@ -34,7 +34,7 @@ export interface UpdateTutorPayload {
   lastName: string;
   bio: string;
   categoryId: string;
-  userId: string;
+  userId?: string;
   phone?: string;
   address?: string;
   email: string;
@@ -72,16 +72,20 @@ export interface TutorProfile {
   email: string;
   phone: string;
   bio: string;
+  address: string;
+  zip: string;
+  cv?: string | null;
   expertiseAreas: string[];
   experienceYears: number;
-  avgRating: number;
-  totalEarned: number;
-  profilePicture: string | null;
+  avgRating?: number;
+  totalEarned?: number;
+  profilePicture?: string | null;
   isFeatured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  categoryId: string;
-  category: {
+  createdAt?: Date;
+  updatedAt?: Date;
+  categoryId?: string;
+
+  category?: {
     id: string;
     name: string;
     slug: string;

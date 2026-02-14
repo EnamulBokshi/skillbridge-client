@@ -3,6 +3,7 @@ import { getStudentUpcomingsAction } from "@/action/student.action copy";
 import { getUserSession } from "@/action/user.action";
 import BookingTable from "@/components/modules/booking/BookingTable";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/ui/EmptyState";
 import { PaginationController } from "@/components/ui/pagination-controller";
 import { userServices } from "@/services/user.service";
 import Link from "next/link";
@@ -32,12 +33,14 @@ export default async function BookingsStudent() {
     );
   }
 
+
+
   const { data: upcomingsSessions } =
-    await getStudentUpcomingsAction(userProfile.student?.id);
+    await getStudentUpcomingsAction(userProfile?.student?.id!);
 
     console.log("Upcoming sessions data:", upcomingsSessions);
   const { data: completedSessions } =
-    await getCompletedSessionsAction(user.id);
+    await getCompletedSessionsAction(userProfile?.student?.id!);
   const completedSessionsData = (completedSessions?.data).flat() || [];
   const completedSessionsPagination = completedSessions?.pagination || null;
   return (
@@ -63,17 +66,18 @@ export default async function BookingsStudent() {
 
         <div className="p-4">
           {!upcomingsSessions || upcomingsSessions.length === 0 ? (
-            <div className="text-center py-10 space-y-2">
-              <p className="text-muted-foreground">
-                You have no upcoming sessions.
-              </p>
-              <Link
-                href="/slots"
-                className="inline-block text-primary underline underline-offset-4"
-              >
-                Explore available sessions
-              </Link>
-            </div>
+            // <div className="text-center py-10 space-y-2">
+            //   <p className="text-muted-foreground">
+            //     You have no upcoming sessions.
+            //   </p>
+            //   <Link
+            //     href="/slots"
+            //     className="inline-block text-primary underline underline-offset-4"
+            //   >
+            //     Explore available sessions
+            //   </Link>
+            // </div>
+              <EmptyState title="No upcoming sessions"  caption="Your booked sessions will appear here once you book them!"/>
           ) : (
             <BookingTable
               bookings={upcomingsSessions}
@@ -98,17 +102,18 @@ export default async function BookingsStudent() {
 
         <div className="p-4">
           {!completedSessionsData || completedSessionsData.length === 0 ? (
-            <div className="text-center py-10 space-y-2">
-              <p className="text-muted-foreground">
-                No completed sessions yet.
-              </p>
-              <Link
-                href="/slots"
-                className="inline-block text-primary underline underline-offset-4"
-              >
-                Book your first session
-              </Link>
-            </div>
+            // <div className="text-center py-10 space-y-2">
+            //   <p className="text-muted-foreground">
+            //     No completed sessions yet.
+            //   </p>
+            //   <Link
+            //     href="/slots"
+            //     className="inline-block text-primary underline underline-offset-4"
+            //   >
+            //     Book your first session
+            //   </Link>
+            // </div>
+            <EmptyState title="No completed sessions yet"  caption="Your completed sessions will appear here once you attend them!"/>
           ) : (
             <>
             <BookingTable

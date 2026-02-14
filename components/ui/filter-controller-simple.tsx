@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./card";
-import { Label } from "./label"; // ✅ use your own Label, not recharts
+import { Label } from "./label"; 
 import { Select, SelectContent, SelectGroup, SelectValue } from "@radix-ui/react-select";
 import { SelectItem, SelectTrigger } from "./select";
 import { BookingStatus } from "@/types/student.type";
@@ -177,22 +177,9 @@ export default function BookingTableFilterController() {
               </div>
 
               {/* Subject */}
-              {/* <div className="space-y-2">
-                <Label>Subject</Label>
-                {/* TODO:
-                    - Fetch subjects via server action
-                    - Replace Input with Select
-                    - Value should be subjectId
-                */}
-                {/* <Input
-                  placeholder="Subject ID (temporary)"
-                  value={filters.subjectId || ""}
-                  onChange={(e) =>
-                    handleFilterChange("subjectId", e.target.value)
-                  }
-                /> 
-              </div> */}
+              
               <div className="space-y-2">
+                <Label>Status</Label>
                     <Select value={filters.status || undefined} onValueChange={(value) => handleFilterChange("status", value)} >
                         <SelectTrigger className="w-full">
                             <SelectValue  placeholder="Select status" />

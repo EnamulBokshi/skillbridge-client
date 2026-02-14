@@ -134,34 +134,6 @@ export interface StudentStats {
   totalReviews: number;
 }
 
-export interface Bookings {
-  id: string;
-  status: BookingStatus;
-  studentId: string;
-  slotId: string;
-  createdAt: string;
-  updatedAt: string;
-  student: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-  };
-  slot: {
-    date: string;
-    startTime: string;
-    endTime: string;
-    tutorId: string;
-    slotPrice: number;
-    tutorProfile: {
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      profilePicture: string | null;
-    };
-  };
-  
-}
 
 
 export interface CreateReviewPayload {

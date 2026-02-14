@@ -5,7 +5,7 @@ import React from 'react'
 
 export default async function UserPage() {
   const {data, error} = await getAllUserAction();
-  console.log("All users data:", data, error);
+  // console.log("All users data:", data, error);
   return (
     <div>
       <h1 className='text-2xl font-bold mb-4'>All Users</h1>

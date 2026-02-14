@@ -13,7 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dateFormatter } from "@/helper/dateFormatter";
-import { BookingStatus, Bookings } from "@/types/student.type";
+import { BookingStatus, } from "@/types/student.type";
+
 import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useConfirm } from "../common/ConfirmDialog";
@@ -25,6 +26,7 @@ import {
   DialogTitle,
 } from "@radix-ui/react-dialog";
 import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Bookings } from "@/types/bookings.type";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -33,7 +35,7 @@ export default function BookingTable({
   caption,
   role,
   handleSessionComplete,
-  handleApprove,
+  
   isBulkData = false,
 }: {
   bookings: Bookings[];
@@ -252,7 +254,7 @@ export default function BookingTable({
                 {booking.status.toLowerCase()}
               </TableHead>
               <TableHead className="text-right">
-                {booking.status === "PENDING" && (
+                {role == "STUDENT"  && booking.status === BookingStatus.PENDING && (
                   <button
                     className="text-red-500 hover:underline"
                     onClick={() => handleSessionCancel(booking.id)}
@@ -260,8 +262,8 @@ export default function BookingTable({
                     Cancel
                   </button>
                 )}
-                {booking.status === BookingStatus.CONFIRMED && (
-                  <div className="flex flex-col items-center gap-2 justify-end py-1">
+                { role == "STUDENT"  && booking.status === BookingStatus.CONFIRMED && (
+                  <div className="flex  items-center gap-2 justify-end py-1">
                     <button
                       className="text-yellow-600 hover:underline"
                       onClick={() =>
@@ -299,7 +301,7 @@ export default function BookingTable({
                     }
                   </div>
                 )}
-                {role !== "TUTOR" && booking.status === "COMPLETED" && (
+                {role == "STUDENT" && booking.status === BookingStatus.COMPLETED && (
                   <Button
                     className="ml-auto"
                     size="sm"
@@ -314,12 +316,12 @@ export default function BookingTable({
                     Write a review
                   </Button>
                 )}
-                {role === "TUTOR" && booking.status === "PENDING" && (
+                {(role === "TUTOR" || role === "ADMIN") && booking.status === BookingStatus.PENDING && (
                   <>
                     <Button
-                      className="ml-auto"
+                      className="ml-auto mr-2 bg-cyan-700"
                       size="sm"
-                      variant="outline"
+                      variant="default"
                       onClick={() => handleApproveBooking(booking.id)}
                     >
                       Confirm/Accept
@@ -327,7 +329,7 @@ export default function BookingTable({
                     <Button
                       className="ml-auto"
                       size="sm"
-                      variant="outline"
+                      variant="destructive"
                       onClick={() => handleCancelBooking(booking.id)}
                     >
                       Cancel/Reject

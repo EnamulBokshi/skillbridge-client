@@ -28,9 +28,7 @@ export default function SlotTable({
   slots,
   caption,
   role,
-  tutorId,
   isEditable = false,
-  emptyStateCaption,
 }: {
   role: "TUTOR" | "STUDENT" | "ADMIN" | "VISITOR";
   slots: ISlotResponse[];
@@ -79,13 +77,22 @@ export default function SlotTable({
     const query = new URLSearchParams(
       filters as Record<string, string>,
     ).toString();
-    router.push(`/dashboard/tutor/slots?${query}`);
-
+    if(role === "TUTOR"){
+      router.push(`/dashboard/tutor/slots?${query}`);
+    }
+    if(role === "ADMIN"){
+      router.push(`/dashboard/admin/slots?${query}`);
+    }
     console.log("Filters changed: ", filters);
   };
   const onSearchChange = async (searchTerm: string) => {
     const query = new URLSearchParams({ search: searchTerm }).toString();
-    router.push(`/dashboard/tutor/slots?${query}`);
+    if(role === "TUTOR"){
+      router.push(`/dashboard/tutor/slots?${query}`);
+    }
+    if(role === "ADMIN"){
+      router.push(`/dashboard/admin/slots?${query}`);
+    }
     console.log("Search term changed: ", searchTerm);
   };
   return (
@@ -123,6 +130,7 @@ export default function SlotTable({
                         isFree: slot.isFree,
                         subjectId: slot.subject?.id,
                         slotPrice: slot.slotPrice,
+                        
                       },
                       slot.id,
                     )
@@ -150,13 +158,12 @@ export default function SlotTable({
             </DialogDescription>
           </DialogHeader>
 
-          {editingSlot && slotId && tutorId && (
+          {editingSlot && slotId  && (
             <div className="py-2">
               <EditSlotForm
                 initialValues={editingSlot}
                 slotId={slotId}
                 role={role}
-                tutorId={tutorId}
                 onClose={() => setIsEditing(false)}
               />
             </div>

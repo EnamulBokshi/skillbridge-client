@@ -15,7 +15,7 @@ import { env } from "@/env"
 import { authClient } from "@/lib/auth-client"
 import { IconBrandGoogle } from "@tabler/icons-react"
 import {useForm} from "@tanstack/react-form"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { toast } from "sonner"
 import * as z from "zod"
 
@@ -25,9 +25,10 @@ const formSchema = z.object({
   password: z.string().min(8, "At least 8 character required!!")
 })
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-
+  const router = useRouter();
   const handleGoogleLogin = async ()=> {
-    
+    console.log("Initiating Google sign-up...");
+    const loading = toast.loading("Redirecting to Google sign-up...");
     try {
       const data = await authClient.signIn.social({
       provider: "google",
@@ -35,15 +36,17 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     });
     
     if(data) {
-      toast.success("Google sign-up successful!!");
-      // redirect("/");
-      redirect("/");
+      toast.success("Google sign-up successful!!", {id: loading});
+      router.push("/");
     }
     
       
     } catch (error) {
       console.log("Google sign-up error:", error);
       toast.error("Google sign-up failed. Please try again.");
+    }
+    finally{
+      toast.dismiss(loading);
     }
   };
 
@@ -59,14 +62,21 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async({value} )=>{
       const loading = toast.loading("Please wait")
       
-        const {data, error} = await authClient.signUp.email(value)
+       try {
+         const {data, error} = await authClient.signUp.email(value)
 
         if(error){
           toast.error(error.message, {id: loading})
           return;
         }
         toast.success("User created successfully!!", {id: loading})
-        redirect("/");
+        router.push("/");
+       } catch (error) {
+        console.error("Error during sign-up:", error);
+        toast.error("An unexpected error occurred. Please try again.", {id: loading});
+       } finally {
+        toast.dismiss(loading);
+       }
 
       
     }

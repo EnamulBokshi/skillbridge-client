@@ -4,6 +4,7 @@ import { adminService } from "@/services/admin.service";
 import { tutorService } from "@/services/tutor.service";
 import { PaginatedResponse, TResponse } from "@/types";
 import { AdminDashboardStats } from "@/types/admin-dashboard.type";
+import { Bookings, BookingSearchParams } from "@/types/bookings.type";
 import { IUser } from "@/types/user.type";
 
 export const getAllUserAction = async (): Promise<PaginatedResponse<IUser>> => {
@@ -28,4 +29,8 @@ export const updateUserAction = async(userId: string, payload: Partial<IUser>): 
 
 export const getTutorReviewsAction = async (tutorId: string) => {
   return await tutorService.getTutorReviews(tutorId);
+}
+
+export const getBookingsAction = async(params?: BookingSearchParams): Promise<PaginatedResponse<Bookings[]>> => {
+     return await adminService.getBookings(params);
 }

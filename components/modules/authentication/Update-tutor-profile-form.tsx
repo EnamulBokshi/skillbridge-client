@@ -34,6 +34,7 @@ import { getCategoriesAction } from "@/action/category.action";
 import { Loading } from "@/components/common/Loading";
 import { TutorProfile, UpdateTutorPayload } from "@/types/tutor.type";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -65,11 +66,13 @@ const formSchema = z.object({
   expertiseAreas: z
     .array(z.string())
     .min(1, "At least one expertise area is required"),
+  isFeatured: z.boolean(),
 });
 export function TutorProfileUpdateForm({
     tutorProfile,
+    userId,
   ...props
-}: { tutorProfile: TutorProfile } & React.ComponentProps<typeof Card>) {
+}: {userId: string, tutorProfile: Partial<TutorProfile> } & React.ComponentProps<typeof Card>) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expertiseInput, setExpertiseInput] = useState("");
@@ -99,18 +102,19 @@ export function TutorProfileUpdateForm({
 
   const form = useForm({
     defaultValues: {
-      firstName: tutorProfile.firstName,
-      lastName: tutorProfile.lastName,
-      bio: tutorProfile.bio,
-      categoryId: tutorProfile.categoryId,
-      phone: tutorProfile.phone,
-      address: tutorProfile.address,
-      email: tutorProfile.email,
-      zip: tutorProfile.zip,
-      profilePicture: tutorProfile.profilePicture,
-      experienceYears: tutorProfile.experienceYears,
-      cv: tutorProfile.cv,
-      expertiseAreas: tutorProfile.expertiseAreas,
+      firstName: tutorProfile.firstName || '',
+      lastName: tutorProfile.lastName || '',
+      bio: tutorProfile.bio || '',
+      categoryId: tutorProfile.categoryId || '',
+      phone: tutorProfile.phone || '',
+      address: tutorProfile.address || '',
+      email: tutorProfile.email || '',
+      zip: tutorProfile.zip || '',
+      profilePicture: tutorProfile.profilePicture || '',
+      experienceYears: tutorProfile.experienceYears || 0,
+      cv: tutorProfile.cv || '',
+      expertiseAreas: tutorProfile.expertiseAreas || [],
+      isFeatured: tutorProfile.isFeatured || false,
     },
     validators: {
       onSubmit: formSchema,
@@ -118,21 +122,21 @@ export function TutorProfileUpdateForm({
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Profile update in progress...");
         const payload: UpdateTutorPayload = {
-            firstName: value.firstName,
-            lastName: value.lastName,
-            bio: value.bio,
+            firstName: value.firstName ,
+            lastName: value.lastName ,
+            bio: value.bio ,
             categoryId: value.categoryId,
-            phone: value.phone,
-            address: value.address,
-            email: value.email,
-            zip: value.zip,
-            profilePicture: value.profilePicture,
-            experienceYears: value.experienceYears,
-            cv: value.cv,
+            phone: value.phone ,
+            address: value.address ,
+            email: value.email ,
+            zip: value.zip ,
+            profilePicture: value.profilePicture ,
+            experienceYears: value.experienceYears ,
+            cv: value.cv ,
             expertiseAreas: value.expertiseAreas,
-            userId: tutorProfile.userId,
+            isFeatured: value.isFeatured
         } 
-        const { data, error,message } = await updateTutorAction(tutorProfile.id, payload);
+        const { data, error,message } = await updateTutorAction(tutorProfile.id! , payload);
         // console.log("Server response:", data, error);
 
          if (error) {
@@ -143,7 +147,7 @@ export function TutorProfileUpdateForm({
        
          toast.success(message, { id: loading });
          form.reset();
-         router.back();
+         router.push("/dashboard/admin/users/" + userId);
       
     },
   });
@@ -282,6 +286,7 @@ export function TutorProfileUpdateForm({
                         </FieldLabel>
                         <Select
                           onValueChange={(value) => field.handleChange(value)}
+                          value={field.state.value}
                         >
                           <SelectTrigger className="w-45">
                             <SelectValue placeholder="Category" />
@@ -469,7 +474,7 @@ export function TutorProfileUpdateForm({
                         type="text"
                         id={field.name}
                         name={field.name}
-                        value={field.state.value}
+                        value={field.state.value || ''}
                         onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="https://example.com/cv.pdf"
                       />
@@ -494,7 +499,7 @@ export function TutorProfileUpdateForm({
                         type="text"
                         id={field.name}
                         name={field.name}
-                        value={field.state.value}
+                        value={field.state.value || ''}
                         onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="https://example.com/profile.jpg"
                       />
@@ -528,7 +533,7 @@ export function TutorProfileUpdateForm({
                                 e.preventDefault();
                                 if (expertiseInput.trim()) {
                                   field.handleChange([
-                                    ...field.state.value,
+                                    ...(field.state.value || []),
                                     expertiseInput.trim(),
                                   ]);
                                   setExpertiseInput("");
@@ -541,7 +546,7 @@ export function TutorProfileUpdateForm({
                             onClick={() => {
                               if (expertiseInput.trim()) {
                                 field.handleChange([
-                                  ...field.state.value,
+                                  ...(field.state.value || []),
                                   expertiseInput.trim(),
                                 ]);
                                 setExpertiseInput("");
@@ -551,7 +556,7 @@ export function TutorProfileUpdateForm({
                             Add
                           </Button>
                         </div>
-                        {field.state.value.length > 0 && (
+                        {field.state.value && field.state.value.length > 0 && (
                           <div className="flex flex-wrap gap-2">
                             {field.state.value.map((area, index) => (
                               <div
@@ -563,7 +568,7 @@ export function TutorProfileUpdateForm({
                                   type="button"
                                   onClick={() => {
                                     field.handleChange(
-                                      field.state.value.filter(
+                                      (field.state.value || []).filter(
                                         (_, i) => i !== index,
                                       ),
                                     );
@@ -584,13 +589,35 @@ export function TutorProfileUpdateForm({
                   );
                 }}
               />
+               <form.Field
+                name="isFeatured"
+                children={(field) => {
+                  return (
+                    <Field className="flex items-center justify-between rounded-lg border p-3">
+                      <div className="space-y-1">
+                        <FieldLabel className="mb-0">Featured User</FieldLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Enable if this tutor is a featured tutor on the platform
+                        </p>
+                      </div>
+
+                      <Switch
+                        checked={field.state.value}
+                        onCheckedChange={(checked) =>
+                          field.handleChange(checked)
+                        }
+                      />
+                    </Field>
+                  );
+                }}
+              />
             </div>
           </FieldGroup>
         </form>
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button type="submit" form="tutorProfile-form" className="w-full">
-          Create Tutor Profile
+            Update Profile
         </Button>
       </CardFooter>
     </Card>

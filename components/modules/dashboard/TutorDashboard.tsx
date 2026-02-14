@@ -8,6 +8,7 @@ import { BookingStatus } from "@/types/student.type";
 import BookingTableFilterController from "@/components/ui/filter-controller-simple";
 import { Loading } from "@/components/common/Loading";
 import { toast } from "sonner";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default async function TutorDashboard({
   profile,
@@ -88,17 +89,18 @@ if(!dashboard){
         <div className="p-4">
           {/* <BookingTableFilterController /> */}
           {!hasPendingBookings ? (
-            <div className="text-center py-10 space-y-2">
-              <p className="text-muted-foreground">
-                No sessions yet.
-              </p>
-              <Link
-                href="/slots"
-                className="inline-block text-primary underline underline-offset-4"
-              >
-                Browse available slots
-              </Link>
-            </div>
+            // <div className="text-center py-10 space-y-2">
+            //   <p className="text-muted-foreground">
+            //     No sessions yet.
+            //   </p>
+            //   <Link
+            //     href="/slots"
+            //     className="inline-block text-primary underline underline-offset-4"
+            //   >
+            //     Browse available slots
+            //   </Link>
+            // </div>
+            <EmptyState title="No sessions yet"  caption="Student's session bookings request will appear here.!"/>
           ) : (
             <>
             <BookingTable

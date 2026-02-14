@@ -36,6 +36,7 @@ import {
   formatDateForInput,
   formatTimeForInput,
 } from "@/helper/dateFormatter";
+import { Switch } from "@/components/ui/switch";
 
 //  zod schema
 const today = new Date();
@@ -52,6 +53,7 @@ const SlotSchema = z
     endTime: z.string().min(1, "End time is required"),
     slotPrice: z.number().min(0, "Price must be positive"),
     isFree: z.boolean(),
+    isFeatured: z.boolean(),
   })
   .refine((data) => data.startTime < data.endTime, {
     message: "End time must be after start time",
@@ -69,7 +71,6 @@ type Subject = {
 type EditSlotFormProps = {
   slotId: string;
   initialValues: IUpdateSlotPayload;
-  tutorId: string;
   role: "TUTOR" | "STUDENT" | "ADMIN" | "VISITOR";
   onClose?: () => void;
 };
@@ -78,10 +79,9 @@ type EditSlotFormProps = {
 export function EditSlotForm({
   slotId,
   initialValues,
-  tutorId,
+
   role,
   onClose,
-
 }: EditSlotFormProps) {
   const [subjects, setSubjects] = React.useState<Subject[] | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -103,6 +103,7 @@ export function EditSlotForm({
 
   const form = useForm({
     defaultValues: {
+      isFeatured: initialValues.isFeatured || false,
       subjectId: initialValues.subjectId || "",
       date: formatDateForInput(initialValues.date),
       startTime: formatTimeForInput(initialValues.startTime),
@@ -124,7 +125,6 @@ export function EditSlotForm({
         const endTimeISO = convertToISODateTime(value.date, value.endTime);
 
         const payload = {
-          tutorId: tutorId,
           subjectId: value.subjectId,
           date: dateISO,
           startTime: startTimeISO,
@@ -152,7 +152,6 @@ export function EditSlotForm({
         // Reset form
         form.reset();
         onClose && onClose();
-
       } catch (error) {
         console.error("Failed to create slot:", error);
         toast.error("Failed to create slot. Please try again.", {
@@ -302,6 +301,26 @@ export function EditSlotForm({
               </Field>
             )}
           </form.Field>
+
+          <form.Field
+            name="isFeatured"
+            children={(field) => {
+              return (
+                <Field className="flex items-center justify-between rounded-lg border p-3">
+                  <FieldLabel htmlFor={field.name}>Featured Slot</FieldLabel>
+                  <CardDescription>
+                    Mark this slot as featured to highlight it in search
+                    results.
+                  </CardDescription>
+
+                  <Switch
+                    checked={field.state.value}
+                    onCheckedChange={(checked) => field.handleChange(checked)}
+                  />
+                </Field>
+              );
+            }}
+          />
 
           <CardFooter className="px-0">
             <Button

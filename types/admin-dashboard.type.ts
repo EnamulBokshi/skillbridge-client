@@ -1,3 +1,4 @@
+import { BookingStatus } from "./student.type";
 
 export interface AdminDashboardStats {
   users: {
@@ -31,3 +32,5 @@ export interface AdminDashboardStats {
     averageRating: number;
   };
 }
+
+

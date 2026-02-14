@@ -3,7 +3,7 @@
 import { tutorService } from "@/services/tutor.service";
 import { ApiResponse, PaginatedResponse, SessionSearchParams, TResponse } from "@/types";
 import { ISlotResponse, IUpdateSlotPayload, SlotSearchParams } from "@/types/slot.type";
-import { Bookings } from "@/types/student.type";
+import { Bookings } from "@/types/bookings.type";
 import {
   CreateTutorPayload,
   UpdateTutorPayload,
@@ -122,7 +122,10 @@ export const updateBookingStatusAction = async (
   bookingId: string,
   statusData: UpdateBookingStatusPayload
 ) => {
-  return await tutorService.updateBookingStatus(tutorId, bookingId, statusData);
+  const result = await tutorService.updateBookingStatus(tutorId, bookingId, statusData);
+  updateTag('bookings');
+  return result;
+
 };
 
 /**
@@ -138,13 +141,19 @@ export const getSessionsAction = async(tutorId: string, params?: SessionSearchPa
 }
 
 export const confirmBookingAction = async (bookingId: string): Promise<TResponse<Bookings>> => {
-  return await tutorService.confirmBooking(bookingId);
+  const result = await tutorService.confirmBooking(bookingId);
+  updateTag('bookings');
+  return result;
 }
 
 export const cancelBookingAction = async (bookingId: string): Promise<TResponse<Bookings>> => { 
-  return await tutorService.cancelBooking(bookingId);
+  const result = await tutorService.cancelBooking(bookingId);
+  updateTag('bookings');
+  return result;
 }
 
 export const markAsCompletedAction = async (bookingId: string): Promise<TResponse<Bookings>> => {
-  return await tutorService.markAsCompleted(bookingId);
+  const result = await tutorService.markAsCompleted(bookingId);
+  updateTag('bookings');
+  return result;
 }

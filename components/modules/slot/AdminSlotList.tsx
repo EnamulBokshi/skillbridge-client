@@ -63,6 +63,7 @@ export function AdminSlotList({ initialData }: AdminSlotListProps) {
       initialSlots={data.slots}
       initialPagination={data.pagination}
       editable={true}
+    
       showTutorFilter={true}
       onFiltersChange={fetchSlots}
       

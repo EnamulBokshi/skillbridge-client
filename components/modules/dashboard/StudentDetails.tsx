@@ -3,10 +3,7 @@ import { getStudentProfile } from '@/services/student.service';
 import Link from 'next/link';
 
 export default async function StudentDetails({studentId}:{studentId: string}) {
-  
-
-
-
+  console.log("Fetching details for student ID: ", studentId);
   const { data: studentProfile, error: studentProfileError } =
     await getStudentProfile(studentId);
 

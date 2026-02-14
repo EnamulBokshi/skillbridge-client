@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { env } from "@/env";
 import { IUser } from "@/types/user.type";
 import { AdminDashboardStats } from "@/types/admin-dashboard.type";
+import { Bookings, BookingSearchParams } from "@/types/bookings.type";
+import handleParams from "@/helper/handleSearchParams";
 
 const getAllUser = async (): Promise<PaginatedResponse<IUser>> => {
     try {
@@ -109,10 +111,29 @@ const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TRes
     });
     return (await response.json()) as TResponse<IUser>;
 }
+
+const getBookings = async(params?:BookingSearchParams):Promise<PaginatedResponse<Bookings[]>>=> {
+    const cookieStore = await cookies();
+    const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/bookings`);
+    console.log("AdminService: Fetching bookings with params:", params)
+    const paramsUrl = handleParams(url.toString(), params);
+    console.log("Fetching bookings with URL:", paramsUrl);
+    const response = await fetch(paramsUrl, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+        next: { tags: ['bookings'] }
+    });
+    return (await response.json()) as PaginatedResponse<Bookings[]>;
+}
 export const adminService = {
     getAllUser,
     cancelBooking,
     confirmBooking,
     getDashboardStats,
-    updateUser
+    updateUser,
+    getBookings
 }

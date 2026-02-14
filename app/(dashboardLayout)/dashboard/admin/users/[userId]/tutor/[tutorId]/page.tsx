@@ -1,5 +1,6 @@
 import { getTutorByIdAction } from "@/action/tutor.action";
 import { TutorProfileUpdateForm } from "@/components/modules/authentication/Update-tutor-profile-form";
+import BackButton from "@/components/ui/BackButton";
 import { TutorProfile } from "@/types/tutor.type";
 import React from "react";
 interface TutorProfileEditProps {
@@ -37,9 +38,9 @@ export default async function TutorProfileEdit({
       <div className="text-center text-gray-500">Tutor profile not found.</div>
     );
   }
-  const payload: TutorProfile = {
+  const payload: Partial<TutorProfile> = {
     id: data.id,
-    userId: data.userId,
+    // userId: data.userId,
     firstName: data.firstName,
     lastName: data.lastName,
     bio: data.bio,
@@ -57,9 +58,11 @@ export default async function TutorProfileEdit({
 
   return (
     <div>
+            <BackButton/>
+      
       <h1 className="text-2xl font-bold mb-4">Edit Tutor Profile</h1>
       <div className="bg-white shadow rounded-lg p-6">
-        <TutorProfileUpdateForm tutorProfile={payload} />
+        <TutorProfileUpdateForm tutorProfile={payload} userId={data.userId} />
       </div>
     </div>
   );
