@@ -75,8 +75,8 @@ export default async function FeaturedTutorsHero() {
 
                   {/* Rating Overlay */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-sm">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 dark:text-violet-600 dark:fill-violet-600" />
+                    <span className="font-semibold text-sm dark:text-violet-600">
                       {tutor?.avgRating?.toFixed(1) || "0.0"}
                     </span>
                   </div>
