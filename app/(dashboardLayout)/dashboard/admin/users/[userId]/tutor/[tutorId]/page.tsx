@@ -62,7 +62,7 @@ export default async function TutorProfileEdit({
       
       <h1 className="text-2xl font-bold mb-4">Edit Tutor Profile</h1>
       <div className="bg-white shadow rounded-lg p-6">
-        <TutorProfileUpdateForm tutorProfile={payload} userId={data.userId} />
+        <TutorProfileUpdateForm tutorProfile={payload} userId={data.userId} isAdmin={true} />
       </div>
     </div>
   );

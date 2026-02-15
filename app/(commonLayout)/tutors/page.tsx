@@ -4,13 +4,13 @@ import TutorsList from "@/components/modules/tutors/TutorsList";
 
 export default async function TutorsPage() {
   // Fetch featured tutors
-  const { data: featuredTutors } = await getTutorsAction({
-    isFeatured: true,
-    page: 1,
-    limit: 6,
-    sortBy: "avgRating",
-    orderBy: "desc",
-  });
+  // const { data: featuredTutors } = await getTutorsAction({
+  //   isFeatured: true,
+  //   page: 1,
+  //   limit: 6,
+  //   sortBy: "avgRating",
+  //   orderBy: "desc",
+  // });
 
   // Fetch all tutors for initial list
   const { data: allTutors } = await getTutorsAction({
@@ -23,7 +23,7 @@ export default async function TutorsPage() {
   return (
     <div className="min-h-screen">
       {/* Featured Tutors Hero Section */}
-      {featuredTutors && <FeaturedTutorsHero tutors={featuredTutors} />}
+      <FeaturedTutorsHero />
 
       {/* Divider */}
       <div className="container mx-auto px-4 md:px-6">

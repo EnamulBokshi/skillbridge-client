@@ -18,7 +18,7 @@ interface TutorInfoProps {
   tutor: TutorDetailedProfile;
 }
 
-export default  async function TutorDetails({ tutorId }: { tutorId: string }) {
+export default  async function TutorDetails({ tutorId, isAdmin }: { tutorId: string, isAdmin: boolean }) {
   console.log("Fetching details for tutor ID: ", tutorId);
     const {data: tutor, error, message} = await getTutorByIdAction(tutorId);
 console.log("Tutor details fetched: ", tutor, error, message);
@@ -33,7 +33,7 @@ console.log("Tutor details fetched: ", tutor, error, message);
       {/* Profile Header Card */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-4">Tutor Details</h2>
-        <Link href={`/dashboard/admin/users/${tutor.user.id}/tutor/${tutor.id}`} className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
+        <Link href={`${isAdmin ? `/dashboard/admin/users/${tutor.user.id}/tutor/${tutor.id}` : `/dashboard/tutor/profile?edit=true&tutorId=${tutor.id}`}`} className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
           Edit Profile
         </Link>
       </div>

@@ -29,7 +29,7 @@ export function PublicSlotList({ initialData, showFilter = true }: PublicSlotLis
       const params: SlotSearchParams = {
         ...filters,
         sortBy: filters?.sortBy || "date",
-        sortOrder: filters?.sortOrder || "asc",
+        orderBy: filters?.orderBy || "asc",
       };
       
       // console.log("Fetching slots with params:", params);

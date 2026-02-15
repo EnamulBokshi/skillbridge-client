@@ -20,7 +20,7 @@ export const tutorRoutes = [
         {
           title: "Sessions",
           url: "/dashboard/tutor/sessions",
-          icon: UserRoundPen,
+          icon: GalleryThumbnailsIcon,
         },
       ],
     },
@@ -32,7 +32,7 @@ export const tutorRoutes = [
         {
           title: "Profile",
           url: "/dashboard/tutor/profile",
-          icon: GalleryThumbnailsIcon,
+          icon: UserRoundPen,
         },
       ],
     },

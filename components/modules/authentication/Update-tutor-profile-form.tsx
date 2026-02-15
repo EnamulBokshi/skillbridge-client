@@ -71,8 +71,9 @@ const formSchema = z.object({
 export function TutorProfileUpdateForm({
     tutorProfile,
     userId,
+    isAdmin = false,
   ...props
-}: {userId: string, tutorProfile: Partial<TutorProfile> } & React.ComponentProps<typeof Card>) {
+}: {isAdmin: boolean, userId: string, tutorProfile: Partial<TutorProfile> } & React.ComponentProps<typeof Card>) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expertiseInput, setExpertiseInput] = useState("");
@@ -147,7 +148,10 @@ export function TutorProfileUpdateForm({
        
          toast.success(message, { id: loading });
          form.reset();
+         if(isAdmin) {
          router.push("/dashboard/admin/users/" + userId);
+         } 
+         router.back();
       
     },
   });
@@ -589,6 +593,7 @@ export function TutorProfileUpdateForm({
                   );
                 }}
               />
+              {isAdmin && (
                <form.Field
                 name="isFeatured"
                 children={(field) => {
@@ -611,6 +616,7 @@ export function TutorProfileUpdateForm({
                   );
                 }}
               />
+              )}
             </div>
           </FieldGroup>
         </form>

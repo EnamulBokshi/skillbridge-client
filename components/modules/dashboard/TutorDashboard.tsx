@@ -9,11 +9,12 @@ import BookingTableFilterController from "@/components/ui/filter-controller-simp
 import { Loading } from "@/components/common/Loading";
 import { toast } from "sonner";
 import EmptyState from "@/components/ui/EmptyState";
+import { IUser } from "@/types/user.type";
 
 export default async function TutorDashboard({
   profile,
 }: {
-  profile: UserProfileType;
+  profile: IUser;
 }) {
   if (!profile.tutorProfile) {
     return (

@@ -5,16 +5,21 @@ import { SlotCard } from "../slot";
 import { dateFormatter, calculateDuration } from "@/helper/dateFormatter";
 import { Badge } from "@/components/ui/badge";
 import { currencyFormatter } from "@/helper/currencyFormatter";
+import { IUser } from "@/types/user.type";
 
 export default async function StudentDashboard({
   profile,
 }: {
-  profile: UserProfileType;
+  profile: IUser | null;
 }) {
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
   const { data: stats, error } = await getStudentStats(
-    profile.student?.id as string,
+    profile?.student?.id as string,
   );
   // const slot = stats?.latestBooking?.slot;
+
 
   // console.log({ stats, error });
   return (

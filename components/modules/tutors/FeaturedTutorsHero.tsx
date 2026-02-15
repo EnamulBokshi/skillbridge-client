@@ -1,21 +1,38 @@
 import { TutorProfile } from "@/types/tutor.type";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Star, BookOpen, Award, GraduationCap } from "lucide-react";
 import Link from "next/link";
+import { PaginatedResponse } from "@/types";
+import { getTutorsAction } from "@/action/tutor.action";
 
-interface FeaturedTutorsHeroProps {
-  tutors: TutorProfile[] | any;
-}
+// interface FeaturedTutorsHeroProps {
+//   tutors: PaginatedResponse<TutorProfile>;
+// }
 
-export default function FeaturedTutorsHero({ tutors }: FeaturedTutorsHeroProps) {
+export default async function FeaturedTutorsHero() {
   // Handle different data structures
-  const tutorsList = Array.isArray(tutors) ? tutors : tutors?.tutors || [];
-  
-  if (!tutorsList || tutorsList.length === 0) {
-    return null;
-  }
+
+  const { data: tutorsData } = await getTutorsAction({
+    isFeatured: true,
+    page: 1,
+    limit: 6,
+    sortBy: "avgRating",
+    orderBy: "desc",
+  });
+
+  // if (!tutorsData || tutorsData.length === 0) {
+  //   return null;
+  // }
+  // console.log("Featured Tutors Data:", tutorsData);
+  const tutorsList: TutorProfile[] = tutorsData.data || [];
 
   return (
     <section className="w-full py-12 md:py-16 lg:py-20">
@@ -30,78 +47,76 @@ export default function FeaturedTutorsHero({ tutors }: FeaturedTutorsHeroProps) 
             Meet Our Star Experts
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto">
-            Learn from the best. Our featured tutors are highly-rated professionals
-            dedicated to helping you achieve your learning goals.
+            Learn from the best. Our featured tutors are highly-rated
+            professionals dedicated to helping you achieve your learning goals.
           </p>
         </div>
 
         {/* Featured Tutors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tutorsList.map((tutor:TutorProfile) => (
+          {tutorsList.map((tutor: TutorProfile) => (
             <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
-              <Card className="group hover:shadow-lg transition-all duration-300 h-full cursor-pointer">
-              <CardHeader className="pb-4">
-                <div className="flex items-start gap-4">
-                  <Avatar size="lg" className="h-16 w-16">
-                    <AvatarImage 
-                      src={tutor.profilePicture || undefined} 
-                      alt={`${tutor.firstName} ${tutor.lastName}`} 
+              <Card className="group overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-1 h-full dark:bg-background dark:shadow-destructive">
+                {/* IMAGE SECTION */}
+                <div className="relative w-full h-72 overflow-hidden">
+                  <Avatar className="h-full w-full rounded-none">
+                    <AvatarImage
+                      src={tutor.profilePicture || './default-avatar.webp' ||`https://ui-avatars.com/api/?name=${tutor.firstName}+${tutor.lastName}&background=random&size=256`}
+                      alt={`${tutor.firstName} ${tutor.lastName}`}
+                      className="object-cover object-top to-15% -top-2.5 group-hover:scale-110 transition-transform duration-700"
                     />
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback className="text-4xl font-bold bg-muted">
                       {tutor.firstName.charAt(0)}
                       {tutor.lastName.charAt(0)}
+
+                      
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="text-xl mb-1">
-                      {tutor.firstName} {tutor.lastName}
-                    </CardTitle>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{tutor.avgRating.toFixed(1)}</span>
-                      <span className="text-muted-foreground">Rating</span>
-                    </div>
+
+                  {/* Rating Overlay */}
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold text-sm">
+                      {tutor?.avgRating?.toFixed(1) || "0.0"}
+                    </span>
                   </div>
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-4">
-                {/* Expertise */}
-                {tutor.expertiseAreas && tutor.expertiseAreas.length > 0 && (
+                {/* CONTENT */}
+                <CardContent className="p-6 space-y-4">
+                  {/* Name */}
                   <div>
-                    <p className="text-sm font-medium mb-1 flex items-center gap-1">
-                      <BookOpen className="h-3.5 w-3.5" />
-                      Expertise
-                    </p>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {tutor.expertiseAreas.join(", ")}
+                    <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                      {tutor.firstName} {tutor.lastName}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {tutor.experienceYears}+ years of experience
                     </p>
                   </div>
-                )}
 
-                {/* Bio */}
-                {tutor.bio && (
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {tutor.bio}
-                  </p>
-                )}
-
-                {/* Stats */}
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {tutor.experienceYears !== null && (
-                    <Badge variant="outline" className="gap-1">
-                      <GraduationCap className="h-3 w-3" />
-                      {tutor.experienceYears}+ years
-                    </Badge>
+                  {/* Expertise */}
+                  {tutor.expertiseAreas?.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {tutor.expertiseAreas.slice(0, 3).map((area, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="text-xs px-2 py-1"
+                        >
+                          {area}
+                        </Badge>
+                      ))}
+                    </div>
                   )}
-                  
-                 
-                </div>
 
-                {/* Certifications */}
-               
-              </CardContent>
-            </Card>
+                  {/* Bio */}
+                  {tutor.bio && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {tutor.bio}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
             </Link>
           ))}
         </div>

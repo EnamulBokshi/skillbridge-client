@@ -5,9 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { USER_ROLES } from '@/constants';
-import { authClient } from '@/lib/auth-client'
 import { userServices } from '@/services/user.service';
-import { IUser, IUserProps } from '@/types/user.type';
+import { IUser } from '@/types/user.type';
 import Link from 'next/link';
 import React from 'react'
 
@@ -18,7 +17,7 @@ export default async function DashBoardLayout({
 }:{
     children: React.ReactNode
 }) {
-    const {data, error} = await userServices.getSession();
+    const {data} = await userServices.getSession();
     const user:IUser = data?.user;
     const userRole = user?.role;
     // console.log("User  in Layout:", user);

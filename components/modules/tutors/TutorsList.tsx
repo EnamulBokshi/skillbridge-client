@@ -160,7 +160,7 @@ const [pagination, setPagination] = useState({
                           <div className="flex items-center gap-1 text-sm">
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span className="font-semibold">
-                              {tutor.avgRating.toFixed(1)}
+                              {tutor?.avgRating?.toFixed(1)}
                             </span>
                           </div>
                         </div>
