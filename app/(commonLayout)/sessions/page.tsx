@@ -110,7 +110,7 @@ export default async function Session({searchParams}: {searchParams:Promise<Slot
       </section>
 
       {/* Sessions List */}
-      <section className="py-20  px-4 sm:px-6 lg:px-8">
+      <section className="py-4  px-4 sm:px-6  md:px-20">
         {/* <PublicSlotList /> */}
         <FilterController />
         <SlotHistory data={data.data}/>

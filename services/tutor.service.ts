@@ -63,40 +63,13 @@ const tutorService = {
    * Auth: Public
    * Supports pagination, filtering, and sorting
    */
-  getTutors: async (params?: GetTutorsParams): Promise<TResponse<any>> => {
-    try {
-      // Build query string from params
-      const queryParams = new URLSearchParams();
+  getTutors: async (params?: GetTutorsParams): Promise<PaginatedResponse<any>> => {
+   
 
-      if (params) {
-        if (params.page !== undefined)
-          queryParams.append("page", params.page.toString());
-        if (params.limit !== undefined)
-          queryParams.append("limit", params.limit.toString());
-        if (params.isFeatured !== undefined)
-          queryParams.append("isFeatured", params.isFeatured.toString());
-        if (params.search) queryParams.append("search", params.search);
-        if (params.categoryId)
-          queryParams.append("categoryId", params.categoryId);
-        if (params.minRating !== undefined)
-          queryParams.append("minRating", params.minRating.toString());
-        if (params.maxRating !== undefined)
-          queryParams.append("maxRating", params.maxRating.toString());
-        if (params.minExperience !== undefined)
-          queryParams.append("minExperience", params.minExperience.toString());
-        if (params.maxExperience !== undefined)
-          queryParams.append("maxExperience", params.maxExperience.toString());
-        if (params.sortBy) queryParams.append("sortBy", params.sortBy);
-        if (params.orderBy) queryParams.append("orderBy", params.orderBy);
-      }
-
-      const queryString = queryParams.toString();
-      const url = queryString
-        ? `${apiBaseUrl}/tutors?${queryString}`
-        : `${apiBaseUrl}/tutors`;
-
+      const url = new URL(`${apiBaseUrl}/tutors`);
+      const paramsUrl = handleParams(url.toString(), params);
       const cookieStore = await cookies();
-      const response = await fetch(url, {
+      const response = await fetch(paramsUrl, {
         method: "GET",
         headers: {
           Cookie: cookieStore.toString(),
@@ -105,20 +78,9 @@ const tutorService = {
         next: { tags: ["tutors"] },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch tutors");
-      }
-
-      const data: ApiResponse<any> = await response.json();
-      return { data: data.data, error: null };
-    } catch (error: any) {
-      console.error("Error fetching tutors:", error);
-      return {
-        data: null,
-        error: { message: error.message || "Failed to fetch tutors" },
-      };
-    }
+     
+      return (await response.json()) as PaginatedResponse<any>;
+     
   },
 
   /**

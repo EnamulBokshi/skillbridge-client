@@ -231,4 +231,9 @@ export interface GetTutorsParams {
   maxExperience?: number;
   sortBy?: string;
   orderBy?: "asc" | "desc";
+  subjectId?: string;
+  slug?: string;
+  bio?: string;
+  
+
 }

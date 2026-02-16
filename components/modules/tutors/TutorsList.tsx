@@ -32,62 +32,7 @@ interface TutorsListProps {
 export default function TutorsList({ initialTutors }: TutorsListProps) {
   const [isPending, startTransition] = useTransition();
   
-  // Parse initial tutors
-  const initialTutorsList = Array.isArray(initialTutors)
-    ? initialTutors
-    : initialTutors?.tutors || [];
-  
-  const [tutors, setTutors] = useState<TutorProfile[]>(initialTutorsList);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
-const [pagination, setPagination] = useState({
-  page: 1,
-  limit: 9,
-  totalRecords: initialTutors?.totalRecords || 0,
-  totalPages: initialTutors?.totalPages || 0,
-});
-  const fetchTutors = (page: number, search?: string) => {
-    startTransition(async () => {
-      const params: any = {
-        page,
-        limit: 9,
-        sortBy: "avgRating",
-        orderBy: "desc",
-      };
-      
-      if (search) {
-        params.search = search;
-      }
-      
-      const { data } = await getTutorsAction();
-      console.log("Fetched Tutors Data from the usetransition hok:", data);
-      const tutorsList = Array.isArray(data) ? data : data?.data || [];
-      setTutors(tutorsList);
-        setPagination(data.pagination);
-    });
-  };
-
-  const handleSearch = () => {
-    setCurrentPage(1);
-    fetchTutors(1, searchInput);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    fetchTutors(page, searchInput || undefined);
-  };
-  useEffect(()=>{
-    fetchTutors(1);
-  }, []);
-// const [tutorsData, setTutorsData] = useState<TutorProfile[] | null  >(null);
-//   const fetchTutors2 = async()=> {
-//     const { data } = await getTutorsAction();
-//     console.log("Fetched Tutors Data:", data.data);
-//     setTutorsData(data.data);
-//   }
-    // useEffect(() => {
-    //   fetchTutors2();
-    // }, []);
+;
 
   return (
     <section className="w-full py-12">
@@ -101,7 +46,7 @@ const [pagination, setPagination] = useState({
         </div>
 
         {/* Search Bar */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <div className="flex gap-2 max-w-2xl">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -124,7 +69,8 @@ const [pagination, setPagination] = useState({
               )}
             </Button>
           </div>
-        </div>
+        </div> */}
+
 
         {/* Loading State */}
         {isPending && (
@@ -136,9 +82,9 @@ const [pagination, setPagination] = useState({
         {/* Tutors Grid */}
         {!isPending && (
           <>
-            {tutors && tutors.length > 0 ? (
+            {initialTutors && initialTutors.data && initialTutors.data.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {tutors.map((tutor) => (
+                {initialTutors.data.map((tutor: any) => (
                   <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
                     <Card className="hover:shadow-lg transition-all duration-300 h-full cursor-pointer">
                     <CardHeader className="pb-4">
@@ -211,7 +157,7 @@ const [pagination, setPagination] = useState({
             )}
 
             {/* Pagination */}
-            {pagination.totalPages > 1 && (
+            {/* {pagination.totalPages > 1 && (
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -250,7 +196,7 @@ const [pagination, setPagination] = useState({
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
-            )}
+            )} */}
           </>
         )}
       </div>

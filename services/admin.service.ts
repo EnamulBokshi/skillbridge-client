@@ -100,6 +100,7 @@ const getDashboardStats = async():Promise<TResponse<AdminDashboardStats>>=> {
 }
 
 const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TResponse<IUser>> => {
+    console.log("AdminService: Updating user with ID:", userId, "Payload:", payload);
     const cookieStore = await cookies();
     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
         method: "PATCH",

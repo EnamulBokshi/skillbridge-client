@@ -67,14 +67,14 @@ export default function UserList({ users }: { users: IUser[] }) {
     if (!ok) {
       return;
     }
-    const reOk = confirm({
-      title: "Confirm Ban",
-      description: "Do you really want to ban this user?",
-      confirmText: "Yes, Ban",
-    });
-    if (!reOk) {
-      return;
-    }
+    // const reOk = confirm({
+    //   title: "Confirm Ban",
+    //   description: "Do you really want to ban this user?",
+    //   confirmText: "Yes, Ban",
+    // });
+    // if (!reOk) {
+    //   return;
+    // }
     const loadingToast = toast.loading("Banning user...");
     const { data, error, message } = await updateUserAction(userId, {
       status: "BANNED",
