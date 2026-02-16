@@ -28,7 +28,7 @@ export default async function FeaturedTutorsHero() {
   //   return null;
   // }
   // console.log("Featured Tutors Data:", tutorsData);
-  const tutorsList : TutorProfile[]  = tutorsData.data  || [] ;
+  const tutorsList : TutorProfile[]  = tutorsData?.data  || [] ;
 
 
   return (

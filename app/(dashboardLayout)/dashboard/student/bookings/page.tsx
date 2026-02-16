@@ -1,5 +1,4 @@
-import { getCompletedSessionsAction } from "@/action/student.action";
-import { getStudentUpcomingsAction } from "@/action/student.action copy";
+import { getCompletedSessionsAction,getUpcomingSessionsAction } from "@/action/student.action";
 import { getUserSession } from "@/action/user.action";
 import BookingTable from "@/components/modules/booking/BookingTable";
 import { Button } from "@/components/ui/button";
@@ -36,7 +35,7 @@ export default async function BookingsStudent() {
 
 
   const { data: upcomingsSessions } =
-    await getStudentUpcomingsAction(userProfile?.student?.id!);
+    await getUpcomingSessionsAction(userProfile?.student?.id!);
 
     console.log("Upcoming sessions data:", upcomingsSessions);
   const { data: completedSessions } =
