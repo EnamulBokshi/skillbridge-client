@@ -41,7 +41,7 @@ export default async function BookingsStudent() {
     console.log("Upcoming sessions data:", upcomingsSessions);
   const { data: completedSessions } =
     await getCompletedSessionsAction(userProfile?.student?.id!);
-  const completedSessionsData = (completedSessions?.data).flat() || [];
+  const completedSessionsData = (completedSessions?.data) || [];
   const completedSessionsPagination = completedSessions?.pagination || null;
   return (
     <div className="space-y-6">

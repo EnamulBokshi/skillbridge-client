@@ -2,15 +2,11 @@ import { TutorProfile } from "@/types/tutor.type";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Star, BookOpen, Award, GraduationCap } from "lucide-react";
+import { Star, Award } from "lucide-react";
 import Link from "next/link";
-import { PaginatedResponse } from "@/types";
 import { getTutorsAction } from "@/action/tutor.action";
 
 // interface FeaturedTutorsHeroProps {
@@ -32,7 +28,8 @@ export default async function FeaturedTutorsHero() {
   //   return null;
   // }
   // console.log("Featured Tutors Data:", tutorsData);
-  const tutorsList: TutorProfile[] = tutorsData.data || [];
+  const tutorsList : TutorProfile[]  = tutorsData.data  || [] ;
+
 
   return (
     <section className="w-full py-12 md:py-16 lg:py-20">
@@ -54,7 +51,7 @@ export default async function FeaturedTutorsHero() {
 
         {/* Featured Tutors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tutorsList.map((tutor: TutorProfile) => (
+          { tutorsList?.map((tutor: TutorProfile) => (
             <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
               <Card className="group overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-1 h-full dark:bg-background dark:shadow-destructive">
                 {/* IMAGE SECTION */}

@@ -1,6 +1,6 @@
 "use server";
 
-import { PaginatedResponse, SessionSearchParams } from "@/types";
+import { PaginatedResponse, SessionSearchParams, TResponse } from "@/types";
 import {
   createStudent,
   getStudentProfile,
@@ -37,18 +37,18 @@ import { SlotSearchParams } from "@/types/slot.type";
  */
 export const createStudentAction = async (
   payload: CreateStudentPayload
-): Promise<ApiResponse<StudentProfile>> => {
+): Promise<TResponse<StudentProfile>> => {
   return await createStudent(payload);
 };
 
 /**
  * Fetches the student profile
  * @param studentId - The student's ID
- * @returns Promise<ApiResponse<StudentDetailedProfile>>
+ * @returns Promise<TResponse<StudentDetailedProfile>>
  */
 export const getStudentProfileAction = async (
   studentId: string
-): Promise<ApiResponse<StudentDetailedProfile>> => {
+): Promise<TResponse<StudentDetailedProfile>> => {
   return await getStudentProfile(studentId);
 };
 
@@ -56,63 +56,63 @@ export const getStudentProfileAction = async (
  * Updates an existing student
  * @param studentId - The student's ID
  * @param payload - UpdateStudentPayload
- * @returns Promise<ApiResponse<StudentProfile>>
+ * @returns Promise<TResponse<StudentProfile>>
  */
 export const updateStudentProfileAction = async (
   studentId: string,
   payload: UpdateStudentPayload
-): Promise<ApiResponse<StudentProfile>> => {
+): Promise<TResponse<StudentProfile>> => {
   return await updateStudentProfile(studentId, payload);
 };
 
 /**
  * Deletes a student profile
  * @param studentId - The student's ID
- * @returns Promise<ApiResponse<void>>
+ * @returns Promise<TResponse<void>>
  */
 export const deleteStudentProfileAction = async (
   studentId: string
-): Promise<ApiResponse<void>> => {
+): Promise<TResponse<void>> => {
   return await deleteStudentProfile(studentId);
 };
 
 /**
  * Fetches statistics for a student
  * @param studentId - The student's ID
- * @returns Promise<ApiResponse<StudentStats>>
+ * @returns Promise<TResponse<StudentStats>>
  */
 export const getStudentStatsAction = async (
   studentId: string
-): Promise<ApiResponse<StudentStats>> => {
+): Promise<TResponse<StudentStats>> => {
   return await getStudentStats(studentId);
 };
 
 /**
  * Fetches completed sessions for a student
  * @param studentId - The student's ID
- * @returns Promise<ApiResponse<StudentBooking[]>>
+ * @returns Promise<TResponse<StudentBooking[]>>
  */
 export const getCompletedSessionsAction = async (
   studentId: string
-): Promise<PaginatedResponse<Bookings[]>> => {
+): Promise<PaginatedResponse<Bookings>> => {
   return await getCompletedSessions(studentId);
 };
 
 /**
  * Fetches upcoming sessions for a student
  * @param studentId - The student's ID
- * @returns Promise<ApiResponse<StudentBooking[]>>
+ * @returns Promise<TResponse<StudentBooking[]>>
  */
 export const getUpcomingSessionsAction = async (
   studentId: string
-): Promise<ApiResponse<Bookings[]>> => {
+): Promise<TResponse<Bookings[]>> => {
   return await getUpcomingSessions(studentId);
 };
 
 export const getAllSesssionAction = async (
   studentId: string,
   params?: SessionSearchParams
-):Promise<PaginatedResponse<Bookings[]>> => {
+):Promise<PaginatedResponse<Bookings>> => {
   return await getAllSessions(studentId, params);
 }
   
@@ -121,12 +121,12 @@ export const getAllSesssionAction = async (
  * Creates a review for a tutor
  * @param studentId - The student's ID
  * @param payload - CreateReviewPayload
- * @returns Promise<ApiResponse<StudentReview>>
+ * @returns Promise<TResponse<StudentReview>>
  */
 export const createReviewAction = async (
   studentId: string,
   payload: CreateReviewPayload
-): Promise<ApiResponse<StudentReview>> => {
+): Promise<TResponse<StudentReview>> => {
   return await createReview(studentId, payload);
 };
 
@@ -134,10 +134,10 @@ export const createReviewAction = async (
  * Cancels a booking
  * @param studentId - The student's ID
  * @param bookingId - The booking's ID
- * @returns Promise<ApiResponse<StudentBooking>>
+ * @returns Promise<TResponse<StudentBooking>>
  */
 export const cancelBookingAction = async (
   bookingId: string
-): Promise<ApiResponse<Bookings>> => {
+): Promise<TResponse<Bookings>> => {
   return await cancelBooking( bookingId);
 };

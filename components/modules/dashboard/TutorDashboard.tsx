@@ -29,7 +29,7 @@ export default async function TutorDashboard({
   );
   const{data: pendingBooking, error:pendingBookingError, message: pendingBookingMessage} = await getSessionsAction(profile.tutorProfile.id,{status: BookingStatus.PENDING})
   
-  const pendingBookingData = (pendingBooking.data).flat() || [];
+  const pendingBookingData = (pendingBooking.data) || [];
   const pendingPagination = pendingBooking.pagination;
   const hasPendingBookings = pendingBookingData.length > 0;
 if(!dashboard){

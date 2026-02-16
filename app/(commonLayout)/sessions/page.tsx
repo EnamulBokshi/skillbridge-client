@@ -18,9 +18,15 @@ export default async function Session({searchParams}: {searchParams:Promise<Slot
   if(isFeatured !== undefined) Params.isFeatured = isFeatured ? true : false;
   if(isFree !== undefined) Params.isFree = isFree ? true : false;
 
-  const {data,error} = await getSlotsAction(Params);
+  const {data,error,message} = await getSlotsAction(Params);
   // console.log(data.data)
-  const pagination = data.pagination;
+  console.log({data,error,message});
+  const pagination = data ? data.pagination : {
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+    totalRecords: 0,
+  };
   // console.log({pagination});
   return (
     <div className="min-h-screen">
@@ -113,7 +119,7 @@ export default async function Session({searchParams}: {searchParams:Promise<Slot
       <section className="py-4  px-4 sm:px-6  md:px-20">
         {/* <PublicSlotList /> */}
         <FilterController />
-        <SlotHistory data={data.data}/>
+        <SlotHistory data={data?.data || []}/>
         <PaginationController pagination={pagination}/>
       </section>
 

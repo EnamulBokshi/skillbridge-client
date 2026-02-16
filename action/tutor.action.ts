@@ -92,7 +92,7 @@ export const getTutorReviewsAction = async (tutorId: string) => {
  * GET TUTOR SLOTS
  * Fetches all slots for a tutor
  */
-export const getTutorSlotsAction = async (tutorId: string, params?: SlotSearchParams): Promise<PaginatedResponse<ISlotResponse[]>> => {
+export const getTutorSlotsAction = async (tutorId: string, params?: SlotSearchParams): Promise<PaginatedResponse<ISlotResponse>> => {
   return await tutorService.getTutorSlots(tutorId, params);
 };
 
@@ -105,6 +105,7 @@ export const updateSlotAction = async(slotId:string, payload:Partial<IUpdateSlot
 /**
  * DELETE TUTOR SLOT
  * Deletes a specific slot for a tutor
+ * 
  */
 export const deleteTutorSlotAction = async (
   // tutorId: string,
@@ -136,7 +137,7 @@ export const getAllTutorBookingsAction = async (tutorId: string) => {
   return await tutorService.getAllTutorBookings(tutorId);
 };
 
-export const getSessionsAction = async(tutorId: string, params?: SessionSearchParams): Promise<PaginatedResponse<Bookings[]>> => {
+export const getSessionsAction = async(tutorId: string, params?: SessionSearchParams): Promise<PaginatedResponse<Bookings>> => {
   return await tutorService.getAllSessions(tutorId, params);
 }
 

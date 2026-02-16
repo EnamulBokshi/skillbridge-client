@@ -17,7 +17,12 @@ import {
 } from "@/types/tutor.type";
 import { cookies } from "next/headers";
 import { cancelBooking } from "./student.service";
-import { ISlot, ISlotResponse, IUpdateSlotPayload, SlotSearchParams } from "@/types/slot.type";
+import {
+  ISlot,
+  ISlotResponse,
+  IUpdateSlotPayload,
+  SlotSearchParams,
+} from "@/types/slot.type";
 
 const apiBaseUrl = env.NEXT_PUBLIC_API_URL;
 
@@ -47,7 +52,7 @@ const tutorService = {
       }
 
       const data: ApiResponse<TutorProfile> = await response.json();
-      return { data: data.data, error: null };
+      return { data: data.data, error: null, message: data.message };
     } catch (error: any) {
       console.error("Error creating tutor profile:", error);
       return {
@@ -63,9 +68,10 @@ const tutorService = {
    * Auth: Public
    * Supports pagination, filtering, and sorting
    */
-  getTutors: async (params?: GetTutorsParams): Promise<PaginatedResponse<any>> => {
-   
-
+  getTutors: async (
+    params?: GetTutorsParams,
+  ): Promise<PaginatedResponse<TutorProfile>> => {
+    try {
       const url = new URL(`${apiBaseUrl}/tutors`);
       const paramsUrl = handleParams(url.toString(), params);
       const cookieStore = await cookies();
@@ -78,9 +84,24 @@ const tutorService = {
         next: { tags: ["tutors"] },
       });
 
-     
       return (await response.json()) as PaginatedResponse<any>;
-     
+    } catch (error: any) {
+      console.log(error);
+      return {
+        success: false,
+        data: {
+          data: [],
+          pagination: {
+            page: 1,
+            limit: 1,
+            totalPages: 1,
+            totalRecords: 0,
+          },
+        },
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 
   /**
@@ -325,10 +346,18 @@ const tutorService = {
    * GET /tutors/:tutorId/slots
    * Auth: TUTOR, ADMIN
    */
-  getTutorSlots: async (tutorId: string, params?: SlotSearchParams): Promise<PaginatedResponse<ISlotResponse[]>> => {
-
-    console.log("Fetching tutor slots for tutor ID:", tutorId, "with params:", params);
-    const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/slots`);
+  getTutorSlots: async (
+    tutorId: string,
+    params?: SlotSearchParams,
+  ): Promise<PaginatedResponse<ISlotResponse>> => {
+    try {
+      console.log(
+        "Fetching tutor slots for tutor ID:",
+        tutorId,
+        "with params:",
+        params,
+      );
+      const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/slots`);
       const paramsUrl = handleParams(url.toString(), params);
       console.log("Fetching tutor slots with URL:", paramsUrl);
       const cookieStore = await cookies();
@@ -340,22 +369,49 @@ const tutorService = {
         cache: "no-store",
         next: { tags: [`tutor-slots-${tutorId}`] },
       });
-      return (await response.json()) as PaginatedResponse<ISlotResponse[]>;
-    
+      return (await response.json()) as PaginatedResponse<ISlotResponse>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        success: false,
+        data: {
+          data: [],
+          pagination: {
+            page: 1,
+            limit: 1,
+            totalPages: 1,
+            totalRecords: 0,
+          },
+        },
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 
-  updateTutorSlot: async(slotId: string, payload: IUpdateSlotPayload):Promise<TResponse<ISlotResponse>> => {
-    const cookieStore = await cookies();
-    const response = await fetch(`${apiBaseUrl}/slots/${slotId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
-      body: JSON.stringify(payload),
-    });
-    return (await response.json()) as TResponse<ISlotResponse>;
-
+  updateTutorSlot: async (
+    slotId: string,
+    payload: IUpdateSlotPayload,
+  ): Promise<TResponse<ISlotResponse>> => {
+    try {
+      const cookieStore = await cookies();
+      const response = await fetch(`${apiBaseUrl}/slots/${slotId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(payload),
+      });
+      return (await response.json()) as TResponse<ISlotResponse>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        data: null,
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 
   /**
@@ -363,23 +419,25 @@ const tutorService = {
    * DELETE /tutors/slots/:slotId
    * Auth: TUTOR
    */
-  deleteTutorSlot: async (
-    slotId: string,
-  ): Promise<TResponse<TutorSlot>> => {
-    
+  deleteTutorSlot: async (slotId: string): Promise<TResponse<TutorSlot>> => {
+    try {
       const cookieStore = await cookies();
-      const response = await fetch(
-        `${apiBaseUrl}/tutors/slots/${slotId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Cookie: cookieStore.toString(),
-          },
+      const response = await fetch(`${apiBaseUrl}/tutors/slots/${slotId}`, {
+        method: "DELETE",
+        headers: {
+          Cookie: cookieStore.toString(),
         },
-      );
+      });
 
-    return (await response.json()) as TResponse<TutorSlot>;     
-
+      return (await response.json()) as TResponse<TutorSlot>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        data: null,
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 
   /**
@@ -458,64 +516,111 @@ const tutorService = {
   getAllSessions: async (
     tutorId: string,
     params?: SessionSearchParams,
-  ): Promise<PaginatedResponse<Bookings[]>> => {
-    const cookieStore = await cookies();
-    const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/sessions`);
-    const paramUrl = handleParams(url.toString(), params);
-    console.log("Fetching all sessions (tutor) with URL:", paramUrl);
-    const response = await fetch(paramUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
-      next: { tags: [`tutor-sessions-${tutorId}`] },
-    });
-
-    return (await response.json()) as Promise<PaginatedResponse<Bookings[]>>;
+  ): Promise<PaginatedResponse<Bookings>> => {
+    try {
+      const cookieStore = await cookies();
+      const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/sessions`);
+      const paramUrl = handleParams(url.toString(), params);
+      console.log("Fetching all sessions (tutor) with URL:", paramUrl);
+      const response = await fetch(paramUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+        next: { tags: [`tutor-sessions-${tutorId}`] },
+      });
+  
+      return (await response.json()) as Promise<PaginatedResponse<Bookings>>;
+    } catch (error: any) {
+      console.error("Error fetching all sessions (tutor):", error);
+      return {
+        success: false,
+        error: error.message || "An error occurred while fetching all sessions.",
+        message:
+          error.message || "An error occurred while fetching all sessions.",
+        data: {
+          data: [],
+          pagination: {
+            totalRecords: 0,
+            page: 1,
+            limit: 10,
+            totalPages: 0,
+          },
+        },
+      };
+    }
   },
   cancelBooking: async (bookingId: string): Promise<TResponse<Bookings>> => {
-    const cookieStore = await cookies();
-    const response = await fetch(`${apiBaseUrl}/bookings/${bookingId}/cancel`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
-    });
-    return (await response.json()) as Promise<TResponse<Bookings>>;
+    try {
+      const cookieStore = await cookies();
+      const response = await fetch(
+        `${apiBaseUrl}/bookings/${bookingId}/cancel`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+          },
+        },
+      );
+      return (await response.json()) as Promise<TResponse<Bookings>>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        data: null,
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
   confirmBooking: async (bookingId: string): Promise<TResponse<Bookings>> => {
-    const cookieStore = await cookies();
-    const response = await fetch(
-      `${apiBaseUrl}/bookings/${bookingId}/confirm`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+    try {
+      const cookieStore = await cookies();
+      const response = await fetch(
+        `${apiBaseUrl}/bookings/${bookingId}/confirm`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+          },
         },
-      },
-    );
-    return (await response.json()) as Promise<TResponse<Bookings>>;
+      );
+      return (await response.json()) as Promise<TResponse<Bookings>>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        data: null,
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 
-  markAsCompleted: async (
-    bookingId: string,
-  ): Promise<TResponse<Bookings>> => {
-    const cookieStore = await cookies();
-    const response = await fetch(
-      `${apiBaseUrl}/bookings/${bookingId}/complete`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+  markAsCompleted: async (bookingId: string): Promise<TResponse<Bookings>> => {
+    try {
+      const cookieStore = await cookies();
+      const response = await fetch(
+        `${apiBaseUrl}/bookings/${bookingId}/complete`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: cookieStore.toString(),
+          },
         },
-      },
-    );
-    return (await response.json()) as Promise<TResponse<Bookings>>;
+      );
+      return (await response.json()) as Promise<TResponse<Bookings>>;
+    } catch (error: any) {
+      console.log(error);
+      return {
+        data: null,
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
   },
 };
 

@@ -10,7 +10,7 @@ type SlotPageProps = {
 export default async function SlotPage({ searchParams }: SlotPageProps) {
   const params = await searchParams;
   const {data, error} = await getSlotsAction({...params, orderBy: "desc", sortBy: "createdAt"});
-  const slots = data ? data.data.flat() : [];
+  const slots = data ? data.data : [];
   const pagination = data ? data.pagination : {
     page: 1,
     limit: 10,

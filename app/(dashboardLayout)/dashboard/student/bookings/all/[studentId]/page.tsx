@@ -32,7 +32,7 @@ export default async function StudentAllBookings({
     page,
     limit,
   });
-  const data = (bookings?.data || []).flat();
+  const data = (bookings?.data || []);
   const pagination = bookings?.pagination || {};
 //   console.log("Bookings data:", data);
 //   console.log("Pagination info:", pagination);

@@ -45,8 +45,8 @@ export default async function Slots({ searchParams }: {
   // console.log("Slot Fetch Error:", slotError);
   // console.log("Slot Fetch Message:", message);
 
-  const slots = slotsResponse ? slotsResponse.data.flat() : [];
-  const pagination = slotsResponse ? slotsResponse.pagination : {
+  const slots = slotsResponse ? slotsResponse?.data : [];
+  const pagination = slotsResponse ? slotsResponse?.pagination : {
     page: 1,
     limit: 10,
     totalPages: 1,

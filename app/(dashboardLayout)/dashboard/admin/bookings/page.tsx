@@ -28,7 +28,7 @@ export default async function BookingsAdmin({ searchParams }: BookingProps) {
         {error ? (
           <div className="text-red-500">Error loading bookings: {error}</div>
         ) : (
-          <BookingTable bookings={bookings.data.flat() || []} role={"ADMIN"} />
+          <BookingTable bookings={bookings.data || []} role={"ADMIN"} />
         )}
         <PaginationController pagination={pagination} />
       </div>

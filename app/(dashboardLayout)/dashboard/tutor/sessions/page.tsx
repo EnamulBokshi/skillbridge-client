@@ -33,7 +33,7 @@ console.log("User Profile:", userProfile);
     );
   }
   const {data: sessionsData, message} = await getSessionsAction(tutorId);
-  const allSessions =  ( sessionsData?.data || []).flat() || []; 
+  const allSessions =  ( sessionsData?.data || []) || []; 
   const allSessionPagination = sessionsData?.pagination || null;
   console.log("Sessions data:", sessionsData, message);
 

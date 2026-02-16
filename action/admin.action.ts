@@ -31,6 +31,6 @@ export const getTutorReviewsAction = async (tutorId: string) => {
   return await tutorService.getTutorReviews(tutorId);
 }
 
-export const getBookingsAction = async(params?: BookingSearchParams): Promise<PaginatedResponse<Bookings[]>> => {
+export const getBookingsAction = async(params?: BookingSearchParams): Promise<PaginatedResponse<Bookings>> => {
      return await adminService.getBookings(params);
 }

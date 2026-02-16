@@ -1,5 +1,6 @@
 "use server";
 import { env } from "@/env";
+import { TResponse } from "@/types";
 import { cookies } from "next/headers";
 
 const apiBaseUrl = env.NEXT_PUBLIC_API_URL;
@@ -21,7 +22,7 @@ export interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
   message: string;
-  data: T;
+  data: T|null;
 }
 
 /**
@@ -31,16 +32,32 @@ export interface ApiResponse<T> {
  */
 export const createBooking = async (
   payload: CreateBookingPayload
-): Promise<ApiResponse<BookingResponse>> => {
-  const cookieStore = await cookies();
-  const response = await fetch(`${apiBaseUrl}/bookings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: cookieStore.toString(),
-    },
-    body: JSON.stringify(payload),
-  });
-
-  return (await response.json()) as ApiResponse<BookingResponse>;
+) => {
+  try {
+    const cookieStore = await cookies();
+    const response = await fetch(`${apiBaseUrl}/bookings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+  
+    return {
+      success: true,
+      data,
+      error:null,
+      message: 'Booking created successfully'
+    } ;
+  }  catch (error: any) {
+      console.error("Error creating tutor profile:", error);
+      return {
+        success:false,
+        data: null,
+        error: error,
+        message: 'Booking failed'
+      };
+    }
 };

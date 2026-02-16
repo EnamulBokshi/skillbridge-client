@@ -1,6 +1,7 @@
 "use server";
 
 import { createBooking, CreateBookingPayload, BookingResponse, ApiResponse } from "@/services/booking.service";
+import { TResponse } from "@/types";
 
 /**
  * Creates a new booking
@@ -9,6 +10,6 @@ import { createBooking, CreateBookingPayload, BookingResponse, ApiResponse } fro
  */
 export const createBookingAction = async (
   payload: CreateBookingPayload
-): Promise<ApiResponse<BookingResponse>> => {
+): Promise<TResponse<BookingResponse>> => {
   return await createBooking(payload);
 };

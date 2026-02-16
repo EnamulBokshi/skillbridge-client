@@ -8,6 +8,7 @@ export interface ServiceOption {
 }
 
 export type TResponse<T> = {
+  success?: boolean;
   data: T | null;
   message?: string;
   error: { message: string } | null;

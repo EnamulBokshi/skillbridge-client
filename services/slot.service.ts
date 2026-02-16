@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import handleParams from "@/helper/handleSearchParams";
-import { ServerResponse } from "@/types";
-import { ICreateSlotPayload, SlotSearchParams } from "@/types/slot.type";
+import { PaginatedData, PaginatedResponse, ServerResponse } from "@/types";
+import { ICreateSlotPayload, ISlotResponse, SlotSearchParams } from "@/types/slot.type";
 import { cookies } from "next/headers";
 
 const slotService = {
@@ -28,7 +28,7 @@ const slotService = {
       };
     }
   },
-  getSlots: async(params?: SlotSearchParams) =>{
+  getSlots: async(params?: SlotSearchParams):Promise<PaginatedResponse<ISlotResponse>> => {
     try {
         const cookieStore = await cookies();
         const base = `${env.NEXT_PUBLIC_API_URL}/slots`;
@@ -43,15 +43,25 @@ const slotService = {
             cache: "no-store",
             next: {tags: ['slots']}
         });
-        const result = await response.json();
-        return {data: result.data, pagination: result.pagination, error: result.error, success: result.success, message: result.message};
+        return (await response.json()) as PaginatedResponse<ISlotResponse>;
+        
     } catch (error) {
         console.error("Error fetching slots:", error);
         return {
-            data: null,
+            data: {
+              data:[],
+              pagination: {
+                page: 1,
+                limit: 10,
+                totalRecords: 0,
+                totalPages: 0,
+            }
+            },
             error,
             success: false,
             message: "Failed to fetch slots",
+            
+            
         };
     }
   }

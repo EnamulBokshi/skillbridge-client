@@ -88,47 +88,81 @@ const confirmBooking = async ( bookingId: string) => {
     }
 }
 const getDashboardStats = async():Promise<TResponse<AdminDashboardStats>>=> {
+     try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        return  (await response.json()) as TResponse<AdminDashboardStats>;
+     }  catch (error: any) {
+      console.error("Error creating tutor profile:", error);
+      return {
+        data: null,
+        error: { message: error.message || "Tutor profile creation failed" },
+      };
+    }
+}
+
+const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TResponse<IUser>> => {
+   try {
+     console.log("AdminService: Updating user with ID:", userId, "Payload:", payload);
      const cookieStore = await cookies();
-     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
+     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+         method: "PATCH",
+         headers: {
+             "Content-Type": "application/json",
+             Cookie: cookieStore.toString(),
+         },
+         body: JSON.stringify(payload),
+     });
+     return (await response.json()) as TResponse<IUser>;
+   }  catch (error: any) {
+      console.error("Error creating tutor profile:", error);
+      return {
+        data: null,
+        error: { message: error.message || "Tutor profile creation failed" },
+      };
+    }
+}
+
+const getBookings = async(params?:BookingSearchParams):Promise<PaginatedResponse<Bookings>>=> {
+   try {
+     const cookieStore = await cookies();
+     const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/bookings`);
+     console.log("AdminService: Fetching bookings with params:", params)
+     const paramsUrl = handleParams(url.toString(), params);
+     console.log("Fetching bookings with URL:", paramsUrl);
+     const response = await fetch(paramsUrl, {
          method: "GET",
          headers: {
              "Content-Type": "application/json",
              Cookie: cookieStore.toString(),
          },
+         cache: "no-store",
+         next: { tags: ['bookings'] }
      });
-     return  (await response.json()) as TResponse<AdminDashboardStats>;
-}
-
-const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TResponse<IUser>> => {
-    console.log("AdminService: Updating user with ID:", userId, "Payload:", payload);
-    const cookieStore = await cookies();
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            Cookie: cookieStore.toString(),
+     return (await response.json()) as PaginatedResponse<Bookings>;
+   } catch (error: any) {
+      console.log(error);
+      return {
+        success: false,
+        data: {
+          data: [],
+          pagination: {
+            page: 1,
+            limit: 1,
+            totalPages: 1,
+            totalRecords: 0,
+          },
         },
-        body: JSON.stringify(payload),
-    });
-    return (await response.json()) as TResponse<IUser>;
-}
-
-const getBookings = async(params?:BookingSearchParams):Promise<PaginatedResponse<Bookings[]>>=> {
-    const cookieStore = await cookies();
-    const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/bookings`);
-    console.log("AdminService: Fetching bookings with params:", params)
-    const paramsUrl = handleParams(url.toString(), params);
-    console.log("Fetching bookings with URL:", paramsUrl);
-    const response = await fetch(paramsUrl, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Cookie: cookieStore.toString(),
-        },
-        cache: "no-store",
-        next: { tags: ['bookings'] }
-    });
-    return (await response.json()) as PaginatedResponse<Bookings[]>;
+        error: error,
+        message: error.message || "Failed to get tutors",
+      };
+    }
 }
 export const adminService = {
     getAllUser,
