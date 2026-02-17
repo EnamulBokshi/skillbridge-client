@@ -20,7 +20,7 @@ export default async function DashBoardLayout({
     const {data} = await userServices.getSession();
     const user:IUser = data?.user;
     const userRole = user?.role;
-    // console.log("User  in Layout:", user);
+    console.log("User  in Layout:", user);
     const isAssociate = user?.isAssociate;
     if(userRole !== USER_ROLES.ADMIN && !isAssociate){
         return (

@@ -12,11 +12,12 @@ import { redirect } from "next/navigation";
 export default async function DashboardPage() {
   const { data:userData, error } = await userServices.getSession();
   const user = userData?.user;
+  console.log("User in DashboardPage:", user);
   if(!user){
     return <Loading />
   }
   const {data:profile} = await userServices.getUser(user.id)
- 
+ console.log("Profile in DashboardPage:", profile);
   // console.log(profile)
   if (error || !user || !profile) {
     redirect("/login");
