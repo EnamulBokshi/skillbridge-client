@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 const slotService = {
   createSlot: async (payload: ICreateSlotPayload) => {
     try {
-        const cookieStore = await cookies();
+        const cookieStore = cookies();
         const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/slots`, {
         method: "POST",
         headers: {
@@ -30,7 +30,7 @@ const slotService = {
   },
   getSlots: async(params?: SlotSearchParams):Promise<PaginatedResponse<ISlotResponse>> => {
     try {
-        const cookieStore = await cookies();
+        const cookieStore = cookies();
         const base = `${env.NEXT_PUBLIC_API_URL}/slots`;
         const url = handleParams(base, params);
         console.log("Fetch slots with URL:", url);

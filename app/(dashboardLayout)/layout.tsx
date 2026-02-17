@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { USER_ROLES } from '@/constants';
+import { authClient } from '@/lib/auth-client';
 import { userServices } from '@/services/user.service';
-import { IUser } from '@/types/user.type';
 import Link from 'next/link';
 import React from 'react'
 
@@ -17,12 +17,48 @@ export default async function DashBoardLayout({
 }:{
     children: React.ReactNode
 }) {
-    const {data} = await userServices.getSession();
-    const user:IUser = data?.user;
-    const userRole = user?.role;
+    // const {data} = await userServices.getSession();
+      const session = await authClient.getSession();
+      const user = session.data?.user;
+      const error = session.error;
+
+    // const user:IUser = data?.user;
+    if(error || !user){
+        return (
+            <div>
+                <h1 className='text-center text-2xl font-bold mt-10'>Access Denied</h1>
+                <p className='text-center mt-5'>You do not have permission to access this page.</p>
+                <div className='text-sm text-center mt-2'>You may haven't verified your email or not completed you profile</div>
+                <Button className='mt-5 mx-auto flex justify-center' variant={'outline'}>
+                    <Link href={'/'}>Go Back</Link>
+                </Button>
+            </div>
+        )
+    }
+
+
+    
+  const {data:profile,error:profileError} = await userServices.getUser(user.id)
+
+    if(profileError || !profile){
+        return (
+            <div>
+                <h1 className='text-center text-2xl font-bold mt-10'>Error Loading Profile</h1>
+                <p className='text-center mt-5'>There was an error loading your profile.</p>
+                <Button className='mt-5 mx-auto flex justify-center' variant={'outline'}>
+                    <Link href={'/'}>Go Back</Link>
+                </Button>
+            </div>
+        )
+    }
+
+
+    const userRole = profile?.role;
+    
+
     console.log("User  in Layout:", user);
-    const isAssociate = user?.isAssociate;
-    if(userRole !== USER_ROLES.ADMIN && !isAssociate){
+    const isAssociate = profile?.isAssociate;
+    if(userRole !== USER_ROLES.ADMIN && !isAssociate ){
         return (
             <div>
                 <h1 className='text-center text-2xl font-bold mt-10'>Access Denied</h1>
@@ -37,7 +73,7 @@ export default async function DashBoardLayout({
     
   return (
      <SidebarProvider>
-      <AppSidebar user = {user} variant='inset'/>
+      <AppSidebar user = {profile} variant='inset'/>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />

@@ -6,12 +6,16 @@ import AdminDashboard from "@/components/modules/dashboard/AdminDashboard";
 import StudentDashboard from "@/components/modules/dashboard/StudentDashboard";
 import TutorDashboard from "@/components/modules/dashboard/TutorDashboard";
 import { USER_ROLES } from "@/constants";
+import { authClient } from "@/lib/auth-client";
 import { userServices } from "@/services/user.service";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const { data:userData, error } = await userServices.getSession();
-  const user = userData?.user;
+  // const { data:userData, error } = await userServices.getSession();
+  const session = await authClient.getSession();
+  const user = session.data?.user;
+  const error = session.error;
+  // const user = userData?.user;
   console.log("User in DashboardPage:", user);
   if(!user){
     return <Loading />
@@ -25,7 +29,7 @@ export default async function DashboardPage() {
 
 
   // Role-based rendering
-  switch (user.role) {
+  switch (profile.role) {
     case USER_ROLES.ADMIN:
       return <AdminDashboard profile={profile} />;
     case USER_ROLES.STUDENT:

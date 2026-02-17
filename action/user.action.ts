@@ -15,7 +15,7 @@ export const healthCheck = async() => {
 export const logOutUserAction = async() => {
 
     const res =  await userServices.logout();
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const allCookies = cookieStore.getAll();
     allCookies.forEach(cookie => {
         cookieStore.delete(cookie.name);

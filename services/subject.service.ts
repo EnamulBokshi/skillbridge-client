@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 const subjectService = {
     createSubject: async(data: ISubject)=> {
         try {
-            const cookieStore = await cookies();
+            const cookieStore = cookies();
             const respone = await fetch(`${env.NEXT_PUBLIC_API_URL}/subjects`,{
                 method: 'POST',
                 headers: {
@@ -24,7 +24,7 @@ const subjectService = {
     },
     getSubjects: async()=>{
         try{
-            const cookieStore = await cookies();
+            const cookieStore = cookies();
             const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/subjects`,{
                 method: 'GET',
                 headers: {
