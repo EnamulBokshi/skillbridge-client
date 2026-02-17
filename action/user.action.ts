@@ -8,14 +8,14 @@ export const getUserSession = async()=> {
     }
 
 export const healthCheck = async() => {
-    const res = (await fetch('http://localhost:5000')).json();
+    const res = (await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/health`)).json();
     return res
 }
 
 export const logOutUserAction = async() => {
 
     const res =  await userServices.logout();
-    const cookieStore = cookies();
+    const cookieStore = await await cookies();
     const allCookies = cookieStore.getAll();
     allCookies.forEach(cookie => {
         cookieStore.delete(cookie.name);

@@ -8,7 +8,7 @@ import handleParams from "@/helper/handleSearchParams";
 
 const getAllUser = async (): Promise<PaginatedResponse<IUser>> => {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const respone = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/users`, {
             method: "GET",
             headers: {
@@ -26,7 +26,7 @@ const getAllUser = async (): Promise<PaginatedResponse<IUser>> => {
 
 const cancelBooking = async ( bookingId: string) => {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const response = await fetch(
           `${env.NEXT_PUBLIC_API_URL}/admin/sessions/${bookingId}/cancel`,
           { 
@@ -58,7 +58,7 @@ const cancelBooking = async ( bookingId: string) => {
 
 const confirmBooking = async ( bookingId: string) => {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const response = await fetch(
           `${env.NEXT_PUBLIC_API_URL}/admin/sessions/${bookingId}/confirm`,
           { 
@@ -89,7 +89,7 @@ const confirmBooking = async ( bookingId: string) => {
 }
 const getDashboardStats = async():Promise<TResponse<AdminDashboardStats>>=> {
      try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
             method: "GET",
             headers: {
@@ -110,7 +110,7 @@ const getDashboardStats = async():Promise<TResponse<AdminDashboardStats>>=> {
 const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TResponse<IUser>> => {
    try {
      console.log("AdminService: Updating user with ID:", userId, "Payload:", payload);
-     const cookieStore = cookies();
+     const cookieStore = await cookies();
      const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
          method: "PATCH",
          headers: {
@@ -131,7 +131,7 @@ const updateUser = async (userId: string, payload: Partial<IUser>): Promise<TRes
 
 const getBookings = async(params?:BookingSearchParams):Promise<PaginatedResponse<Bookings>>=> {
    try {
-     const cookieStore = cookies();
+     const cookieStore = await cookies();
      const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/bookings`);
      console.log("AdminService: Fetching bookings with params:", params)
      const paramsUrl = handleParams(url.toString(), params);

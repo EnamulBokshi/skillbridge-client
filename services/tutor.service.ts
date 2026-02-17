@@ -16,9 +16,7 @@ import {
   GetTutorsParams,
 } from "@/types/tutor.type";
 import { cookies } from "next/headers";
-import { cancelBooking } from "./student.service";
 import {
-  ISlot,
   ISlotResponse,
   IUpdateSlotPayload,
   SlotSearchParams,
@@ -36,7 +34,7 @@ const tutorService = {
     tutorData: CreateTutorPayload,
   ): Promise<TResponse<TutorProfile>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors`, {
         method: "POST",
         headers: {
@@ -74,7 +72,7 @@ const tutorService = {
     try {
       const url = new URL(`${apiBaseUrl}/tutors`);
       const paramsUrl = handleParams(url.toString(), params);
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(paramsUrl, {
         method: "GET",
         headers: {
@@ -114,7 +112,7 @@ const tutorService = {
     tutorData: UpdateTutorPayload,
   ): Promise<TResponse<TutorProfile>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}`, {
         method: "PATCH",
         headers: {
@@ -145,7 +143,7 @@ const tutorService = {
   ): Promise<TResponse<TutorDetailedProfile>> => {
     try {
       console.log("Fetching tutor details for tutor ID (service):", tutorId);
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}`, {
         method: "GET",
         headers: {
@@ -173,7 +171,7 @@ const tutorService = {
    */
   deleteTutor: async (tutorId: string): Promise<TResponse<TutorProfile>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}`, {
         method: "DELETE",
         headers: {
@@ -206,7 +204,7 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorStats>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/tutors/${tutorId}/dashboard`,
         {
@@ -237,7 +235,7 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorBooking[]>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/tutors/${tutorId}/upcoming-bookings`,
         {
@@ -277,7 +275,7 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorBooking[]>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/tutors/${tutorId}/completed-bookings`,
         {
@@ -317,7 +315,7 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorReview[]>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}/reviews`, {
         method: "GET",
         headers: {
@@ -360,7 +358,7 @@ const tutorService = {
       const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/slots`);
       const paramsUrl = handleParams(url.toString(), params);
       console.log("Fetching tutor slots with URL:", paramsUrl);
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(paramsUrl, {
         method: "GET",
         headers: {
@@ -394,7 +392,7 @@ const tutorService = {
     payload: IUpdateSlotPayload,
   ): Promise<TResponse<ISlotResponse>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/slots/${slotId}`, {
         method: "PATCH",
         headers: {
@@ -421,7 +419,7 @@ const tutorService = {
    */
   deleteTutorSlot: async (slotId: string): Promise<TResponse<TutorSlot>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/slots/${slotId}`, {
         method: "DELETE",
         headers: {
@@ -451,7 +449,7 @@ const tutorService = {
     statusData: UpdateBookingStatusPayload,
   ): Promise<TResponse<TutorBooking>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/tutors/${tutorId}/bookings/${bookingId}/status`,
         {
@@ -490,7 +488,7 @@ const tutorService = {
     tutorId: string,
   ): Promise<TResponse<TutorBooking[]>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(`${apiBaseUrl}/tutors/${tutorId}/bookings`, {
         method: "GET",
         headers: {
@@ -518,7 +516,7 @@ const tutorService = {
     params?: SessionSearchParams,
   ): Promise<PaginatedResponse<Bookings>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const url = new URL(`${apiBaseUrl}/tutors/${tutorId}/sessions`);
       const paramUrl = handleParams(url.toString(), params);
       console.log("Fetching all sessions (tutor) with URL:", paramUrl);
@@ -554,7 +552,7 @@ const tutorService = {
   },
   cancelBooking: async (bookingId: string): Promise<TResponse<Bookings>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/bookings/${bookingId}/cancel`,
         {
@@ -577,7 +575,7 @@ const tutorService = {
   },
   confirmBooking: async (bookingId: string): Promise<TResponse<Bookings>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/bookings/${bookingId}/confirm`,
         {
@@ -601,7 +599,7 @@ const tutorService = {
 
   markAsCompleted: async (bookingId: string): Promise<TResponse<Bookings>> => {
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const response = await fetch(
         `${apiBaseUrl}/bookings/${bookingId}/complete`,
         {

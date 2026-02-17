@@ -27,7 +27,7 @@ export const createStudent = async (
   payload: CreateStudentPayload,
 ): Promise<TResponse<StudentProfile>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/students`, {
       method: "POST",
       headers: {
@@ -61,7 +61,7 @@ export const getStudentProfile = async (
   studentId: string,
 ): Promise<TResponse<StudentDetailedProfile>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/students/${studentId}`, {
       method: "GET",
       headers: {
@@ -95,7 +95,7 @@ export const updateStudentProfile = async (
   payload: UpdateStudentPayload,
 ): Promise<TResponse<StudentProfile>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/students/${studentId}`, {
       method: "PATCH",
       headers: {
@@ -130,7 +130,7 @@ export const deleteStudentProfile = async (
   studentId: string,
 ): Promise<TResponse<void>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/students/${studentId}`, {
       method: "DELETE",
       headers: {
@@ -164,7 +164,7 @@ export const getStudentStats = async (
   studentId: string,
 ): Promise<TResponse<StudentStats>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/students/${studentId}/stats`, {
       method: "GET",
       headers: {
@@ -191,7 +191,7 @@ export const getCompletedSessions = async (
   studentId: string,
 ): Promise<PaginatedResponse<Bookings>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(
       `${apiBaseUrl}/students/${studentId}/sessions?status=COMPLETED`,
       {
@@ -233,7 +233,7 @@ export const getAllSessions = async (
     const paramUrl = handleParams(url.toString(), params);
     console.log("Fetching all sessions with URL:", paramUrl);
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(paramUrl, {
       method: "GET",
       headers: {
@@ -269,7 +269,7 @@ export const getUpcomingSessions = async (
   studentId: string,
 ): Promise<TResponse<Bookings[]>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(
       `${apiBaseUrl}/students/${studentId}/sessions?status=PENDING,CONFIRMED`,
       {
@@ -300,7 +300,7 @@ export const createReview = async (
   payload: CreateReviewPayload,
 ): Promise<TResponse<StudentReview>> => {
  try {
-   const cookieStore = cookies();
+   const cookieStore = await cookies();
    const response = await fetch(`${apiBaseUrl}/students/${studentId}/review`, {
      method: "POST",
      headers: {
@@ -331,7 +331,7 @@ export const cancelBooking = async (
   bookingId: string,
 ): Promise<TResponse<Bookings>> => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(
       `${apiBaseUrl}/students/sessions/${bookingId}/cancel`,
       {

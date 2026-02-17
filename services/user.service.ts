@@ -6,7 +6,7 @@ import { cookies } from "next/headers"
 export const userServices = {
     getSession: async()=>{
         try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             // const res = await fetch(`${authUrl}/get-session`,{
             //     headers: {
             //         Cookie: cookieStore.toString()
@@ -27,7 +27,7 @@ export const userServices = {
     },
     getUser: async(userId:string):Promise<{data: IUser | null, error: any, message?: string}> => {
         try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/v1/users/${userId}`, {
                 headers: {
                     Cookie: cookieStore.toString()
@@ -46,7 +46,7 @@ export const userServices = {
     },
     logout: async()=>{
         try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/auth/signout`, {
                 method: 'POST',
                 headers: {

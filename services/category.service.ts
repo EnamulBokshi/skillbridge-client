@@ -7,7 +7,7 @@ import { Category } from "@/types/category.type";
 const categoryService = {
     createCategory:async (data: any, options?: ServiceOption) => {
        try {
-         const cookieStore = cookies();
+         const cookieStore = await cookies();
         console.log("Creating category with data:", data);
         const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories`, {
             method: 'POST',
@@ -66,7 +66,7 @@ const categoryService = {
 
     updateCategory: async (data: Partial<Category>): Promise<TResponse<Category | null>> => {
         try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories/${data.id}`,{
                 method: 'PATCH',
                 headers: {
@@ -89,7 +89,7 @@ const categoryService = {
 
     deleteCategory: async(categoryId:string)=>{
         try {
-            const cookieStore = cookies();
+            const cookieStore = await cookies();
             const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/categories/${categoryId}`,{
                 method: 'DELETE',
                 headers: {

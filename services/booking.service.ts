@@ -34,7 +34,7 @@ export const createBooking = async (
   payload: CreateBookingPayload
 ) => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${apiBaseUrl}/bookings`, {
       method: "POST",
       headers: {
