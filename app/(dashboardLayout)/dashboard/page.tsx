@@ -1,5 +1,4 @@
 // app/(dashboardLayout)/page.tsx
-"use server"
 
 import { Loading } from "@/components/common/Loading";
 import AdminDashboard from "@/components/modules/dashboard/AdminDashboard";
@@ -11,10 +10,9 @@ import { userServices } from "@/services/user.service";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  // const { data:userData, error } = await userServices.getSession();
-  const session = await authClient.getSession();
-  const user = session.data?.user;
-  const error = session.error;
+  const { data:userData, error } = await userServices.getSession();
+  // const session = await authClient.getSession();
+  const user = userData?.user;
   // const user = userData?.user;
   console.log("User in DashboardPage:", user);
   if(!user){
