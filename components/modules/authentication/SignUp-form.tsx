@@ -37,6 +37,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     
     if(data) {
       toast.success("Google sign-up successful!!", {id: loading});
+      router.refresh();
       router.push("/");
     }
     

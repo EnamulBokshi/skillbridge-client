@@ -24,17 +24,23 @@ import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 import { env } from "@/env";
+import { useRouter } from "next/navigation";
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8, "At least 8 character required!!"),
 });
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+  
+  const router = useRouter();
+  
   const handleGoogleLogin = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
       callbackURL: env.NEXT_PUBLIC_APP_URL,
     });
   };
+
+
 
   const form = useForm({
     defaultValues: {
@@ -47,16 +53,25 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Please wait, signing in...");
      
-        const { data, error } = await authClient.signIn.email(value);
-        
-
-        if (error) {
-          toast.error(error.message, { id: loading });
-          return;
+        try {
+          const { data, error } = await authClient.signIn.email(value);
+          
+  
+          if (error) {
+            toast.error(error.message, { id: loading });
+            return;
+          }
+  
+          toast.success("Login successful!!", { id: loading });
+          router.refresh();
+          router.push("/");
+        } catch (error) {
+          toast.error("An unexpected error occurred during login.", { id: loading });
+          console.error("Login error:", error);
         }
-
-        toast.success("Login successful!!", { id: loading });
-        redirect("/");
+        finally{
+          toast.dismiss(loading);
+        }
       
     },
   });
