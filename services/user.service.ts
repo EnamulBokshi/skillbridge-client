@@ -7,14 +7,15 @@ export const userServices = {
     getSession: async()=>{
         try {
             const cookieStore = await cookies();
-            // const res = await fetch(`${authUrl}/get-session`,{
-            //     headers: {
-            //         Cookie: cookieStore.toString()
-            //     },
-            //     cache: "no-store",
+            const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/auth/get-session`,{
+                headers: {
+                    Cookie: cookieStore.toString()
+                },
+                cache: "no-store",
 
-            // });
-            const session = await authClient.getSession();
+            });
+            // const session = await authClient.getSession();
+            const session = await res.json();
             if(!session){
                 return {data: null, error: {message: 'No active session found'}};
             }
