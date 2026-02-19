@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
-import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 import { env } from "@/env";
