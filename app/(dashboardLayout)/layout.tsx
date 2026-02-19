@@ -17,10 +17,11 @@ export default async function DashBoardLayout({
 }:{
     children: React.ReactNode
 }) {
-    // const {data} = await userServices.getSession();
-      const session = await authClient.getSession();
-      const user = session.data?.user;
-      const error = session.error;
+    const {data} = await userServices.getSession();
+      // const session = await authClient.getSession();
+      const user = data?.user;
+      const error = data?.error;
+      console.log("Session in Layout:", data);
 
     // const user:IUser = data?.user;
     if(error || !user){
