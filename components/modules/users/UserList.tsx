@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
 import { IUser } from "@/types/user.type";
 import { UserCard } from "./UserCard";
+import React from "react";
+import { Button } from "@/components/ui/button";
 import EditUserForm from "./EditUserForm";
 import { toast } from "sonner";
 import { updateUserAction } from "@/action/admin.action";
 import { useConfirm } from "../common/ConfirmDialog";
-import { Button } from "@/components/ui/button";
 
 import {
   Dialog,
@@ -19,25 +19,13 @@ import {
 } from "@/components/ui/dialog";
 
 export default function UserList({ users }: { users: IUser[] }) {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editingUser, setEditingUser] = React.useState<IUser | null>(null);
   const { confirm } = useConfirm();
 
-  const [userList, setUserList] = React.useState<IUser[]>(users);
-  const [editingUser, setEditingUser] = React.useState<IUser | null>(null);
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [loadingId, setLoadingId] = React.useState<string | null>(null);
-
   const onClose = () => {
-    setEditingUser(null);
     setIsEditing(false);
-  };
-
-  // Optimistic Update Helper
-  const updateUserOptimistic = (userId: string, updates: Partial<IUser>) => {
-    setUserList((prev) =>
-      prev.map((user) =>
-        user.id === userId ? { ...user, ...updates } : user
-      )
-    );
+    setEditingUser(null);
   };
 
   const handleAction = async (
@@ -53,33 +41,21 @@ export default function UserList({ users }: { users: IUser[] }) {
 
     if (!ok) return;
 
-    const previousUsers = [...userList];
-
-    // Optimistic Update
-    updateUserOptimistic(userId, { status });
-
-    setLoadingId(userId);
     const loadingToast = toast.loading(`${actionText} user...`);
 
-    try {
-      const { error, message } = await updateUserAction(userId, { status });
+    const { error, message } = await updateUserAction(userId, {
+      status,
+    });
 
-      toast.dismiss(loadingToast);
+    toast.dismiss(loadingToast);
 
-      if (error) {
-        setUserList(previousUsers);
-        toast.error(message || `Failed to ${actionText.toLowerCase()} user`);
-        return;
-      }
-
-      toast.success(message || `User ${actionText.toLowerCase()} successfully`);
-    } catch (err) {
-      setUserList(previousUsers);
-      toast.dismiss(loadingToast);
-      toast.error("Something went wrong");
+    if (error) {
+      toast.error(message || `Failed to ${actionText.toLowerCase()} user`);
+      return;
     }
 
-    setLoadingId(null);
+    toast.success(message || `User ${actionText.toLowerCase()} successfully`);
+    window.location.reload();
   };
 
   return (
@@ -87,7 +63,7 @@ export default function UserList({ users }: { users: IUser[] }) {
       <h2 className="text-xl font-semibold mb-4">User List</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {userList.map((user) => (
+        {users.map((user) => (
           <UserCard
             key={user.id}
             user={user}
@@ -102,9 +78,9 @@ export default function UserList({ users }: { users: IUser[] }) {
         ))}
       </div>
 
-      {/* Edit User Modal */}
+      {/* Proper Center Modal */}
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
-        <DialogContent className="sm:max-w-lg rounded-2xl">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
             <DialogDescription>
@@ -118,11 +94,6 @@ export default function UserList({ users }: { users: IUser[] }) {
               role={editingUser.role}
               userId={editingUser.id}
               onClose={onClose}
-              // onSuccess={(updatedUser: IUser) => {
-              //   updateUserOptimistic(updatedUser.id, updatedUser);
-              //   toast.success("User updated successfully");
-              //   onClose();
-              // }}
             />
           )}
 
