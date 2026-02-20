@@ -1,119 +1,93 @@
 "use client";
+
+import React from "react";
 import { IUser } from "@/types/user.type";
 import { UserCard } from "./UserCard";
+import EditUserForm from "./EditUserForm";
+import { toast } from "sonner";
+import { updateUserAction } from "@/action/admin.action";
+import { useConfirm } from "../common/ConfirmDialog";
+import { Button } from "@/components/ui/button";
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import EditUserForm from "./EditUserForm";
-import { toast } from "sonner";
-
-import { updateUserAction } from "@/action/admin.action";
-import { useConfirm } from "../common/ConfirmDialog";
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
 
 export default function UserList({ users }: { users: IUser[] }) {
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [editingUser, setEditingUser] = React.useState<IUser | null>(null);
   const { confirm } = useConfirm();
+
+  const [userList, setUserList] = React.useState<IUser[]>(users);
+  const [editingUser, setEditingUser] = React.useState<IUser | null>(null);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [loadingId, setLoadingId] = React.useState<string | null>(null);
+
   const onClose = () => {
-    setIsEditing(false);
     setEditingUser(null);
+    setIsEditing(false);
   };
 
-  const onDelete = async (userId: string) => {
-    const ok = confirm({
-      title: "Delete User",
-      description:
-        "Are you sure you want to delete this user? This action cannot be undone.",
-      confirmText: "Delete",
-    });
-    if (!ok) {
-      return;
-    }
-    const reOk = confirm({
-      title: "Confirm Deletion",
-      description:
-        "This is your last chance to cancel. Do you really want to delete this user?",
-      confirmText: "Yes, Delete",
-    });
-    if (!reOk) {
-      return;
-    }
-    const loadingToast = toast.loading("Deleting user...");
-    const { data, error, message } = await updateUserAction(userId, {
-      status: "INACTIVE",
-    });
-    if (!error) {
-      toast.success(message || "User deleted successfully");
-      onClose();
-    }
-    toast.error(message || "Failed to delete user. Please try again.");
-    toast.dismiss(loadingToast);
-    onClose();
-    window.location.reload();
+  // Optimistic Update Helper
+  const updateUserOptimistic = (userId: string, updates: Partial<IUser>) => {
+    setUserList((prev) =>
+      prev.map((user) =>
+        user.id === userId ? { ...user, ...updates } : user
+      )
+    );
   };
-  const onBan = async (userId: string) => {
-    const ok = await confirm({
-      title: "Ban User",
-      description:
-        "Are you sure you want to ban this user? This action can be undone from the user details page.",
-      confirmText: "Ban",
-    });
-    // const reOk = confirm({
-    //   title: "Confirm Ban",
-    //   description: "Do you really want to ban this user?",
-    //   confirmText: "Yes, Ban",
-    // });
-    // if (!reOk) {
-    //   return;
-    // }
 
-    if (ok) {
-      const loadingToast = toast.loading("Processing...");
-      const { data, error, message } = await updateUserAction(userId, {
-        status: "BANNED",
-      });
-      if (!error) {
-        toast.success(message || "User banned successfully");
-        onClose();
-      }
-      toast.error(message || "Failed to ban user. Please try again.");
-      toast.dismiss(loadingToast);
-      onClose();
-      window.location.reload();
-    }
-  };
-  const onUnban = async (userId: string) => {
+  const handleAction = async (
+    userId: string,
+    status: "ACTIVE" | "BANNED" | "INACTIVE",
+    actionText: string
+  ) => {
     const ok = await confirm({
-      title: "Unban User",
-      description: "Are you sure you want to unban this user?",
-      confirmText: "Unban",
+      title: `${actionText} User`,
+      description: `Are you sure you want to ${actionText.toLowerCase()} this user?`,
+      confirmText: actionText,
     });
-    if (ok) {
-      const loadingToast = toast.loading("Unbanning user...");
-      const { data, error, message } = await updateUserAction(userId, {
-        status: "ACTIVE",
-      });
-      if (!error) {
-        toast.success(message || "User unbanned successfully");
-        onClose();
-      }
-      toast.error(message || "Failed to unban user. Please try again.");
+
+    if (!ok) return;
+
+    const previousUsers = [...userList];
+
+    // Optimistic Update
+    updateUserOptimistic(userId, { status });
+
+    setLoadingId(userId);
+    const loadingToast = toast.loading(`${actionText} user...`);
+
+    try {
+      const { error, message } = await updateUserAction(userId, { status });
+
       toast.dismiss(loadingToast);
-      onClose();
-      window.location.reload();
+
+      if (error) {
+        setUserList(previousUsers);
+        toast.error(message || `Failed to ${actionText.toLowerCase()} user`);
+        return;
+      }
+
+      toast.success(message || `User ${actionText.toLowerCase()} successfully`);
+    } catch (err) {
+      setUserList(previousUsers);
+      toast.dismiss(loadingToast);
+      toast.error("Something went wrong");
     }
+
+    setLoadingId(null);
   };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">User List</h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {users.map((user) => (
+        {userList.map((user) => (
           <UserCard
             key={user.id}
             user={user}
@@ -121,42 +95,44 @@ export default function UserList({ users }: { users: IUser[] }) {
               setEditingUser(user);
               setIsEditing(true);
             }}
-            onDelete={onDelete}
-            onBan={onBan}
-            onUnban={onUnban}
+            onDelete={(id) => handleAction(id, "INACTIVE", "Delete")}
+            onBan={(id) => handleAction(id, "BANNED", "Ban")}
+            onUnban={(id) => handleAction(id, "ACTIVE", "Unban")}
           />
         ))}
       </div>
 
-      <div className="fixed bottom-4 right-4">
-        <Dialog open={isEditing} onOpenChange={setIsEditing}>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-              <DialogDescription>
-                Update the details of your user.
-              </DialogDescription>
-            </DialogHeader>
+      {/* Edit User Modal */}
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+        <DialogContent className="sm:max-w-lg rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
+              Update user information below.
+            </DialogDescription>
+          </DialogHeader>
 
-            {editingUser && (
-              <div className="py-2">
-                <EditUserForm
-                  initialValues={editingUser}
-                  role={editingUser.role}
-                  userId={editingUser.id}
-                  onClose={onClose}
-                />
-              </div>
-            )}
+          {editingUser && (
+            <EditUserForm
+              initialValues={editingUser}
+              role={editingUser.role}
+              userId={editingUser.id}
+              onClose={onClose}
+              // onSuccess={(updatedUser: IUser) => {
+              //   updateUserOptimistic(updatedUser.id, updatedUser);
+              //   toast.success("User updated successfully");
+              //   onClose();
+              // }}
+            />
+          )}
 
-            <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
-                Cancel
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
