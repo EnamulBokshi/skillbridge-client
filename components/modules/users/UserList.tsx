@@ -31,7 +31,7 @@ export default function UserList({ users }: { users: IUser[] }) {
   const handleAction = async (
     userId: string,
     status: "ACTIVE" | "BANNED" | "INACTIVE",
-    actionText: string
+    actionText: string,
   ) => {
     const ok = await confirm({
       title: `${actionText} User`,
@@ -79,31 +79,35 @@ export default function UserList({ users }: { users: IUser[] }) {
       </div>
 
       {/* Proper Center Modal */}
-      <Dialog open={isEditing} onOpenChange={setIsEditing}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription>
-              Update user information below.
-            </DialogDescription>
-          </DialogHeader>
+      {isEditing && (
+        <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose}>
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Edit User</DialogTitle>
+                <DialogDescription>
+                  Update user information below.
+                </DialogDescription>
+              </DialogHeader>
 
-          {editingUser && (
-            <EditUserForm
-              initialValues={editingUser}
-              role={editingUser.role}
-              userId={editingUser.id}
-              onClose={onClose}
-            />
-          )}
+              {editingUser && (
+                <EditUserForm
+                  initialValues={editingUser}
+                  role={editingUser.role}
+                  userId={editingUser.id}
+                  onClose={onClose}
+                />
+              )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
     </div>
   );
 }
