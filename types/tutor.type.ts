@@ -189,6 +189,18 @@ export interface TutorReview {
   bookingId: string;
   createdAt: string;
   updatedAt: string;
+  student: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        profilePicture: string | null;
+    };
+    tutor: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        profilePicture: string | null;
+    };
 }
 
 export interface TutorSlot {

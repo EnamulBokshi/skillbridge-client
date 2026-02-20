@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { USER_ROLES } from '@/constants';
-import { authClient } from '@/lib/auth-client';
 import { userServices } from '@/services/user.service';
 import Link from 'next/link';
 import React from 'react'

@@ -322,14 +322,7 @@ const tutorService = {
           Cookie: cookieStore.toString(),
         },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch tutor reviews");
-      }
-
-      const data: ApiResponse<TutorReview[]> = await response.json();
-      return { data: data.data, error: null };
+      return (await response.json()) as TResponse<TutorReview[]>;
     } catch (error: any) {
       console.error("Error fetching tutor reviews:", error);
       return {

@@ -1,4 +1,4 @@
-import { Bot, CalendarCheck, DatabaseZap, GalleryThumbnailsIcon, Settings2, SquareArrowDownLeft, SquareArrowOutUpRight, SquareTerminal, UserRoundPen } from "lucide-react";
+import { Bot, CalendarCheck, DatabaseZap, GalleryThumbnailsIcon, Settings2, SquareArrowDownLeft, SquareArrowOutUpRight, SquareTerminal, UserRoundPen, ViewIcon } from "lucide-react";
 
 export const tutorRoutes = [
     {
@@ -12,16 +12,21 @@ export const tutorRoutes = [
           url: "/dashboard/tutor/slots",
           icon: CalendarCheck ,
         },
-        {
-          title: "Analytics",
-          url: "/dashboard/tutor/analytics",
-          icon: DatabaseZap 
-        },
+        // {
+        //   title: "Analytics",
+        //   url: "/dashboard/tutor/analytics",
+        //   icon: DatabaseZap 
+        // },
         {
           title: "Sessions",
           url: "/dashboard/tutor/sessions",
           icon: GalleryThumbnailsIcon,
         },
+        {
+          title: "Reviews",
+          url: "/dashboard/tutor/reviews",
+          icon: ViewIcon,
+        }
       ],
     },
     {
