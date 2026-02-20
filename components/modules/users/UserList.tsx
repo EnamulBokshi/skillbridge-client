@@ -82,7 +82,7 @@ export default function UserList({ users }: { users: IUser[] }) {
       {isEditing && (
         <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose}>
           <Dialog open={isEditing} onOpenChange={setIsEditing}>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent className="sm:max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
               <DialogHeader>
                 <DialogTitle>Edit User</DialogTitle>
                 <DialogDescription>
