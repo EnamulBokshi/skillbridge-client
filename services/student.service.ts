@@ -271,7 +271,7 @@ export const getUpcomingSessions = async (
   try {
     const cookieStore = await cookies();
     const response = await fetch(
-      `${apiBaseUrl}/students/${studentId}/sessions?status=CONFIRMED`,
+      `${apiBaseUrl}/students/${studentId}/sessions?status=PENDING,CONFIRMED`,
       {
         method: "GET",
         headers: {

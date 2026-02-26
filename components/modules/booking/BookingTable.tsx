@@ -418,7 +418,7 @@ export default function BookingTable({
           <Dialog open={showReviewForm} onOpenChange={setShowReviewForm} >
             <DialogContent className="sm:max-w-lg p-4 rounded-md border backdrop-blur-sm" >
               <DialogHeader>
-                <DialogTitle >How was your session?</DialogTitle>
+                <DialogTitle >How was the tutor?</DialogTitle>
                 <DialogDescription>
                   Please provide your feedback for the tutor.
                 </DialogDescription>
