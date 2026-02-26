@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Label } from "@/components/ui/label";
 import { BookingStatus } from "@/types/student.type";
 import { USER_ROLES } from "@/constants";
+import { UserStatus } from "@/types/user.type";
 
 export default function UserFilterController() {
   const router = useRouter();
@@ -140,10 +141,10 @@ export default function UserFilterController() {
                         </SelectTrigger>
                         <SelectContent align="start" className="bg-background ">
                             <SelectGroup>
-                                <SelectItem value = {BookingStatus.CANCELLED}>{BookingStatus.CANCELLED}</SelectItem>
-                                <SelectItem value = {BookingStatus.COMPLETED}>{BookingStatus.COMPLETED}</SelectItem>
-                                <SelectItem value = {BookingStatus.CONFIRMED}>{BookingStatus.CONFIRMED}</SelectItem>
-                                <SelectItem value = {BookingStatus.PENDING}>{BookingStatus.PENDING}</SelectItem>
+                                
+                                <SelectItem value={UserStatus.ACTIVE}>{UserStatus.ACTIVE}</SelectItem>
+                                <SelectItem value={UserStatus.BAN}>{UserStatus.BAN}</SelectItem>
+                                <SelectItem value={UserStatus.INACTIVE}>{UserStatus.INACTIVE}</SelectItem>
                             </SelectGroup>
                             </SelectContent>
                     </Select>

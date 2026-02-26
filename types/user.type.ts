@@ -49,11 +49,14 @@ export interface UpdateUserPayload {
     image: string | null;
 }
 
-
-
-
 export interface UserFilterParams {
     role?: string;
     status?: string;
     search?: string;
+}
+
+export enum UserStatus{
+    ACTIVE="ACTIVE",
+    BAN='BAN',
+    INACTIVE='INACTIVE'
 }
