@@ -2,7 +2,7 @@
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { Field, FieldGroup, FieldLabel } from "../ui/field";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "../ui/card";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { createReviewAction } from "@/action/student.action";
@@ -68,6 +68,9 @@ export default function WriteReview({
       <Card>
       <CardHeader>
         <h2 className="text-xl font-semibold mb-4">Write a Review</h2>
+        <CardDescription>
+          Tell us, how was your session?
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form

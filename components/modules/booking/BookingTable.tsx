@@ -417,12 +417,12 @@ export default function BookingTable({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Dialog open={showReviewForm} onOpenChange={setShowReviewForm} >
             <DialogContent className="sm:max-w-lg p-4 rounded-md" >
-              <DialogHeader>
+              {/* <DialogHeader>
                 <DialogTitle >How was your session?</DialogTitle>
                 <DialogDescription>
                   Please provide your feedback for the tutor.
                 </DialogDescription>
-              </DialogHeader>
+              </DialogHeader> */}
 
               {showReviewForm && (
                 <div className="py-2">

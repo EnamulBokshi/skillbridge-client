@@ -11,8 +11,6 @@ import Link from "next/dist/client/link";
 export default async function SessionPage() {
   const {data: userSession, error} = await getUserSession()
   const user = userSession?.user;
-  // const session = await authClient.getSession();
-  // const user = session.data?.user;
   console.log("User in SessionPage:", user);
   if(error || !user){
     return (
@@ -50,15 +48,6 @@ console.log("User Profile:", userProfile);
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">My Sessions</h1>
-      {/* <div>
-              <BookingTableFilterController />
-              <BookingTable
-                bookings={allSessions}
-                caption="All bookings you have engaged so far!"
-                role="TUTOR"
-              />
-              <PaginationController pagination={allSessionPagination} />
-            </div> */}
       <section className="rounded-lg border bg-background shadow-sm">
         <div className="p-4 border-b">
           <h2 className="text-xl font-semibold">

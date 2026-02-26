@@ -66,17 +66,6 @@ export default async function BookingsStudent() {
 
         <div className="p-4">
           {!upcomingsSessions || upcomingsSessions.length === 0 ? (
-            // <div className="text-center py-10 space-y-2">
-            //   <p className="text-muted-foreground">
-            //     You have no upcoming sessions.
-            //   </p>
-            //   <Link
-            //     href="/slots"
-            //     className="inline-block text-primary underline underline-offset-4"
-            //   >
-            //     Explore available sessions
-            //   </Link>
-            // </div>
               <EmptyState title="No upcoming sessions"  caption="Your booked sessions will appear here once you book them!"/>
           ) : (
             <BookingTable
