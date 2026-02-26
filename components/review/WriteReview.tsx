@@ -69,7 +69,7 @@ export default function WriteReview({
       <CardHeader>
         <h2 className="text-xl font-semibold mb-4">Write a Review</h2>
         <CardDescription>
-          Tell us, how was your session?
+          Tell us, how was the tutor?
         </CardDescription>
       </CardHeader>
       <CardContent>
