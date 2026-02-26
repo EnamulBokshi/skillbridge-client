@@ -78,12 +78,13 @@ export default function UserList({ users }: { users: IUser[] }) {
         ))}
       </div>
 
-      {/* Proper Center Modal */}
-      {isEditing && editingUser && (
+      {/* Edit User Modal */}
+      {editingUser && (
         <EditUserForm
           initialValues={editingUser}
           role={editingUser.role}
           userId={editingUser.id}
+          open={isEditing}
           onClose={onClose}
         />
       )}

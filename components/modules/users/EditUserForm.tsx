@@ -1,13 +1,13 @@
 import { updateUserAction } from "@/action/admin.action";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Field,
   FieldError,
@@ -46,12 +46,14 @@ export default function EditUserForm({
   initialValues,
   userId,
   role,
+  open,
   onClose,
 }: {
   initialValues: IUser;
   userId: string;
   role: USER_ROLES;
-  onClose?: () => void;
+  open: boolean;
+  onClose: () => void;
 }) {
   const form = useForm({
     defaultValues: {
@@ -84,15 +86,16 @@ export default function EditUserForm({
   });
 
   {
-    return (
-      <Card className="max-w-2xl mx-auto shadow-lg">
-        <CardHeader>
-          <CardTitle>Edit User</CardTitle>
-          <CardDescription>
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Edit User</DialogTitle>
+          <DialogDescription>
             Enter your information below to update the user details
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </DialogDescription>
+        </DialogHeader>
+        <div>
           <form
             id="edit-user-form"
             onSubmit={(e) => {
@@ -273,13 +276,26 @@ export default function EditUserForm({
               />
             </FieldGroup>
           </form>
-        </CardContent>
-        <CardFooter className="flex flex-col">
-          <Button type="submit" form="edit-user-form" className="w-full">
+        </div>
+        <DialogFooter className="flex gap-2 sm:gap-0">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onClose}
+            className="w-full sm:w-auto"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            form="edit-user-form" 
+            className="w-full sm:w-auto"
+          >
             Update
           </Button>
-        </CardFooter>
-      </Card>
-    );
-  }
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 }
