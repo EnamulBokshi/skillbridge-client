@@ -360,7 +360,7 @@ export default function BookingTable({
                     </Button>
                   </>
                 )}
-                {(role === 'TUTOR' || role === "ADMIN") && booking.status === BookingStatus.CONFIRMED} && (
+                {(role === 'TUTOR' || role === "ADMIN") && booking.status === BookingStatus.CONFIRMED && (
                   <Button
                       className="ml-auto mr-2 bg-cyan-700"
                       size="sm"
@@ -370,6 +370,7 @@ export default function BookingTable({
                       Mark as completed
                     </Button>
                 )
+              }
               </TableHead>
             </TableRow>
           ))}
