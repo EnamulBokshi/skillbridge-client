@@ -54,7 +54,7 @@ export default async function ProfilePage() {
       <div className="rounded-lg border bg-background shadow-sm">
         <div className="p-6 flex flex-col md:flex-row gap-6">
           {/* Avatar */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <img
               src={
                 studentProfile.profilePicture ||

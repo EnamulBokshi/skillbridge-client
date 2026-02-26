@@ -1,4 +1,4 @@
-import { cancelBookingAction, getSessionsAction, markAsCompletedAction } from "@/action/tutor.action";
+import {getSessionsAction } from "@/action/tutor.action";
 import { getUserSession } from "@/action/user.action"
 import BookingTable from "@/components/modules/booking/BookingTable";
 import BookingTableFilterController from "@/components/ui/filter-controller-simple";

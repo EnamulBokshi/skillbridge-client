@@ -4,7 +4,6 @@ import HomeSlotList from '@/components/modules/slot/HomeSlotList';
 import FeaturedTutorsHero from '@/components/modules/tutors/FeaturedTutorsHero';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import React from 'react';
 
 export default async function Home() {
   return (

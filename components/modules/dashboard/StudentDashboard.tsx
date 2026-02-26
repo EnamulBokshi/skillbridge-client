@@ -1,11 +1,9 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getStudentStats } from "@/services/student.service";
-import { UserProfileType } from "@/types";
-import { SlotCard } from "../slot";
+import { IUser } from "@/types/user.type";
 import { dateFormatter, calculateDuration } from "@/helper/dateFormatter";
 import { Badge } from "@/components/ui/badge";
 import { currencyFormatter } from "@/helper/currencyFormatter";
-import { IUser } from "@/types/user.type";
 
 export default async function StudentDashboard({
   profile,
@@ -15,98 +13,136 @@ export default async function StudentDashboard({
   if (!profile) {
     return <div>Loading...</div>;
   }
-  const { data: stats, error } = await getStudentStats(
-    profile?.student?.id as string,
+
+  const { data: stats } = await getStudentStats(
+    profile?.student?.id as string
   );
-  // const slot = stats?.latestBooking?.slot;
 
-
-  // console.log({ stats, error });
   return (
-    <div className="p-4 ">
-      <h1 className="text-2xl font-bold">
-        Welcome to Student Dashboard, {profile.name}!
-      </h1>
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Your Stats:</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div className="p-4 bg-white rounded shadow">
-            <h3 className="text-lg font-medium">Total sessions:</h3>
-            <p className="text-2xl font-bold">{stats?.totalBookings || 0}</p>
-          </div>
-          <div className="p-4 bg-white rounded shadow">
-            <h3 className="text-lg font-medium">Upcoming Sessions:</h3>
-            <p className="text-2xl font-bold">
-              {stats?.totalUpcomingBookings || 0}
-            </p>
-          </div>
-          <div className="p-4 bg-white rounded shadow">
-            <h3 className="text-lg font-medium">Completed Sessions:</h3>
-            <p className="text-2xl font-bold">
-              {stats?.totalCompletedBookings || 0}
-            </p>
-          </div>
-        </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Welcome back, {profile.name} 👋
+        </h1>
+        <p className="text-muted-foreground">
+          Here’s a quick overview of your tutoring activity
+        </p>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold">Latest bookings:</h2>
-        {!stats?.latestBooking && (
-          <p className="text-muted-foreground">No bookings yet.</p>
+      {/* Stats */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">Your Stats</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="transition hover:shadow-md">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Sessions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">
+                {stats?.totalBookings || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="transition hover:shadow-md">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Upcoming Sessions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">
+                {stats?.totalUpcomingBookings || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="transition hover:shadow-md">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Completed Sessions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">
+                {stats?.totalCompletedBookings || 0}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Latest Bookings */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">Latest Bookings</h2>
+
+        {!stats?.latestBooking?.length && (
+          <Card>
+            <CardContent className="py-10 text-center text-muted-foreground">
+              No bookings yet.
+            </CardContent>
+          </Card>
         )}
-        {stats?.latestBooking &&
-          // <SlotCard slot={stats?.latestBooking} editable={false} />
-          stats.latestBooking.map((bookings) => (
-            <Card className="mt-4" key={bookings.id}>
-              <div className="p-5 space-y-4">
+
+        <div className="space-y-4">
+          {stats?.latestBooking?.map((booking) => (
+            <Card
+              key={booking.id}
+              className="transition hover:shadow-md border"
+            >
+              <CardContent className="p-6 space-y-5">
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold leading-tight">
+                    <h3 className="text-lg font-semibold">
                       Session with{" "}
                       <span className="text-primary">
-                        {bookings.slot.tutorProfile.firstName}{" "}
-                        {bookings.slot.tutorProfile.lastName}
+                        {booking.slot.tutorProfile.firstName}{" "}
+                        {booking.slot.tutorProfile.lastName}
                       </span>
                     </h3>
+
                     <p className="text-sm text-muted-foreground">
-                      Upcoming tutoring session
+                      Tutoring Session
                     </p>
                   </div>
 
                   <Badge
                     variant="outline"
-                    className="capitalize whitespace-nowrap"
+                    className="capitalize"
                   >
-                    {bookings.status}
+                    {booking.status}
                   </Badge>
                 </div>
 
-                {/* Divider */}
-                <div className="h-px bg-border" />
+                <div className="border-t" />
 
                 {/* Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Date</p>
                     <p className="font-medium">
-                      {dateFormatter(bookings.slot.date)}
+                      {dateFormatter(booking.slot.date)}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-muted-foreground">Time</p>
                     <p className="font-medium">
-                      {new Date(bookings.slot.startTime).toLocaleTimeString(
-                        [],
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      )}{" "}
-                      –{" "}
-                      {new Date(bookings.slot.endTime).toLocaleTimeString([], {
+                      {new Date(
+                        booking.slot.startTime
+                      ).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                      {" – "}
+                      {new Date(
+                        booking.slot.endTime
+                      ).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -117,8 +153,8 @@ export default async function StudentDashboard({
                     <p className="text-muted-foreground">Duration</p>
                     <p className="font-medium">
                       {calculateDuration(
-                        bookings.slot.startTime,
-                        bookings.slot.endTime,
+                        booking.slot.startTime,
+                        booking.slot.endTime
                       )}
                     </p>
                   </div>
@@ -126,14 +162,17 @@ export default async function StudentDashboard({
                   <div>
                     <p className="text-muted-foreground">Price</p>
                     <p className="font-semibold text-primary">
-                      {currencyFormatter(bookings.slot.slotPrice)}
+                      {currencyFormatter(
+                        booking.slot.slotPrice
+                      )}
                     </p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
             </Card>
           ))}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
