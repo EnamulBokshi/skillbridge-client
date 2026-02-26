@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { BookingStatus } from "@/types/student.type";
 import { USER_ROLES } from "@/constants";
 
-export default function BookingTableFilterController() {
+export default function UserFilterController() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
