@@ -3,14 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Star } from "lucide-react";
-import { Select, SelectTrigger } from "../ui/select";
-import {
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectValue,
-} from "@radix-ui/react-select";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { createReviewAction } from "@/action/student.action";

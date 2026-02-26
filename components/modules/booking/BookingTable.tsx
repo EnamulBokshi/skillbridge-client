@@ -416,7 +416,7 @@ export default function BookingTable({
       {showReviewForm && reviewData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Dialog open={showReviewForm} onOpenChange={setShowReviewForm} >
-            <DialogContent className="sm:max-w-lg bg-white p-4 rounded-md" >
+            <DialogContent className="sm:max-w-lg p-4 rounded-md" >
               <DialogHeader>
                 <DialogTitle >How was your session?</DialogTitle>
                 <DialogDescription>

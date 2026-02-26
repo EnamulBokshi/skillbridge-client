@@ -34,8 +34,9 @@ export default async function BookingsStudent() {
 
 
 
-  const { data: upcomingsSessions } =
+  const { data: upcomingsSessions } = 
     await getUpcomingSessionsAction(userProfile?.student?.id!);
+  
 
     console.log("Upcoming sessions data:", upcomingsSessions);
   const { data: completedSessions } =
