@@ -59,7 +59,7 @@ export default function SubjectsTable({
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/40">
-            <TableHead className="w-[240px]">Subject</TableHead>
+            <TableHead className="w-60">Subject</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Slug</TableHead>
             <TableHead className="text-center">Credits</TableHead>

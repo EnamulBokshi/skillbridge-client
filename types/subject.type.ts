@@ -4,7 +4,9 @@ export interface ISubject{
     categoryId: string;
     slug: string;
     description: string;
+    isActive?: boolean;
 }
+
 
 export interface OSubject {
     id :string;

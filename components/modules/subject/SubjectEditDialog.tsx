@@ -37,7 +37,7 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { SubjectWithCategory } from "@/types/subject.type";
+import { OSubject, SubjectWithCategory } from "@/types/subject.type";
 import { Category } from "@/types/category.type";
 import { useState, useEffect } from "react";
 import generateSlug from "@/helper/generateSlug";
@@ -55,7 +55,7 @@ interface SubjectEditDialogProps {
   subject: SubjectWithCategory | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpdate: (subject: SubjectWithCategory) => Promise<void>;
+  onUpdate: (subject: OSubject) => Promise<void>;
 }
 
 export function SubjectEditDialog({
@@ -65,7 +65,7 @@ export function SubjectEditDialog({
   onUpdate,
 }: SubjectEditDialogProps) {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [pendingValues, setPendingValues] = useState<SubjectWithCategory | null>(null);
+  const [pendingValues, setPendingValues] = useState<OSubject | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
@@ -82,7 +82,7 @@ export function SubjectEditDialog({
     },
     onSubmit: async ({ value }) => {
       // Store the pending values and show confirmation dialog
-      setPendingValues({ ...subject, ...value, category: categories.find(cat => cat.id === value.categoryId) } as SubjectWithCategory);
+      setPendingValues({ ...subject, ...value, category: categories.find(cat => cat.id === value.categoryId) } as OSubject);
       setShowConfirmDialog(true);
     },
   });

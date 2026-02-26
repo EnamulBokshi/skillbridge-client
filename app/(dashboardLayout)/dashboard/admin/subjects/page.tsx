@@ -1,8 +1,7 @@
 import { getSubjectsAction } from '@/action/subject.action';
 import { SubjectForm } from '@/components/modules/subject/CreateSubjectForm';
 import { SubjectTableWrapper } from '@/components/modules/subject/SubjectTableWrapper';
-import { SubjectWithCategory } from '@/types/subject.type';
-import React from 'react';
+
 
 export default async function SubjectsPageAdmin() {
   const { data, error } = await getSubjectsAction();
