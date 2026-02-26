@@ -3,18 +3,16 @@ import { getUserSession } from "@/action/user.action"
 import BookingTable from "@/components/modules/booking/BookingTable";
 import BookingTableFilterController from "@/components/ui/filter-controller-simple";
 import { PaginationController } from "@/components/ui/pagination-controller";
-import { authClient } from "@/lib/auth-client";
+
 import { userServices } from "@/services/user.service";
-import { BookingStatus } from "@/types/tutor.type";
 import Link from "next/dist/client/link";
 
 
 export default async function SessionPage() {
-  // const {data: userSession} = await getUserSession()
-  // const user = userSession?.user;
-  const session = await authClient.getSession();
-  const user = session.data?.user;
-  const error = session.error;
+  const {data: userSession, error} = await getUserSession()
+  const user = userSession?.user;
+  // const session = await authClient.getSession();
+  // const user = session.data?.user;
   console.log("User in SessionPage:", user);
   if(error || !user){
     return (
