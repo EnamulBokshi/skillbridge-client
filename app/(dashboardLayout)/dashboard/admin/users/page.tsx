@@ -18,7 +18,7 @@ export default async function UserPage({searchParams}:UserPageProps) {
   return (
     <div>
       <h1 className='text-2xl font-bold mb-4'>All Users</h1>
-      <div className='w-full bg-white  dark:bg-background rounded-lg shadow-md p-6'>
+      <div className='w-full  rounded-lg shadow-md p-6'>
         <UserFilterController />
         {data && <UserList users={data.data} />}
         {!data && <p className='text-gray-500'>No users found.</p>}
