@@ -5,10 +5,10 @@ import { tutorService } from "@/services/tutor.service";
 import { PaginatedResponse, TResponse } from "@/types";
 import { AdminDashboardStats } from "@/types/admin-dashboard.type";
 import { Bookings, BookingSearchParams } from "@/types/bookings.type";
-import { IUser } from "@/types/user.type";
+import { IUser, UserFilterParams } from "@/types/user.type";
 
-export const getAllUserAction = async (): Promise<PaginatedResponse<IUser>> => {
-    return await adminService.getAllUser();
+export const getAllUserAction = async (params?:UserFilterParams): Promise<PaginatedResponse<IUser>> => {
+    return await adminService.getAllUser(params);
 }
 
 export const cancelBookingAction = async ( bookingId: string) => {
