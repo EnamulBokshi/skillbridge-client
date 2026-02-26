@@ -24,6 +24,8 @@ import {
 } from "./select";
 import { OSubject } from "@/types/subject.type";
 
+
+
 export default function FilterController() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,8 +38,8 @@ export default function FilterController() {
   /* -------------------- Filter State -------------------- */
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<{
-    isFree?: string;
-    isFeatured?: string;
+    isFree?: boolean | undefined| string;
+    isFeatured?: boolean | undefined | string;
     date?: string;
     startDate?: string;
     endDate?: string;
@@ -58,7 +60,7 @@ export default function FilterController() {
     setSearch(searchParams.get("search") || "");
 
     setFilters({
-      isFree: searchParams.get("isFree") || undefined,
+      isFree: (searchParams.get("isFree")) || undefined,
       isFeatured: searchParams.get("isFeatured") || undefined,
       date: searchParams.get("date") || undefined,
       startDate: searchParams.get("startDate") || undefined,
@@ -86,14 +88,19 @@ export default function FilterController() {
     updateParams({ search });
   };
 
-  const handleFilterChange = (key: keyof typeof filters, value?: string) => {
+  const handleFilterChange = (key: keyof typeof filters, value?: string | boolean) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const applyFilters = () => {
     updateParams({
       search,
-      ...filters,
+      isFree: filters.isFree === undefined ? undefined : String(filters.isFree),
+      isFeatured: filters.isFeatured === undefined ? undefined : String(filters.isFeatured),
+      date: filters.date,
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+      subjectId: filters.subjectId,
     });
   };
 
@@ -218,6 +225,69 @@ export default function FilterController() {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {/* Is Featured */}
+              <div className="space-y-2">
+                <Label>Featured</Label>
+                <Select
+                  value={
+                    filters.isFeatured === undefined
+                      ? "all"
+                      : filters.isFeatured
+                      ? "true"
+                      : "false"
+                  }
+                  onValueChange={(value) =>
+                    handleFilterChange(
+                      "isFeatured",
+                      value === "all" ? undefined : value === "true"
+                    )
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="true">Featured</SelectItem>
+                    <SelectItem value="false">Not Featured</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Is Free */}
+              {/* Is Free */}
+              <div className="space-y-2">
+                <Label>Free Slots</Label>
+                <Select
+                  value={
+                    filters.isFree === undefined
+                      ? "all"
+                      : filters.isFree
+                      ? "true"
+                      : "false"
+                  }
+                  onValueChange={(value) =>
+                    handleFilterChange(
+                      "isFree",
+                      value === "all" ? undefined : value === "true"
+                    )
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="true">Free</SelectItem>
+                    <SelectItem value="false">Paid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div> 
+
+              
+
+
             </div>
 
             {/* Actions */}

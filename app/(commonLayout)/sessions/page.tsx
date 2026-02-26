@@ -1,13 +1,35 @@
 import { getSlotsAction } from '@/action/slot.action';
 import SlotHistory from '@/components/layout/SlotHistory';
-import { PublicSlotList } from '@/components/modules/slot'
+import { SlotFilters } from '@/components/modules/slot';
 import FilterController from '@/components/ui/filter-controller';
 import { PaginationController } from '@/components/ui/pagination-controller';
 import { SlotSearchParams } from '@/types/slot.type';
-import React from 'react'
 
 export default async function Session({searchParams}: {searchParams:Promise<SlotSearchParams>}) {
   const {tutorId,page,limit,search,isFeatured, isFree, subjectId} = await searchParams;
+  // const onSearchChange = async (searchTerm: string) => {
+  //   const query = new URLSearchParams({ search: searchTerm }).toString();
+    
+  //     router.push(`/dashboard/admin/slots?${query}`);
+
+    
+  //   console.log("Search term changed: ", searchTerm);
+  // };
+
+
+// const onFilterChange = async (filters: SlotSearchParams) => {
+//     const query = new URLSearchParams(
+//       filters as Record<string, string>,
+//     ).toString();
+//     if(role === "TUTOR"){
+//       router.push(`/dashboard/tutor/slots?${query}`);
+//     }
+//     if(role === "ADMIN"){
+//       router.push(`/dashboard/admin/slots?${query}`);
+//     }
+//     console.log("Filters changed: ", filters);
+//   };
+
   const Params: SlotSearchParams = { }
   Params.isBookable = true;
   if(tutorId) Params.tutorId = tutorId;
@@ -119,6 +141,7 @@ export default async function Session({searchParams}: {searchParams:Promise<Slot
       <section className="py-4  px-4 sm:px-6  md:px-20">
         {/* <PublicSlotList /> */}
         <FilterController />
+        {/* <SlotFilters /> */}
         <SlotHistory data={data?.data || []}/>
         <PaginationController pagination={pagination}/>
       </section>

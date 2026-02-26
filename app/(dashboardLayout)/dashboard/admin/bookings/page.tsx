@@ -1,6 +1,5 @@
 import { getBookingsAction } from "@/action/admin.action";
 import BookingTable from "@/components/modules/booking/BookingTable";
-import FilterController from "@/components/ui/filter-controller";
 import BookingTableFilterController from "@/components/ui/filter-controller-simple";
 import { PaginationController } from "@/components/ui/pagination-controller";
 import { BookingSearchParams } from "@/types/bookings.type";

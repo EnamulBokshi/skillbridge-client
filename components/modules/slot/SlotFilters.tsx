@@ -31,6 +31,8 @@ interface SlotFiltersProps {
   initialFilters?: SlotSearchParams;
 }
 
+
+
 export function SlotFilters({
   onFilterChange,
   onSearchChange,
