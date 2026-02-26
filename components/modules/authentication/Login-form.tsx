@@ -35,7 +35,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleGoogleLogin = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: 'https://skillbridge-client-dusky.vercel.app',
+      callbackURL: 'https://skillbridge-client-dusky.vercel.app/dashboard',
     });
   };
 
