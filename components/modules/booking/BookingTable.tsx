@@ -1,6 +1,6 @@
 "use client";
 
-import { cancelBookingAction } from "@/action/tutor.action";
+import { cancelBookingAction, markAsCompletedAction } from "@/action/tutor.action";
 import { confirmBookingAction } from "@/action/tutor.action";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,17 +34,16 @@ export default function BookingTable({
   bookings,
   caption,
   role,
-  handleSessionComplete,
-  
   isBulkData = false,
 }: {
   bookings: Bookings[];
   caption?: string;
   role: "STUDENT" | "TUTOR" | "ADMIN";
-  handleSessionComplete?: (bookingId: string) => void;
   handleApprove?: (bookingId: string) => void;
   isBulkData?: boolean;
 }) {
+
+
   // console.log("Received bookings in BookingTable:", bookings);
   const { confirm } = useConfirm();
   const [currentPage, setCurrentPage] = useState(1);
@@ -222,6 +221,31 @@ export default function BookingTable({
     setReviewData({ tutorId, studentId });
     setShowReviewForm(true);
   };
+
+
+    const handleSessionComplete = async (bookingId: string) => {
+      
+      const ok = confirm({
+        title: "Are sure want to mark this session as completed?",
+        description: "This action can't be undone",
+        destructive: false,
+        confirmText: "Yes, mark as completed"
+      })
+      if(!ok) {
+        return null;
+      }
+      const loadingToast = toast.loading("Marking session as completed...");
+      const {data, error, message} = await markAsCompletedAction(bookingId) ;
+      console.log(`Mark session as completed for booking ID: ${bookingId}`, data, error, message);
+      if(error){
+        toast.error(message, {id: loadingToast});
+      } else {
+        toast.success(message, {id: loadingToast});
+      }
+      toast.dismiss(loadingToast);
+    
+  };
+
   return (
     <div className="space-y-3">
       <Table>
@@ -336,6 +360,16 @@ export default function BookingTable({
                     </Button>
                   </>
                 )}
+                {(role === 'TUTOR' || role === "ADMIN") && booking.status === BookingStatus.CONFIRMED} && (
+                  <Button
+                      className="ml-auto mr-2 bg-cyan-700"
+                      size="sm"
+                      variant="default"
+                      onClick={() => handleSessionComplete(booking.id)}
+                    >
+                      Mark as completed
+                    </Button>
+                )
               </TableHead>
             </TableRow>
           ))}

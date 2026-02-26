@@ -7,7 +7,6 @@ import { authClient } from "@/lib/auth-client";
 import { userServices } from "@/services/user.service";
 import { BookingStatus } from "@/types/tutor.type";
 import Link from "next/dist/client/link";
-import { toast } from "sonner";
 
 
 export default async function SessionPage() {
@@ -50,20 +49,6 @@ console.log("User Profile:", userProfile);
   const allSessionPagination = sessionsData?.pagination || null;
   console.log("Sessions data:", sessionsData, message);
 
-    const handleSessionComplete = async (bookingId: string) => {
-      "use server"
-    
-      // const loadingToast = toast.loading("Marking session as completed...");
-      const {data, error, message} = await markAsCompletedAction(bookingId) ;
-      console.log(`Mark session as completed for booking ID: ${bookingId}`, data, error, message);
-      // if(error){
-      //   toast.error(message, {id: loadingToast});
-      // } else {
-      //   toast.success(message, {id: loadingToast});
-      // }
-      // toast.dismiss(loadingToast);
-    
-  };
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">My Sessions</h1>
@@ -106,7 +91,6 @@ console.log("User Profile:", userProfile);
               bookings={allSessions}
               caption="All bookings you were engaged so far!"
               role="TUTOR"
-              handleSessionComplete={handleSessionComplete}
             />
             <div className="mt-4">
               <PaginationController pagination={allSessionPagination} />

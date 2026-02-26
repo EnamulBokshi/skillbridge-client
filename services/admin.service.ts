@@ -1,15 +1,19 @@
-import { ApiResponse, PaginatedResponse, TResponse } from "@/types";
+import { PaginatedResponse, TResponse } from "@/types";
 import { cookies } from "next/headers";
 import { env } from "@/env";
-import { IUser } from "@/types/user.type";
+import { IUser, UserFilterParams } from "@/types/user.type";
 import { AdminDashboardStats } from "@/types/admin-dashboard.type";
 import { Bookings, BookingSearchParams } from "@/types/bookings.type";
 import handleParams from "@/helper/handleSearchParams";
 
-const getAllUser = async (): Promise<PaginatedResponse<IUser>> => {
+const getAllUser = async (params?: UserFilterParams): Promise<PaginatedResponse<IUser>> => {
     try {
+`${env.NEXT_PUBLIC_API_URL}/admin/users`
         const cookieStore = await cookies();
-        const respone = await fetch(`${env.NEXT_PUBLIC_API_URL}/admin/users`, {
+
+        const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/users`);
+        const paramUrl = handleParams(url.toString(), params)
+        const respone = await fetch(paramUrl, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
