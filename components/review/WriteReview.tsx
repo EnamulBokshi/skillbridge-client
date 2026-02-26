@@ -68,9 +68,9 @@ export default function WriteReview({
       <Card>
       <CardHeader>
         <h2 className="text-xl font-semibold mb-4">Write a Review</h2>
-        <CardDescription>
+        {/* <CardDescription>
           Tell us, how was the tutor?
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <CardContent>
         <form
