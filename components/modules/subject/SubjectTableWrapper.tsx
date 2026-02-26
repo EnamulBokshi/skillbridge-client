@@ -18,8 +18,6 @@ export function SubjectTableWrapper({ subjects }: SubjectTableWrapperProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const router = useRouter();
 
-  const {confirm} =  useConfirm();
-
   const handleEdit = (subject: SubjectWithCategory) => {
     setEditingSubject(subject);
     setIsEditDialogOpen(true);
@@ -27,13 +25,13 @@ export function SubjectTableWrapper({ subjects }: SubjectTableWrapperProps) {
 
   const handleUpdate = async (updatedSubject: OSubject) => {
 
-    const ok = await confirm({
-      title: "Confirm Update",
-      description: "Are you sure you want to update this subject?",
-      confirmText: "Yes, Update",
-      cancelText: "Cancel",
-    })
-    if(!ok) return;
+    // const ok = await confirm({
+    //   title: "Confirm Update",
+    //   description: "Are you sure you want to update this subject?",
+    //   confirmText: "Yes, Update",
+    //   cancelText: "Cancel",
+    // })
+    // if(!ok) return;
 
     const loading = toast.loading("Updating subject...");
 
@@ -57,20 +55,20 @@ export function SubjectTableWrapper({ subjects }: SubjectTableWrapperProps) {
 
   const handleDelete = async (subjectId: string) => {
 
-    const ok = await confirm({
-      title: "Confirm Deletion",
-      description: "Are you sure you want to delete this subject? This action cannot be undone.",
-      confirmText: "Yes, Delete",
-      cancelText: "Cancel",
-    })
-    if(!ok) return;
+    // const ok = await confirm({
+    //   title: "Confirm Deletion",
+    //   description: "Are you sure you want to delete this subject? This action cannot be undone.",
+    //   confirmText: "Yes, Delete",
+    //   cancelText: "Cancel",
+    // })
+    // if(!ok) return;
 
     const loading = toast.loading("Deleting subject...");
     
     try {
       await deleteSubjectAction(subjectId);
       
-      // console.log("Delete subject:", subjectId);
+      console.log("Delete subject:", subjectId);
       toast.success("Subject deleted successfully", { id: loading });
       router.refresh();
     } catch (error) {
