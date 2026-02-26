@@ -10,7 +10,7 @@ export default async function Home() {
     <div className="min-h-screen">
       <BookingSuccessToast />
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative overflow-hidden bg-linear-to-br from-primary/5 via-background to-secondary/5">
         {/* Background Decorative Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />

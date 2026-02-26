@@ -184,7 +184,7 @@ export default function PaymentClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
+          <div className="flex items-center justify-between p-4 bg-white rounded-lg border dark:text-black">
             <span className="font-semibold">Session Fee</span>
             <span className="text-2xl font-bold">
               ${slot.isFree ? "0.00" : slot.slotPrice.toFixed(2)}
