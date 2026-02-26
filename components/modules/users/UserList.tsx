@@ -79,34 +79,13 @@ export default function UserList({ users }: { users: IUser[] }) {
       </div>
 
       {/* Proper Center Modal */}
-      {isEditing && (
-        <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose}>
-          <Dialog open={isEditing} onOpenChange={setIsEditing}>
-            <DialogContent className="sm:max-w-lg w-full ">
-              <DialogHeader>
-                <DialogTitle>Edit User</DialogTitle>
-                <DialogDescription>
-                  Update user information below.
-                </DialogDescription>
-              </DialogHeader>
-
-              {editingUser && (
-                <EditUserForm
-                  initialValues={editingUser}
-                  role={editingUser.role}
-                  userId={editingUser.id}
-                  onClose={onClose}
-                />
-              )}
-
-              <DialogFooter>
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+      {isEditing && editingUser && (
+        <EditUserForm
+          initialValues={editingUser}
+          role={editingUser.role}
+          userId={editingUser.id}
+          onClose={onClose}
+        />
       )}
     </div>
   );

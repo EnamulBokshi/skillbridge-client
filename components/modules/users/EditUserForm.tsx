@@ -28,8 +28,6 @@ import {
   SelectValue,
 } from "@radix-ui/react-select";
 import { useForm } from "@tanstack/react-form";
-import { redirect } from "next/dist/client/components/navigation";
-import React from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 const formSchema = z.object({
