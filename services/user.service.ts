@@ -52,7 +52,8 @@ export const userServices = {
                 method: 'POST',
                 headers: {
                     Cookie: cookieStore.toString()
-                }
+                },
+                credentials: "include"
             });
             // Clear cookies
             // const cookies = (cookieStore).getAll();

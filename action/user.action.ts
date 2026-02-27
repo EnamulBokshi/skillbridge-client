@@ -25,6 +25,9 @@ export const logOutUserAction = async() => {
     return res;
 }
 
+import { authClient } from "@/lib/auth-client";
+
+
 export const getUserAction = async(userId: string): Promise<{data: IUser | null, error: any, message?: string}> => {
     return await userServices.getUser(userId);
 }
