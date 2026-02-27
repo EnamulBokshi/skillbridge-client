@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggler";
-import logoutUser from "@/helper/logout";
 import { useConfirm } from "../modules/common/ConfirmDialog";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -90,7 +89,6 @@ const Navbar = ({
   isLoggedIn = false,
   isAssociate = false,
 }: Navbar1Props) => {
-  const logoutUser = async () => {};
 
   const { confirm } = useConfirm();
   const handleLogout = async () => {
@@ -226,6 +224,7 @@ const Navbar = ({
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
+
                   {/* complete registration button-mobile */}
                   {renderTheCompleteRegistrationButton && (
                     <Link href={"/complete-registration"}>

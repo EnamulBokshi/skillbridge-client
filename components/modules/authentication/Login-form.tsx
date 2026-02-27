@@ -62,8 +62,8 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           }
   
           toast.success("Login successful!!", { id: loading });
-          router.refresh();
-          router.push("/");
+          // router.refresh();
+          window.location.href = '/';
         } catch (error) {
           toast.error("An unexpected error occurred during login.", { id: loading });
           console.error("Login error:", error);
