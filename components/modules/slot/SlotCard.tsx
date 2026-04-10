@@ -71,8 +71,8 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
       {/* Featured Badge */}
       {slot.isFeatured && (
         <div className="absolute top-2 right-2 z-10">
-          <Badge className="bg-linear-to-r from-yellow-500 to-orange-500 text-white">
-            <Star className="w-3 h-3 mr-1 fill-white" />
+          <Badge className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Star className="w-3 h-3 mr-1 fill-accent-foreground" />
             Featured
           </Badge>
         </div>
@@ -136,7 +136,7 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
         {/* Price & Status */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-600" />
+            <DollarSign className="w-5 h-5 text-secondary" />
             <span className="text-2xl font-bold">
               {slot.isFree ? (
                 <Badge variant="outline" className="text-lg">
@@ -152,7 +152,7 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
           {slot.isBooked ? (
             <Badge variant="secondary">Booked</Badge>
           ) : (
-            <Badge className="bg-green-500 hover:bg-green-600">
+            <Badge className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
               Available
             </Badge>
           )}

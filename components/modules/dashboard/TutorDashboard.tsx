@@ -10,6 +10,9 @@ import { Loading } from "@/components/common/Loading";
 import { toast } from "sonner";
 import EmptyState from "@/components/ui/EmptyState";
 import { IUser } from "@/types/user.type";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Bot } from "lucide-react";
 
 export default async function TutorDashboard({
   profile,
@@ -77,6 +80,24 @@ if(!dashboard){
           highlight
         />
       </div>
+
+      <Card className="border border-border bg-linear-to-r from-primary/10 via-background to-secondary/10">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Bot className="h-5 w-5 text-primary" />
+            AI Assistant Workspace
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Use SkillBridge AI to quickly answer platform queries and preview tutor recommendations.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <Button asChild>
+            <Link href="/dashboard/tutor/ai">Open AI Assistant</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       <section className="rounded-lg border bg-background shadow-sm">
         <div className="p-4 border-b">
           <h2 className="text-xl font-semibold">

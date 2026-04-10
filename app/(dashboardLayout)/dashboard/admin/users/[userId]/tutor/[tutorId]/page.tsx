@@ -35,7 +35,7 @@ export default async function TutorProfileEdit({
   }
   if (!data) {
     return (
-      <div className="text-center text-gray-500">Tutor profile not found.</div>
+      <div className="text-center text-muted-foreground">Tutor profile not found.</div>
     );
   }
   const payload: Partial<TutorProfile> = {
@@ -61,7 +61,7 @@ export default async function TutorProfileEdit({
             <BackButton/>
       
       <h1 className="text-2xl font-bold mb-4">Edit Tutor Profile</h1>
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-card text-card-foreground border border-border rounded-xl shadow-sm p-6">
         <TutorProfileUpdateForm tutorProfile={payload} userId={data.userId} isAdmin={true} />
       </div>
     </div>

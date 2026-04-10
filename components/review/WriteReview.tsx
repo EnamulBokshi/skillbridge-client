@@ -90,7 +90,7 @@ export default function WriteReview({
                 return (
                   <Field>
                     <FieldLabel>
-                      Rating <span className="text-red-500">*</span>
+                      Rating <span className="text-accent">*</span>
                     </FieldLabel>
 
                     <StarRating

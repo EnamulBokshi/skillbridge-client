@@ -133,8 +133,8 @@ export default async function ProfilePage() {
               <span
                 className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
                   studentProfile.user?.status === 'ACTIVE'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-700'
+                    ? 'bg-secondary/15 text-secondary'
+                    : 'bg-muted text-muted-foreground'
                 }`}
               >
                 {studentProfile.user?.status || 'N/A'}

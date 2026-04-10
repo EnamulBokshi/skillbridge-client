@@ -83,11 +83,11 @@ export default function PaymentClient({
   if (isConfirmed) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-        <div className="rounded-full bg-green-100 p-6">
-          <CheckCircle2 className="h-16 w-16 text-green-600" />
+        <div className="rounded-full bg-secondary/15 p-6">
+          <CheckCircle2 className="h-16 w-16 text-secondary" />
         </div>
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-green-600">
+          <h1 className="text-3xl font-bold text-secondary">
             Booking Confirmed!
           </h1>
           <p className="text-muted-foreground text-lg">
@@ -147,7 +147,7 @@ export default function PaymentClient({
                   {tutor.experienceYears} years exp
                 </Badge>
                 <div className="flex items-center gap-1 text-sm">
-                  <span className="text-yellow-500">★</span>
+                  <span className="text-accent">★</span>
                   <span>{tutor.avgRating || "N/A"}</span>
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function PaymentClient({
         </CardContent>
       </Card>
 
-      <Card className="border-blue-200 bg-blue-50/50">
+      <Card className="border-secondary/30 bg-secondary/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <HandCoins className="h-5 w-5" />
@@ -184,21 +184,21 @@ export default function PaymentClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-white rounded-lg border dark:text-black">
+          <div className="flex items-center justify-between p-4 bg-card text-card-foreground rounded-lg border border-border">
             <span className="font-semibold">Session Fee</span>
             <span className="text-2xl font-bold">
               ${slot.isFree ? "0.00" : slot.slotPrice.toFixed(2)}
             </span>
           </div>
 
-          <div className="space-y-2 p-4 bg-amber-50 rounded-lg border border-amber-200">
+          <div className="space-y-2 p-4 bg-accent/15 rounded-lg border border-accent/40">
             <div className="flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-accent mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium text-amber-900">
+                <p className="font-medium text-accent-foreground">
                   Payment Collection Method
                 </p>
-                <p className="text-sm text-amber-800 mt-1">
+                <p className="text-sm text-accent-foreground/90 mt-1">
                   Payment will be collected physically at the time of the
                   session. Please bring the exact amount or arrange payment
                   directly with your tutor.
@@ -208,8 +208,8 @@ export default function PaymentClient({
           </div>
 
           {slot.isFree && (
-            <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-sm text-green-800 font-medium">
+            <div className="p-3 bg-secondary/10 rounded-lg border border-secondary/30">
+              <p className="text-sm text-secondary font-medium">
                 ✓ This is a free session - No payment required
               </p>
             </div>

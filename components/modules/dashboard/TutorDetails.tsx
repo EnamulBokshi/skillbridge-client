@@ -25,7 +25,7 @@ console.log("Tutor details fetched: ", tutor, error, message);
 
     if(error || !tutor) {
       console.error("Error fetching tutor details: ", message);
-        return <div className="text-center text-gray-500">Failed to load tutor details.</div>
+        return <div className="text-center text-muted-foreground">Failed to load tutor details.</div>
     }
     // console.log("Tutor details: ", tutor);
   return (
@@ -77,7 +77,7 @@ console.log("Tutor details fetched: ", tutor, error, message);
               {/* Rating & Stats */}
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-5 w-5 fill-accent text-accent" />
                   <span className="font-semibold text-lg">
                     {tutor.avgRating.toFixed(1)}
                   </span>

@@ -217,7 +217,7 @@ export function Footer() {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Made with</span>
               <svg
-                className="w-4 h-4 text-red-500"
+                className="w-4 h-4 text-accent"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >

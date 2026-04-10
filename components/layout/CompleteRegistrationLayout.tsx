@@ -18,7 +18,7 @@ export default function CompleteRegistrationLayout() {
             <CardContent className='mt-4'>
                 <div>
                  <strong>I am registering as a:</strong>
-                    <div className='mt-2 mb-4 text-sm text-gray-600'>
+                    <div className='mt-2 mb-4 text-sm text-muted-foreground'>
                         Please select whether you are signing up as a student looking for courses or a tutor offering courses.
                     </div>
                      <div className='flex flex-col gap-4'>

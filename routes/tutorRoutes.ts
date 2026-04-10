@@ -39,6 +39,11 @@ export const tutorRoutes = [
           url: "/dashboard/tutor/profile",
           icon: UserRoundPen,
         },
+        {
+          title: "AI Assistant",
+          url: "/dashboard/tutor/ai",
+          icon: Bot,
+        },
       ],
     },
 ]

@@ -29,7 +29,7 @@ export default async function StudentDetails({studentId}:{studentId: string}) {
       <div className="rounded-lg border bg-background shadow-sm">
         <div className="p-6 flex flex-col md:flex-row gap-6">
           {/* Avatar */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <img
               src={
                 studentProfile.profilePicture ||
@@ -108,8 +108,8 @@ export default async function StudentDetails({studentId}:{studentId: string}) {
               <span
                 className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
                   studentProfile.user?.status === 'ACTIVE'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-700'
+                    ? 'bg-secondary/15 text-secondary'
+                    : 'bg-muted text-muted-foreground'
                 }`}
               >
                 {studentProfile.user?.status || 'N/A'}

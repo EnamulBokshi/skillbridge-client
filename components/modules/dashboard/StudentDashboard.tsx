@@ -4,6 +4,9 @@ import { IUser } from "@/types/user.type";
 import { dateFormatter, calculateDuration } from "@/helper/dateFormatter";
 import { Badge } from "@/components/ui/badge";
 import { currencyFormatter } from "@/helper/currencyFormatter";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Bot } from "lucide-react";
 
 export default async function StudentDashboard({
   profile,
@@ -74,6 +77,25 @@ export default async function StudentDashboard({
             </CardContent>
           </Card>
         </div>
+      </section>
+
+      <section>
+        <Card className="border border-border bg-linear-to-r from-primary/10 via-background to-secondary/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Bot className="h-5 w-5 text-primary" />
+              AI Study Assistant
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Ask SkillBridge AI about tutors, slots, bookings, and get smart recommendations.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/dashboard/student/ai">Open AI Assistant</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Latest Bookings */}

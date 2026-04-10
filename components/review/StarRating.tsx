@@ -36,7 +36,7 @@ function StarRating({
               <Star
                 className={`h-7 w-7 ${
                   active
-                    ? "fill-yellow-400 text-yellow-400"
+                    ? "fill-accent text-accent"
                     : "text-muted-foreground"
                 }`}
               />

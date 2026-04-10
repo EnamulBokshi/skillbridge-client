@@ -53,7 +53,7 @@ export default async function FeaturedTutorsHero() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           { tutorsList?.map((tutor: TutorProfile) => (
             <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
-              <Card className="group overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm hover:-translate-y-1 h-full dark:bg-background dark:shadow-destructive">
+              <Card className="group overflow-hidden border border-border shadow-md hover:shadow-2xl transition-all duration-500 bg-card/90 backdrop-blur-sm hover:-translate-y-1 h-full">
                 {/* IMAGE SECTION */}
                 <div className="relative w-full h-72 overflow-hidden">
                   <Avatar className="h-full w-full rounded-none">
@@ -71,9 +71,9 @@ export default async function FeaturedTutorsHero() {
                   </Avatar>
 
                   {/* Rating Overlay */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 dark:text-violet-600 dark:fill-violet-600" />
-                    <span className="font-semibold text-sm dark:text-violet-600">
+                  <div className="absolute top-4 right-4 bg-background/90 border border-border backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+                    <Star className="h-4 w-4 fill-accent text-accent" />
+                    <span className="font-semibold text-sm text-accent">
                       {tutor?.avgRating?.toFixed(1) || "0.0"}
                     </span>
                   </div>

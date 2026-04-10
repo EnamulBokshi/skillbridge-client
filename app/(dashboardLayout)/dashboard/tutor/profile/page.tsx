@@ -25,16 +25,16 @@ export default async function ProfileTutor({ params, searchParams }: ProfileTuto
   console.log("Current user role:", userRole);
   console.log("Current user details:", user);
   if(userRole !== "TUTOR") {
-      return <div className='text-center text-gray-500'>You do not have permission to view this profile.</div>
+      return <div className='text-center text-muted-foreground'>You do not have permission to view this profile.</div>
   }
   const {data:userDetails, error:userDetailsError, message:userDetailsMessage} = await userServices.getUser(user.id);
   const tutorId = userDetails?.tutorProfile?.id;
   if(!tutorId) {
-    return <div className='text-center text-gray-500'>Tutor profile not found.</div>
+    return <div className='text-center text-muted-foreground'>Tutor profile not found.</div>
   }
   const {data:tutorProfile, error} = await getTutorByIdAction(tutorId);
   if(error || !tutorProfile) {
-    return <div className='text-center text-gray-500'>Failed to load tutor profile.</div>
+    return <div className='text-center text-muted-foreground'>Failed to load tutor profile.</div>
   }
 const payload: Partial<TutorProfile> = {
     id: tutorProfile.id,

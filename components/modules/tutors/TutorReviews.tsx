@@ -63,8 +63,8 @@ export default function TutorReviews({ reviews }: TutorReviewsProps) {
                           key={i}
                           className={`h-4 w-4 ${
                             i < review.rating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
+                              ? "fill-accent text-accent"
+                              : "text-muted-foreground"
                           }`}
                         />
                       ))}

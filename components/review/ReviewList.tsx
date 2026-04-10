@@ -79,7 +79,7 @@ export default async function ReviewList({ tutorId }: { tutorId: string }) {
                           key={i}
                           className={`w-4 h-4 ${
                             i < review.rating
-                              ? "fill-yellow-400 text-yellow-400"
+                              ? "fill-accent text-accent"
                               : "text-muted-foreground"
                           }`}
                         />

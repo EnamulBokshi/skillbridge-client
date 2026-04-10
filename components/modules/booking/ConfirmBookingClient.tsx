@@ -83,7 +83,7 @@ export default function ConfirmBookingClient({
                   {tutor.experienceYears} years experience
                 </Badge>
                 <div className="flex items-center gap-1">
-                  <span className="text-yellow-500">★</span>
+                  <span className="text-accent">★</span>
                   <span className="font-medium">{tutor.avgRating || "N/A"}</span>
                 </div>
               </div>

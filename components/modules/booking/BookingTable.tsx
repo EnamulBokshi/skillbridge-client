@@ -280,7 +280,7 @@ export default function BookingTable({
               <TableHead className="text-right">
                 {role == "STUDENT"  && booking.status === BookingStatus.PENDING && (
                   <button
-                    className="text-red-500 hover:underline"
+                    className="text-accent hover:underline"
                     onClick={() => handleSessionCancel(booking.id)}
                   >
                     Cancel
@@ -289,7 +289,7 @@ export default function BookingTable({
                 { role == "STUDENT"  && booking.status === BookingStatus.CONFIRMED && (
                   <div className="flex  items-center gap-2 justify-end py-1">
                     <button
-                      className="text-yellow-600 hover:underline"
+                      className="text-primary hover:underline"
                       onClick={() =>
                         handleSessionJoin(
                           booking.id,
@@ -305,7 +305,7 @@ export default function BookingTable({
 
                       new Date() > new Date(booking.slot.endTime) ? (
                         <button
-                          className="text-green-600 hover:underline"
+                          className="text-secondary hover:underline"
                           onClick={() =>
                             handleSessionComplete &&
                             handleSessionComplete(booking.id)
@@ -343,7 +343,7 @@ export default function BookingTable({
                 {(role === "TUTOR" || role === "ADMIN") && booking.status === BookingStatus.PENDING && (
                   <>
                     <Button
-                      className="ml-auto mr-2 bg-cyan-700"
+                      className="ml-auto mr-2 bg-secondary text-secondary-foreground hover:bg-secondary/90"
                       size="sm"
                       variant="default"
                       onClick={() => handleApproveBooking(booking.id)}
@@ -362,7 +362,7 @@ export default function BookingTable({
                 )}
                 {(role === 'TUTOR' || role === "ADMIN") && booking.status === BookingStatus.CONFIRMED && (
                   <Button
-                      className="ml-auto mr-2 bg-cyan-700"
+                      className="ml-auto mr-2 bg-secondary text-secondary-foreground hover:bg-secondary/90"
                       size="sm"
                       variant="default"
                       onClick={() => handleSessionComplete(booking.id)}

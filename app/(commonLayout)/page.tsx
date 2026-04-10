@@ -1,4 +1,6 @@
 import BookingSuccessToast from '@/components/modules/booking/BookingSuccessToast';
+import PlatformStatsSection from '@/components/modules/common/PlatformStatsSection';
+import TutorPromoSection from '@/components/modules/common/TutorPromoSection';
 import { PublicSlotList } from '@/components/modules/slot';
 import HomeSlotList from '@/components/modules/slot/HomeSlotList';
 import FeaturedTutorsHero from '@/components/modules/tutors/FeaturedTutorsHero';
@@ -52,25 +54,10 @@ export default async function Home() {
                 </Button>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8">
-                <div>
-                  <p className="text-3xl font-bold text-primary">500+</p>
-                  <p className="text-sm text-muted-foreground">Expert Tutors</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">10K+</p>
-                  <p className="text-sm text-muted-foreground">Students</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">50+</p>
-                  <p className="text-sm text-muted-foreground">Subjects</p>
-                </div>
-              </div>
             </div>
 
             {/* Right Content - Illustration/Graphics */}
-            <div className="relative lg:h-[600px] flex items-center justify-center">
+            <div className="relative lg:h-150 flex items-center justify-center">
               {/* Main Illustration Card */}
               <div className="relative w-full max-w-lg">
                 {/* Floating Cards */}
@@ -90,8 +77,8 @@ export default async function Home() {
 
                 <div className="absolute bottom-0 left-0 w-48 p-4 bg-card rounded-2xl shadow-lg border animate-float" style={{ animationDelay: '1s' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -103,7 +90,7 @@ export default async function Home() {
                 </div>
 
                 {/* Central Graphic */}
-                <div className="relative z-10 p-8 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl border-2 border-primary/20">
+                <div className="relative z-10 p-8 bg-linear-to-br from-primary/10 to-secondary/10 rounded-3xl border-2 border-primary/20">
                   <div className="text-center space-y-6">
                     <div className="w-32 h-32 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
                       <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,6 +108,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <PlatformStatsSection />
+      <TutorPromoSection />
 
       {/* Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
@@ -234,7 +224,7 @@ export default async function Home() {
                 Explore our wide range of tutors and subjects. Filter by expertise, availability, and ratings.
               </p>
               {/* Connector Line */}
-              <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary to-transparent" />
+              <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-linear-to-r from-primary to-transparent" />
             </div>
 
             <div className="relative text-center">
@@ -246,7 +236,7 @@ export default async function Home() {
                 Choose a time slot that works for you and book your session with just a few clicks.
               </p>
               {/* Connector Line */}
-              <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary to-transparent" />
+              <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-linear-to-r from-primary to-transparent" />
             </div>
 
             <div className="text-center">
@@ -294,7 +284,7 @@ export default async function Home() {
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-12 text-center text-primary-foreground">
+          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-primary to-primary/80 p-12 text-center text-primary-foreground">
             <div className="absolute inset-0 bg-grid-white/10" />
             <div className="relative space-y-6">
               <h2 className="text-3xl lg:text-4xl font-bold">Ready to Start Your Learning Journey?</h2>

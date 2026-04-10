@@ -1,5 +1,5 @@
 import { SidebarRoute } from "@/types";
-import { BookA, BookCopy, ChartBarStackedIcon, SquaresIntersect, StretchHorizontal, Tags, UserCog, Users2 } from "lucide-react";
+import { BookA, BookCopy, Bot, ChartBarStackedIcon, StretchHorizontal, Tags, UserCog } from "lucide-react";
 
 
 
@@ -40,6 +40,12 @@ export const adminRoutes: SidebarRoute[] = [
           url:"/dashboard/admin/subjects",
           icon: BookCopy ,
           isActive: false
+        },
+        {
+          title: "AI Assistant",
+          url: "/dashboard/admin/ai",
+          icon: Bot,
+          isActive: false,
         }
         
       ],

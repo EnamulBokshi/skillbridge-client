@@ -19,7 +19,7 @@ export default async function EditStudentProfile({params}: EditStudentProfilePro
   return (
     <div>
         <h1 className="text-2xl font-bold mb-4">Edit Student Profile</h1>
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-card text-card-foreground border border-border rounded-xl shadow-sm p-6">
             {studentProfile ? (
                 <StudentProfileUpdateForm profile={studentProfile} />
             ) : (

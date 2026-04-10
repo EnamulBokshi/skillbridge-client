@@ -104,7 +104,7 @@ export default function TutorsList({ initialTutors }: TutorsListProps) {
                             {tutor.firstName} {tutor.lastName}
                           </CardTitle>
                           <div className="flex items-center gap-1 text-sm">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <Star className="h-4 w-4 fill-accent text-accent" />
                             <span className="font-semibold">
                               {tutor?.avgRating?.toFixed(1)}
                             </span>

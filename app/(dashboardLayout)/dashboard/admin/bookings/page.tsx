@@ -25,7 +25,7 @@ export default async function BookingsAdmin({ searchParams }: BookingProps) {
         {/* <FilterController /> */}
         <BookingTableFilterController />
         {error ? (
-          <div className="text-red-500">Error loading bookings: {error}</div>
+          <div className="text-accent">Error loading bookings: {error}</div>
         ) : (
           <BookingTable bookings={bookings.data || []} role={"ADMIN"} />
         )}

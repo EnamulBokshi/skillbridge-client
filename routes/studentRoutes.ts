@@ -1,4 +1,4 @@
-import {  FileBarChartIcon, Settings2, SquareTerminal } from "lucide-react";
+import { Bot, FileBarChartIcon, Settings2, SquareTerminal } from "lucide-react";
 
 export const studentRoutes = [
     {
@@ -11,6 +11,11 @@ export const studentRoutes = [
           title: "Bookings",
           url: "/dashboard/student/bookings",
           icon: SquareTerminal
+        },
+        {
+          title: "AI Assistant",
+          url: "/dashboard/student/ai",
+          icon: Bot,
         },
       ],
     },

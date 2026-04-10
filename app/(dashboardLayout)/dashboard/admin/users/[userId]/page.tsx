@@ -14,12 +14,12 @@ export default async function UserProfile({params}:{params: Promise<{userId: str
 
     const userRole = user.role;
     if(userRole !== "ADMIN") {
-        return <div className='text-center text-gray-500'>You do not have permission to view this profile.</div>
+      return <div className='text-center text-muted-foreground'>You do not have permission to view this profile.</div>
     }
 
     const {data:userDetails,error:userDetailsError, message:userDetailsMessage} = await getUserAction(userId)
     if(userDetailsError) {
-        return <div className='text-center text-gray-500'>{userDetailsMessage || "Failed to load user details."}</div>
+      return <div className='text-center text-muted-foreground'>{userDetailsMessage || "Failed to load user details."}</div>
     }
     
   return (

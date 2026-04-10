@@ -11,7 +11,6 @@ export default async function StudentDashboardLayout({ children }: { children: R
         // toast.error('Please login to access the student dashboard');
         redirect('/login')
     }
-    
   return (
     <div>Student {children}</div>
   )

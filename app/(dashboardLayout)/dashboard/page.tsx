@@ -20,7 +20,6 @@ export default async function DashboardPage() {
   }
   const {data:profile} = await userServices.getUser(user.id)
  console.log("Profile in DashboardPage:", profile);
-  // console.log(profile)
   if (error || !user || !profile) {
     redirect("/login");
   }

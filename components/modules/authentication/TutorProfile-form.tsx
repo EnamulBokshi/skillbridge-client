@@ -543,7 +543,7 @@ export function TutorProfileForm({
                             {field.state.value.map((area, index) => (
                               <div
                                 key={index}
-                                className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded-full text-sm"
+                                className="flex items-center gap-1 bg-secondary/15 border border-secondary/30 px-3 py-1 rounded-full text-sm"
                               >
                                 <span>{area}</span>
                                 <button
@@ -555,7 +555,7 @@ export function TutorProfileForm({
                                       ),
                                     );
                                   }}
-                                  className="text-red-500 hover:text-red-700 font-bold ml-1"
+                                  className="text-accent hover:text-accent/80 font-bold ml-1"
                                 >
                                   ×
                                 </button>

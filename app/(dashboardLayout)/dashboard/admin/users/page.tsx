@@ -21,7 +21,7 @@ export default async function UserPage({searchParams}:UserPageProps) {
       <div className='w-full  rounded-lg shadow-md p-6'>
         <UserFilterController />
         {data && <UserList users={data.data} />}
-        {!data && <p className='text-gray-500'>No users found.</p>}
+        {!data && <p className='text-muted-foreground'>No users found.</p>}
         <PaginationController pagination={data?.pagination || { page: 1, totalPages: 1, totalRecords: 0 }} />
       </div>
 

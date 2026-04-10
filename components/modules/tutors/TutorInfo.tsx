@@ -55,7 +55,7 @@ export default function TutorInfo({ tutor }: TutorInfoProps) {
               {/* Rating & Stats */}
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-5 w-5 fill-accent text-accent" />
                   <span className="font-semibold text-lg">
                     {tutor.avgRating.toFixed(1)}
                   </span>

@@ -12,14 +12,23 @@ import { redirect, usePathname } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 
+const normalizePath = (value: string) => {
+  if (!value) return "/";
+  const normalized = value.replace(/\/+$/, "");
+  return normalized === "" ? "/" : normalized;
+};
+
+const isRouteActive = (pathname: string, url: string) => {
+  const current = normalizePath(pathname);
+  const target = normalizePath(url);
+
+  if (target === "/") return current === "/";
+  return current === target || current.startsWith(`${target}/`);
+};
+
 export function NavMain({ routes }: { routes: SidebarRoute[] }) {
   const pathName = usePathname();
-  const isMatched = (url:string) =>{
-    const urlLastSegment = url.split("/").filter(Boolean).pop()
-    const pathLastSegment = pathName.split("/").filter(Boolean).pop()
-    return urlLastSegment === pathLastSegment;
-  }
-  const activeItem = pathName.split("/").pop();
+
   if (!routes || routes.length === 0) {
     toast.error("No routes available");
     redirect("/");
@@ -41,8 +50,10 @@ export function NavMain({ routes }: { routes: SidebarRoute[] }) {
                     //   //   : ""
 
                     // }
-                    isActive={isMatched(subItem.url)}
-                    className={isMatched(subItem.url)? 'text-violet-400' :''}
+                    isActive={isRouteActive(pathName, subItem.url)}
+                    className={
+                      isRouteActive(pathName, subItem.url) ? "text-primary" : ""
+                    }
                   >
                     <Link href={subItem.url} >
                     {subItem.icon && <subItem.icon className = "inline mr-2"/>}
