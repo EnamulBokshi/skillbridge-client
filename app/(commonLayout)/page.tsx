@@ -1,5 +1,6 @@
 import BookingSuccessToast from '@/components/modules/booking/BookingSuccessToast';
 import PlatformStatsSection from '@/components/modules/common/PlatformStatsSection';
+import TestimonialsSection from '@/components/modules/common/TestimonialsSection';
 import TutorPromoSection from '@/components/modules/common/TutorPromoSection';
 import { PublicSlotList } from '@/components/modules/slot';
 import HomeSlotList from '@/components/modules/slot/HomeSlotList';
@@ -280,6 +281,8 @@ export default async function Home() {
           <FeaturedTutorsHero />
         </div>
     </section>
+
+      <TestimonialsSection />
 
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
