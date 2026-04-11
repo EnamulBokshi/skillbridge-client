@@ -251,7 +251,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="#"
+                  href="/help-center"
                   className="text-muted-foreground transition-colors hover:text-primary"
                 >
                   Help Center
@@ -267,7 +267,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/privacy-policy"
                   className="text-muted-foreground transition-colors hover:text-primary"
                 >
                   Privacy Policy
@@ -275,7 +275,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/terms-of-service"
                   className="text-muted-foreground transition-colors hover:text-primary"
                 >
                   Terms of Service
@@ -326,7 +326,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/faq"
                   className="text-muted-foreground transition-colors hover:text-primary"
                 >
                   FAQ

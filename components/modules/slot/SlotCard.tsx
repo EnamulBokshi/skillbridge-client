@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 interface SlotCardProps {
   slot: ISlotResponse;
@@ -37,137 +36,142 @@ export function SlotCard({
   onEdit,
   onDelete,
 }: SlotCardProps) {
-
-  
-  const [isEditing, setIsEditing] = useState(false);
   const startTime = new Date(slot.startTime);
   const endTime = new Date(slot.endTime);
   const slotDate = new Date(slot.date);
   const tutorId = slot.tutorId;
-  // Calculate duration in hours
+
   const durationMs = endTime.getTime() - startTime.getTime();
   const durationHours = durationMs / (1000 * 60 * 60);
   const hours = Math.floor(durationHours);
   const minutes = Math.round((durationHours - hours) * 60);
-  const durationText = hours > 0 
-    ? `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`.trim()
+  const durationText = hours > 0
+    ? `${hours}h ${minutes > 0 ? `${minutes}m` : ""}`.trim()
     : `${minutes}m`;
 
-  // Get tutor initials for avatar fallback
   const tutorInitials = slot.tutorProfile
     ? `${slot.tutorProfile.firstName[0]}${slot.tutorProfile.lastName[0]}`
     : "TU";
-const isPastSlot = new Date(slot.endTime) < new Date();
-const isBookable = !editable && !slot.isBooked && !isPastSlot;
+  const isPastSlot = new Date(slot.endTime) < new Date();
+  const isBookable = !editable && !slot.isBooked && !isPastSlot;
 
-  const router = useRouter()
- const handleBookSlot = (slotId: string) => {
-
-    // Redirect to confirm booking page with slot and tutor details
+  const router = useRouter();
+  const handleBookSlot = (slotId: string) => {
     router.push(`/confirm-booking?slotId=${slotId}&tutorId=${tutorId}`);
   };
-  return (
-    <Card className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
-      {/* Featured Badge */}
-      {slot.isFeatured && (
-        <div className="absolute top-2 right-2 z-10">
-          <Badge className="bg-accent text-accent-foreground hover:bg-accent/90">
-            <Star className="w-3 h-3 mr-1 fill-accent-foreground" />
-            Featured
-          </Badge>
-        </div>
-      )}
 
-      <CardHeader className="pb-3">
-        {/* Tutor Profile */}
-        {slot.tutorProfile && (
-          <div className="flex items-center gap-3 mb-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage 
-                src={slot.tutorProfile.profilePicture || `https://api.dicebear.com/7.x/initials/svg?seed=${slot.tutorProfile.firstName}+${slot.tutorProfile.lastName}`} 
-                alt={`${slot.tutorProfile.firstName} ${slot.tutorProfile.lastName}`} 
+  const statusLabel = slot.isBooked ? "Booked" : isPastSlot ? "Expired" : "Available";
+
+  return (
+    <Card className="group relative overflow-hidden rounded-2xl border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-linear-to-r from-primary/8 via-secondary/10 to-transparent" />
+
+      <CardHeader className="relative space-y-4 pb-2">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-11 w-11 ring-2 ring-border/60">
+              <AvatarImage
+                src={
+                  slot.tutorProfile?.profilePicture ||
+                  `https://api.dicebear.com/7.x/initials/svg?seed=${slot.tutorProfile?.firstName || "Tutor"}+${slot.tutorProfile?.lastName || "Profile"}`
+                }
+                alt={
+                  slot.tutorProfile
+                    ? `${slot.tutorProfile.firstName} ${slot.tutorProfile.lastName}`
+                    : "Tutor profile"
+                }
               />
               <AvatarFallback>{tutorInitials}</AvatarFallback>
             </Avatar>
+
             <div>
-              <p className="font-semibold text-sm">
-                {slot.tutorProfile.firstName} {slot.tutorProfile.lastName}
+              <p className="line-clamp-1 text-sm font-semibold">
+                {slot.tutorProfile
+                  ? `${slot.tutorProfile.firstName} ${slot.tutorProfile.lastName}`
+                  : "Assigned Tutor"}
               </p>
-              <p className="text-xs text-muted-foreground">Tutor</p>
+              <p className="text-xs text-muted-foreground">Session Tutor</p>
             </div>
           </div>
-        )}
 
-        {/* Subject & Category */}
-        {slot.subject && (
-          <div className="space-y-1 mb-3">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-primary" />
-              <span className="font-medium text-sm capitalize">
-                {slot.subject.name}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Tag className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground capitalize">
-                {slot.subject.category.name}
-              </span>
-            </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {slot.isFeatured && (
+              <Badge variant="secondary" className="rounded-full">
+                <Star className="mr-1 h-3 w-3 fill-current" />
+                Featured
+              </Badge>
+            )}
+            {slot.isFree && (
+              <Badge variant="outline" className="rounded-full">
+                Free
+              </Badge>
+            )}
+            <Badge
+              variant={slot.isBooked || isPastSlot ? "outline" : "default"}
+              className="rounded-full"
+            >
+              {statusLabel}
+            </Badge>
           </div>
-        )}
+        </div>
 
-        {/* Date & Time */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4" />
-            {format(slotDate, "EEEE, MMM dd, yyyy")}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <p className="line-clamp-1 text-base font-semibold capitalize">
+              {slot.subject?.name || "General Session"}
+            </p>
           </div>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Tag className="h-3.5 w-3.5" />
+            <span className="line-clamp-1 capitalize">
+              {slot.subject?.category?.name || "Uncategorized"}
+            </span>
+          </div>
+        </div>
+
+        <div className="grid gap-2.5 rounded-xl border bg-background/70 p-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="w-4 h-4" />
-            {format(startTime, "hh:mm a")} - {format(endTime, "hh:mm a")}
-            <Badge variant="outline" className="text-xs ml-auto">
+            <Calendar className="h-4 w-4" />
+            <span>{format(slotDate, "EEEE, MMM dd, yyyy")}</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4" />
+            <span>
+              {format(startTime, "hh:mm a")} - {format(endTime, "hh:mm a")}
+            </span>
+            <Badge variant="outline" className="ml-auto rounded-full text-[10px]">
               {durationText}
             </Badge>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3">
-        {/* Price & Status */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-secondary" />
-            <span className="text-2xl font-bold">
-              {slot.isFree ? (
-                <Badge variant="outline" className="text-lg">
-                  FREE
-                </Badge>
-              ) : (
-                `$${slot.slotPrice.toFixed(2)}`
-              )}
+      <CardContent className="pb-3">
+        <div className="flex items-center justify-between rounded-xl border bg-background/70 px-3 py-2.5">
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Session Fee
+          </span>
+          <div className="flex items-center gap-1.5">
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <span className="text-lg font-semibold">
+              {slot.isFree ? "Free" : `$${slot.slotPrice.toFixed(2)}`}
             </span>
           </div>
-
-          {/* Status Badge */}
-          {slot.isBooked ? (
-            <Badge variant="secondary">Booked</Badge>
-          ) : (
-            <Badge className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
-              Available
-            </Badge>
-          )}
         </div>
       </CardContent>
 
-      {editable && (
-        <CardFooter className="gap-2 pt-4 border-t">
+      {editable ? (
+        <CardFooter className="gap-2 border-t pt-3">
           <Button
             variant="outline"
             size="sm"
             className="flex-1"
             onClick={() => onEdit?.(slot)}
           >
-            <Edit className="w-4 h-4 mr-2" />
+            <Edit className="mr-2 h-4 w-4" />
             Edit
           </Button>
           <Button
@@ -176,18 +180,21 @@ const isBookable = !editable && !slot.isBooked && !isPastSlot;
             className="flex-1"
             onClick={() => onDelete?.(slot.id)}
           >
-            <Trash2 className="w-4 h-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </Button>
         </CardFooter>
-      )}
-
-      {isBookable && (
-        <CardFooter className="pt-4 border-t">
-          <Button className="w-full" onClick={()=> handleBookSlot(slot.id)}>Book Now</Button>
+      ) : (
+        <CardFooter className="border-t pt-3">
+          <Button
+            className="w-full rounded-full"
+            onClick={() => handleBookSlot(slot.id)}
+            disabled={!isBookable}
+          >
+            {isPastSlot ? "Session Ended" : slot.isBooked ? "Already Booked" : "Book Session"}
+          </Button>
         </CardFooter>
       )}
-      
     </Card>
   );
 }

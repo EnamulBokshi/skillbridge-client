@@ -178,9 +178,9 @@ export default function ContactForm({ className, embedded = false }: ContactForm
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-12 rounded-full bg-[#ff0f5b] px-10 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-pink-500/30 hover:bg-[#f30e56]"
+                        className="h-12 rounded-full bg-primary px-10 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-colors duration-200 hover:bg-primary/90"
                       >
-                        {isSubmitting ? "Sending..." : "Sign up"}
+                        {isSubmitting ? "Sending..." : "Send Message"}
                       </Button>
                     </div>
                   </form>

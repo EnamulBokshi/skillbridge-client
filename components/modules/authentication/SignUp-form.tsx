@@ -15,7 +15,8 @@ import { env } from "@/env"
 import { authClient } from "@/lib/auth-client"
 import { IconBrandGoogle } from "@tabler/icons-react"
 import {useForm} from "@tanstack/react-form"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { toast } from "sonner"
 import * as z from "zod"
 
@@ -26,8 +27,12 @@ const formSchema = z.object({
 })
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+  const [formError, setFormError] = useState("")
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const handleGoogleLogin = async ()=> {
     console.log("Initiating Google sign-up...");
+    setIsGoogleLoading(true)
+    setFormError("")
     const loading = toast.loading("Redirecting to Google sign-up...");
     try {
       const data = await authClient.signIn.social({
@@ -44,10 +49,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       
     } catch (error) {
       console.log("Google sign-up error:", error);
-      toast.error("Google sign-up failed. Please try again.");
+      setFormError("Google sign-up failed. Please try again.")
     }
     finally{
       toast.dismiss(loading);
+      setIsGoogleLoading(false)
     }
   };
 
@@ -62,19 +68,20 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
     onSubmit: async({value} )=>{
       const loading = toast.loading("Please wait")
+      setFormError("")
       
        try {
-         const {data, error} = await authClient.signUp.email(value)
+         const {error} = await authClient.signUp.email(value)
 
         if(error){
-          toast.error(error.message, {id: loading})
+          setFormError(error.message || "Failed to create account. Please try again.")
           return;
         }
         toast.success("User created successfully!!", {id: loading})
         router.push("/");
        } catch (error) {
         console.error("Error during sign-up:", error);
-        toast.error("An unexpected error occurred. Please try again.", {id: loading});
+        setFormError("An unexpected error occurred. Please try again.");
        } finally {
         toast.dismiss(loading);
        }
@@ -96,6 +103,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           form.handleSubmit()
         }}>
          <FieldGroup>
+            {formError && (
+              <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {formError}
+              </p>
+            )}
             <form.Field 
               name="name"
               children={(field)=> {
@@ -108,7 +120,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
-                    onChange={(e)=>field.handleChange(e.target.value)}
+                    onChange={(e)=> {
+                      if (formError) setFormError("")
+                      field.handleChange(e.target.value)
+                    }}
                     placeholder="Name"
                     />
                     {isInvalid && (
@@ -132,7 +147,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
-                    onChange={(e)=>field.handleChange(e.target.value)}
+                    onChange={(e)=> {
+                      if (formError) setFormError("")
+                      field.handleChange(e.target.value)
+                    }}
                     placeholder="Email Address"
                     />
                     {
@@ -157,7 +175,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
-                    onChange={(e)=>field.handleChange(e.target.value)}
+                    onChange={(e)=> {
+                      if (formError) setFormError("")
+                      field.handleChange(e.target.value)
+                    }}
                     placeholder="Password"
                     />
                     {
@@ -173,8 +194,30 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button type="submit" form="signup-form" className="w-full">Register</Button>
-        <Button variant="outline" type="button" onClick={()=> handleGoogleLogin()} className="w-full mt-3" > Continue with Google <IconBrandGoogle className="inline"/></Button>
+        <form.Subscribe selector={(state) => state.isSubmitting}>
+          {(isSubmitting) => (
+            <>
+              <Button
+                type="submit"
+                form="signup-form"
+                className="w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                {isSubmitting ? "Creating account..." : "Register"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={()=> handleGoogleLogin()}
+                className="mt-3 w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+                {!isGoogleLoading && <IconBrandGoogle className="inline"/>}
+              </Button>
+            </>
+          )}
+        </form.Subscribe>
       </CardFooter>
     </Card>
   )

@@ -20,26 +20,33 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
-import { env } from "@/env";
-import { useRouter } from "next/navigation";
+
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8, "At least 8 character required!!"),
 });
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-  
-  const router = useRouter();
-  
+  const [formError, setFormError] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
   const handleGoogleLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: 'https://skillbridge-client-dusky.vercel.app/dashboard',
-    });
+    setIsGoogleLoading(true);
+    setFormError("");
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "https://skillbridge-client-dusky.vercel.app/dashboard",
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      setFormError("Google login failed. Please try again.");
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
-
-
 
   const form = useForm({
     defaultValues: {
@@ -51,29 +58,27 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Please wait, signing in...");
-     
-        try {
-          const { data, error } = await authClient.signIn.email(value);
-          
-  
-          if (error) {
-            toast.error(error.message, { id: loading });
-            return;
-          }
-  
-          toast.success("Login successful!!", { id: loading });
-          // router.refresh();
-          window.location.href = '/';
-        } catch (error) {
-          toast.error("An unexpected error occurred during login.", { id: loading });
-          console.error("Login error:", error);
+      setFormError("");
+
+      try {
+        const { error } = await authClient.signIn.email(value);
+
+        if (error) {
+          setFormError(error.message || "Unable to login. Please try again.");
+          return;
         }
-        finally{
-          toast.dismiss(loading);
-        }
-      
+
+        toast.success("Login successful!!", { id: loading });
+        window.location.href = "/";
+      } catch (error) {
+        setFormError("An unexpected error occurred during login.");
+        console.error("Login error:", error);
+      } finally {
+        toast.dismiss(loading);
+      }
     },
   });
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -82,13 +87,18 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
-          id="signup-form"
+          id="login-form"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
           }}
         >
           <FieldGroup>
+            {formError && (
+              <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {formError}
+              </p>
+            )}
             <form.Field
               name="email"
               children={(field) => {
@@ -103,7 +113,10 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => {
+                        if (formError) setFormError("");
+                        field.handleChange(e.target.value);
+                      }}
                       placeholder="Email Address"
                     />
                     {isInvalid && (
@@ -127,7 +140,10 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => {
+                        if (formError) setFormError("");
+                        field.handleChange(e.target.value);
+                      }}
                       placeholder="Password"
                     />
                     {isInvalid && (
@@ -141,18 +157,30 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button type="submit" form="signup-form" className="w-full">
-          Login
-        </Button>
-        <Button
-          variant="outline"
-          type="button"
-          onClick={() => handleGoogleLogin()}
-          className="w-full mt-3"
-        >
-          {" "}
-          Continue with Google <IconBrandGoogle className="inlin" />
-        </Button>
+        <form.Subscribe selector={(state) => state.isSubmitting}>
+          {(isSubmitting) => (
+            <>
+              <Button
+                type="submit"
+                form="login-form"
+                className="w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                {isSubmitting ? "Signing in..." : "Login"}
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => handleGoogleLogin()}
+                className="mt-3 w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+                {!isGoogleLoading && <IconBrandGoogle className="inline" />}
+              </Button>
+            </>
+          )}
+        </form.Subscribe>
       </CardFooter>
     </Card>
   );

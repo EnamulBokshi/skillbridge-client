@@ -1,6 +1,6 @@
 "use client";
 
-import { Filter, RefreshCw, Search, X } from "lucide-react";
+import { Filter, RefreshCw, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -29,6 +29,7 @@ import {
 import { getCategoriesAction } from "@/action/category.action";
 import { Category } from "@/types/category.type";
 import { Switch } from "@/components/ui/switch";
+import SearchSuggestionInput from "@/components/modules/ai/SearchSuggestionInput";
 
 export default function TutorFilterController() {
   const router = useRouter();
@@ -106,8 +107,10 @@ export default function TutorFilterController() {
   };
 
   /* ------------------ Handlers ------------------ */
-  const handleSearch = () => {
-    updateParams({ search });
+  const handleSearch = (submitted?: string) => {
+    const nextSearch = (submitted ?? search).trim();
+    setSearch(nextSearch);
+    updateParams({ search: nextSearch || undefined });
   };
 
   const handleFilterChange = (key: keyof typeof filters, value?: string) => {
@@ -191,19 +194,18 @@ export default function TutorFilterController() {
       {/* Search & Filter Toggle */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Search */}
-        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
-          <div className="relative w-full sm:w-72 lg:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by subject, tutor, or category..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-10 rounded-xl pl-9 text-sm"
-            />
-          </div>
-          <Button onClick={handleSearch} size="sm" className="h-10 rounded-xl px-4">
-            Search
-          </Button>
+        <div className="w-full lg:max-w-xl">
+          <SearchSuggestionInput
+            value={search}
+            onChange={setSearch}
+            onSubmit={handleSearch}
+            context="all"
+            placeholder="Search by subject, tutor, or category..."
+            className="w-full"
+            inputClassName="h-10 rounded-xl text-sm"
+            buttonClassName="h-10 rounded-xl px-4"
+            buttonLabel="Search"
+          />
         </div>
 
         {/* Filters */}
