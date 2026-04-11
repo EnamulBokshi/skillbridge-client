@@ -1,6 +1,7 @@
 import { TutorDetailedProfile } from "@/types/tutor.type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 
 interface TutorReviewsProps {
@@ -8,33 +9,46 @@ interface TutorReviewsProps {
 }
 
 export default function TutorReviews({ reviews }: TutorReviewsProps) {
+  const averageRating =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : 0;
+
   if (!reviews || reviews.length === 0) {
     return (
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Reviews</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center py-8">
-            No reviews yet.
-          </p>
+          <div className="rounded-2xl border border-dashed bg-muted/30 px-4 py-10 text-center">
+            <p className="text-sm font-medium">No reviews yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Be the first student to share feedback after your session.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
-        <CardTitle>Reviews ({reviews.length})</CardTitle>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <CardTitle>Reviews ({reviews.length})</CardTitle>
+          <Badge variant="secondary" className="rounded-full px-3 py-1">
+            {averageRating.toFixed(1)} average
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className="space-y-4">
           {reviews.map((review) => (
-            <div key={review.id} className="border-b last:border-0 pb-6 last:pb-0">
+            <div key={review.id} className="rounded-2xl border bg-background/70 p-4 shadow-sm transition-colors hover:bg-background">
               <div className="flex gap-4">
                 {/* Student Avatar */}
-                <Avatar>
+                <Avatar className="h-10 w-10 shrink-0">
                   <AvatarFallback>
                     {review.student.firstName?.charAt(0) || "U"}
                     {review.student.lastName?.charAt(0) || ""}
@@ -42,13 +56,13 @@ export default function TutorReviews({ reviews }: TutorReviewsProps) {
                 </Avatar>
 
                 {/* Review Content */}
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
+                <div className="flex-1 space-y-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="font-semibold">
                         {review.student.firstName} {review.student.lastName}
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {new Date(review.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "long",
@@ -56,7 +70,7 @@ export default function TutorReviews({ reviews }: TutorReviewsProps) {
                         })}
                       </p>
                     </div>
-                    {/* Rating */}
+
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -71,10 +85,9 @@ export default function TutorReviews({ reviews }: TutorReviewsProps) {
                     </div>
                   </div>
 
-                  {/* Comment */}
-                  {review.comment && (
-                    <p className="text-muted-foreground">{review.comment}</p>
-                  )}
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {review.comment || "No written comment was provided for this review."}
+                  </p>
                 </div>
               </div>
             </div>

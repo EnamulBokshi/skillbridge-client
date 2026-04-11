@@ -36,7 +36,6 @@ export default async function TutorsPage({searchParams}: TutorsPageProps) {
  
 
   const { data: allTutors } = await getTutorsAction(searchParamsObj);
-  const tutorsList = allTutors?.data || [];
   const pagination = allTutors?.pagination || {};
   return (
     <div className="min-h-screen">

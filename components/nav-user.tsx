@@ -29,7 +29,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import logoutUser from "@/helper/logout"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export function NavUser({
   user,
@@ -42,6 +42,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
 
   return (
     <SidebarMenu>
@@ -50,9 +51,9 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="rounded-xl border border-sidebar-border/60 bg-muted/35 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-8 w-8 rounded-lg ring-2 ring-sidebar-border/60 grayscale">
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
                 <AvatarFallback className="rounded-lg">{user.name.charAt(0).toLocaleUpperCase()}</AvatarFallback>
               </Avatar>
@@ -66,13 +67,13 @@ export function NavUser({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl border-sidebar-border/70"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <div className="flex items-center gap-2 px-2 py-2 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image ?? undefined} alt={user.name} />
                   <AvatarFallback className="rounded-lg">{user.name.charAt(0).toLocaleUpperCase()}</AvatarFallback>
@@ -83,11 +84,14 @@ export function NavUser({
                     {user.email}
                   </span>
                 </div>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                  {user.role}
+                </span>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={()=> {redirect(`/dashboard/${user.role.toLocaleLowerCase()}/profile`)}} >
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/${user.role.toLocaleLowerCase()}/profile`)}>
                 <IconUserCircle /> 
                 Profile
               </DropdownMenuItem>

@@ -1,205 +1,117 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import { getTutorsAction } from "@/action/tutor.action";
-import { TutorProfile } from "@/types/tutor.type";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+
 import {
   Star,
-  BookOpen,
-  GraduationCap,
-  Search,
+  Bookmark,
   Loader2,
 } from "lucide-react";
+import { TutorProfile } from "@/types/tutor.type";
 
 interface TutorsListProps {
   initialTutors: any;
 }
 
 export default function TutorsList({ initialTutors }: TutorsListProps) {
-  const [isPending, startTransition] = useTransition();
-  
-;
+  const tutors: TutorProfile[] = initialTutors?.data || [];
+
+  const getTutorImage = (tutor: TutorProfile) => {
+    if (tutor.profilePicture) return tutor.profilePicture;
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      `${tutor.firstName} ${tutor.lastName}`,
+    )}&background=EEF2FF&color=1E1B4B&size=256`;
+  };
+
+  const getTutorCardTitle = (tutor: TutorProfile) => {
+    const primaryExpertise = tutor.expertiseAreas?.[0]?.trim();
+    if (primaryExpertise) return `${primaryExpertise} Intensive`;
+    return `${tutor.firstName} ${tutor.lastName}`;
+  };
+
+  const getTutorTag = (tutor: TutorProfile) => {
+    const primaryExpertise = tutor.expertiseAreas?.[0]?.trim();
+    if (primaryExpertise) return primaryExpertise;
+    return "Top Tutor";
+  };
 
   return (
-    <section className="w-full py-12">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">All Tutors</h2>
-          <p className="text-muted-foreground">
-            Browse and find the perfect tutor for your learning journey
-          </p>
+    <section className="w-full py-6">
+      {initialTutors === undefined ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
-
-        {/* Search Bar */}
-        {/* <div className="mb-8">
-          <div className="flex gap-2 max-w-2xl">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name, bio, or expertise..."
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="pl-10"
-              />
-            </div>
-            <Button onClick={handleSearch} disabled={isPending}>
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <Search className="h-4 w-4" />
-                  Search
-                </>
-              )}
-            </Button>
-          </div>
-        </div> */}
-
-
-        {/* Loading State */}
-        {isPending && (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        )}
-
-        {/* Tutors Grid */}
-        {!isPending && (
-          <>
-            {initialTutors && initialTutors.data && initialTutors.data.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {initialTutors.data.map((tutor: any) => (
-                  <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
-                    <Card className="hover:shadow-lg transition-all duration-300 h-full cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-start gap-4">
-                        <Avatar size="lg" className="h-16 w-16">
-                          <AvatarImage
-                            src={tutor.profilePicture || undefined}
-                            alt={`${tutor.firstName} ${tutor.lastName}`}
-                          />
-                          <AvatarFallback className="text-lg">
-                            {tutor.firstName.charAt(0)}
-                            {tutor.lastName.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-xl mb-1">
-                            {tutor.firstName} {tutor.lastName}
-                          </CardTitle>
-                          <div className="flex items-center gap-1 text-sm">
-                            <Star className="h-4 w-4 fill-accent text-accent" />
-                            <span className="font-semibold">
-                              {tutor?.avgRating?.toFixed(1)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                      {/* Expertise */}
-                      {tutor.expertiseAreas && (
-                        <div>
-                          <p className="text-sm font-medium mb-1 flex items-center gap-1">
-                            <BookOpen className="h-3.5 w-3.5" />
-                            Expertise
-                          </p>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {tutor.expertiseAreas.join(", ")}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Bio */}
-                      {tutor.bio && (
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                          {tutor.bio}
-                        </p>
-                      )}
-
-                      {/* Stats */}
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {tutor.experienceYears !== null && (
-                          <Badge variant="outline" className="gap-1">
-                            <GraduationCap className="h-3 w-3" />
-                            {tutor.experienceYears}+ years
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">
-                  No tutors found.
-                </p>
-              </div>
-            )}
-
-            {/* Pagination */}
-            {/* {pagination.totalPages > 1 && (
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        currentPage > 1 && handlePageChange(currentPage - 1)
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
+      ) : tutors.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {tutors.map((tutor: TutorProfile) => (
+            <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
+              <Card className="group h-full overflow-hidden rounded-3xl border border-border/70 bg-card/90 p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                <div className="relative h-85 overflow-hidden">
+                  <Avatar className="h-full w-full rounded-none">
+                    <AvatarImage
+                      src={getTutorImage(tutor)}
+                      alt={`${tutor.firstName} ${tutor.lastName}`}
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
-                  </PaginationItem>
+                    <AvatarFallback className="text-4xl font-bold bg-muted">
+                      {tutor.firstName.charAt(0)}
+                      {tutor.lastName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
 
-                  {[...Array(pagination.totalPages)].map((_, i) => {
-                    const page = i + 1;
-                    return (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/72 via-black/15 to-transparent" />
 
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className="cursor-pointer"
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )} */}
-          </>
-        )}
-      </div>
+                  <div className="absolute left-4 top-4">
+                    <Badge className="rounded-xl border-0 bg-black/75 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      {getTutorTag(tutor)}
+                    </Badge>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-label="Save tutor"
+                    className="absolute right-4 top-4 rounded-full border border-white/40 bg-white/25 p-2 text-white backdrop-blur-sm"
+                  >
+                    <Bookmark className="h-4 w-4" />
+                  </button>
+
+                  <CardContent className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <h3 className="mb-2 text-4xl font-semibold leading-tight tracking-tight">
+                      {getTutorCardTitle(tutor)}
+                    </h3>
+
+                    <p className="mb-2 text-lg font-medium text-white/90">
+                      {tutor.experienceYears}+ years
+                      <span className="mx-2 text-white/50">•</span>
+                      Rated {tutor?.avgRating?.toFixed(1) || "0.0"}
+                    </p>
+
+                    <div className="flex items-center gap-2 text-lg text-white/92">
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage src={getTutorImage(tutor)} alt={tutor.firstName} />
+                        <AvatarFallback className="text-[10px]">
+                          {tutor.firstName.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>
+                        Coach {tutor.firstName} {tutor.lastName}
+                      </span>
+                      <Star className="ml-auto h-4 w-4 fill-amber-300 text-amber-300" />
+                    </div>
+                  </CardContent>
+                </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-border/70 bg-card/50 py-14 text-center">
+          <p className="text-lg text-muted-foreground">No tutors found.</p>
+        </div>
+      )}
     </section>
   );
 }

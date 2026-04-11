@@ -136,30 +136,83 @@ export default function TutorFilterController() {
   const activeFilterCount =
     Object.values(filters).filter(Boolean).length + (search ? 1 : 0);
 
+  const activeChips = [
+    ...(search
+      ? [{ key: "search", label: `Search: ${search}`, value: search }]
+      : []),
+    ...(filters.categoryId
+      ? [{
+          key: "categoryId",
+          label: `Category: ${categories.find((c) => c.id === filters.categoryId)?.name || filters.categoryId}`,
+          value: filters.categoryId,
+        }]
+      : []),
+    ...(filters.subjectId
+      ? [{
+          key: "subjectId",
+          label: `Subject: ${subjects.find((s) => s.id === filters.subjectId)?.name || filters.subjectId}`,
+          value: filters.subjectId,
+        }]
+      : []),
+    ...(filters.minRating !== undefined
+      ? [{ key: "minRating", label: `Min Rating: ${filters.minRating}`, value: String(filters.minRating) }]
+      : []),
+    ...(filters.maxRating !== undefined
+      ? [{ key: "maxRating", label: `Max Rating: ${filters.maxRating}`, value: String(filters.maxRating) }]
+      : []),
+    ...(filters.isFeatured
+      ? [{ key: "isFeatured", label: "Featured Only", value: "true" }]
+      : []),
+  ];
+
+  const removeSingleFilter = (key: string) => {
+    if (key === "search") {
+      setSearch("");
+      updateParams({ search: undefined });
+      return;
+    }
+
+    const nextFilters = { ...filters, [key]: undefined };
+    setFilters(nextFilters);
+
+    updateParams({
+      search,
+      ...Object.fromEntries(
+        Object.entries(nextFilters).map(([filterKey, value]) => [
+          filterKey,
+          value !== undefined ? String(value) : undefined,
+        ]),
+      ),
+    });
+  };
+
   return (
-    <div className="space-y-4 py-4">
+    <div className="space-y-4 py-2">
       {/* Search & Filter Toggle */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Search */}
-        <div className="flex gap-2 flex-1">
-          <div className="relative flex-1">
+        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
+          <div className="relative w-full sm:w-72 lg:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search by subject, tutor, or category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="h-10 rounded-xl pl-9 text-sm"
             />
           </div>
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={handleSearch} size="sm" className="h-10 rounded-xl px-4">
+            Search
+          </Button>
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             onClick={() => setIsFilterPanelOpen((p) => !p)}
-            className="gap-2"
+            size="sm"
+            className="h-10 gap-2 rounded-xl"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -169,7 +222,7 @@ export default function TutorFilterController() {
           </Button>
 
           {activeFilterCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={resetFilters}>
+            <Button variant="ghost" size="sm" onClick={resetFilters} className="h-10 rounded-xl">
               <X className="w-4 h-4 mr-1" />
               Clear
             </Button>
@@ -177,9 +230,36 @@ export default function TutorFilterController() {
         </div>
       </div>
 
+      {activeChips.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {activeChips.map((chip) => (
+            <Badge key={chip.key} variant="secondary" className="gap-1 rounded-lg px-2.5 py-1 text-xs">
+              <span>{chip.label}</span>
+              <button
+                type="button"
+                aria-label={`Remove ${chip.label}`}
+                className="ml-1 rounded-sm p-0.5 hover:bg-black/10"
+                onClick={() => removeSingleFilter(chip.key)}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
+            className="h-7 rounded-lg px-2 text-xs"
+          >
+            Clear all
+          </Button>
+        </div>
+      )}
+
       {/* Filter Panel */}
       {isFilterPanelOpen && (
-        <Card className="border shadow-lg rounded-2xl">
+        <Card className="rounded-2xl border border-border/80 bg-card/70 shadow-sm">
           <CardHeader className="pb-4 border-b">
             <CardTitle className="text-lg flex items-center gap-2">
               <Filter className="w-4 h-4" />
@@ -194,7 +274,7 @@ export default function TutorFilterController() {
             {/* Top Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Featured Toggle */}
-              <div className="flex items-center justify-between p-4 rounded-xl bg-muted/40">
+              <div className="flex items-center justify-between rounded-xl bg-muted/35 p-4">
                 <div>
                   <Label className="text-sm font-medium">Featured Only</Label>
                   <p className="text-xs text-muted-foreground">
@@ -221,7 +301,7 @@ export default function TutorFilterController() {
                     handleFilterChange("categoryId", value)
                   }
                 >
-                  <SelectTrigger className="rounded-xl">
+                  <SelectTrigger className="h-10 rounded-xl">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -247,7 +327,7 @@ export default function TutorFilterController() {
                   }
                   disabled={isSubjectsLoading}
                 >
-                  <SelectTrigger className="rounded-xl">
+                  <SelectTrigger className="h-10 rounded-xl">
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent>
@@ -275,7 +355,7 @@ export default function TutorFilterController() {
                   onChange={(e) =>
                     handleFilterChange("minRating", e.target.value)
                   }
-                  className="rounded-xl"
+                  className="h-10 rounded-xl"
                 />
               </div>
 
@@ -291,21 +371,21 @@ export default function TutorFilterController() {
                   onChange={(e) =>
                     handleFilterChange("maxRating", e.target.value)
                   }
-                  className="rounded-xl"
+                  className="h-10 rounded-xl"
                 />
               </div>
             </div>
 
             {/* Divider */}
             <div className="border-t pt-6 flex flex-col sm:flex-row gap-3">
-              <Button onClick={applyFilters} className="flex-1 rounded-xl">
+              <Button onClick={applyFilters} className="h-10 flex-1 rounded-xl">
                 Apply Filters
               </Button>
 
               <Button
                 variant="outline"
                 onClick={resetFilters}
-                className="flex-1 rounded-xl"
+                className="h-10 flex-1 rounded-xl"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Reset

@@ -8,9 +8,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarRoute } from "@/types";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { toast } from "sonner";
 
 const normalizePath = (value: string) => {
   if (!value) return "/";
@@ -30,34 +29,33 @@ export function NavMain({ routes }: { routes: SidebarRoute[] }) {
   const pathName = usePathname();
 
   if (!routes || routes.length === 0) {
-    toast.error("No routes available");
-    redirect("/");
+    return null;
   }
+
   return (
     <>
       {routes?.map((item) => (
-        <SidebarGroup key={item.title}>
-          <SidebarGroupLabel># {item.title}</SidebarGroupLabel>
+        <SidebarGroup key={item.title} className="px-2 py-1.5">
+          <SidebarGroupLabel className="h-6 px-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-muted-foreground/90">
+            {item.title}
+          </SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-2">
-            <SidebarMenu>
+            <SidebarMenu className="gap-1.5">
               {item?.items?.map((subItem) => (
                 <SidebarMenuItem key={subItem.title}>
                   <SidebarMenuButton
+                    asChild
                     tooltip={subItem.title}
-                    // className={
-                    //   // subItem.title === activeItem
-                    //   //   ? "bg-accent/50 text-accent-foreground"
-                    //   //   : ""
-
-                    // }
                     isActive={isRouteActive(pathName, subItem.url)}
                     className={
-                      isRouteActive(pathName, subItem.url) ? "text-primary" : ""
+                      isRouteActive(pathName, subItem.url)
+                        ? "rounded-xl border border-primary/20 bg-primary/12 text-primary shadow-sm hover:text-primary transition-colors duration-200"
+                        : "rounded-xl text-sidebar-foreground/85 hover:bg-muted/55 hover:text-sidebar-foreground transition-colors duration-200"
                     }
                   >
-                    <Link href={subItem.url} >
-                    {subItem.icon && <subItem.icon className = "inline mr-2"/>}
-                    <span>{subItem.title}</span>
+                    <Link href={subItem.url} className="flex w-full items-center gap-2.5">
+                      {subItem.icon && <subItem.icon className="size-4 shrink-0" />}
+                      <span className="truncate text-[13px] font-medium">{subItem.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

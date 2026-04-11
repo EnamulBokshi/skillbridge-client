@@ -1,51 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { TutorDetailedProfile } from "@/types/tutor.type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, DollarSign } from "lucide-react";
-import Link from "next/link";
 
 interface TutorSlotsProps {
   slots: TutorDetailedProfile["slot"];
   tutorId: string;
 }
 
-const MAX_SLOTS_TO_SHOW = 20;
+const MAX_SLOTS_PER_DAY = 6;
 
 export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
   const router = useRouter();
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  // Filter available slots (not booked)
-  const availableSlots = slots.filter((slot) => !slot.isBooked);
-
-  // Check if a slot is in the past
-  const isSlotInPast = (slotEndTime: Date) => {
+  const availableSlots = useMemo(() => {
     const now = new Date();
-    const endTime = new Date(slotEndTime);
-    return endTime < now;
-  };
+    return slots.filter((slot) => !slot.isBooked && new Date(slot.endTime) > now);
+  }, [slots]);
 
-  // Group slots by date
-  const slotsByDate = availableSlots.reduce((acc, slot) => {
-    const date = new Date(slot.date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(slot);
-    return acc;
-  }, {} as Record<string, typeof availableSlots>);
+  const groupedSlots = useMemo(() => {
+    const grouped = availableSlots.reduce((acc, slot) => {
+      const dateLabel = new Date(slot.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      if (!acc[dateLabel]) {
+        acc[dateLabel] = [];
+      }
+
+      acc[dateLabel].push(slot);
+      return acc;
+    }, {} as Record<string, typeof availableSlots>);
+
+    return Object.entries(grouped).sort(
+      ([a], [b]) => new Date(a).getTime() - new Date(b).getTime(),
+    );
+  }, [availableSlots]);
 
   const handleBookSlot = (slotId: string) => {
-    // Redirect to confirm booking page with slot and tutor details
     router.push(`/confirm-booking?slotId=${slotId}&tutorId=${tutorId}`);
   };
 
@@ -56,108 +56,95 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
           <CardTitle>Available Slots</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center py-8">
-            No available slots at the moment. Please check back later.
-          </p>
+          <div className="rounded-2xl border border-dashed bg-muted/30 px-4 py-10 text-center">
+            <p className="text-sm font-medium">No available slots right now</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Please check back later or use the contact option for scheduling help.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
-        <CardTitle>Available Slots ({availableSlots.length})</CardTitle>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <CardTitle>Available Slots ({availableSlots.length})</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Book directly or view the full schedule below.
+          </p>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {Object.entries(slotsByDate).slice(0, MAX_SLOTS_TO_SHOW).map(([date, dateSlots]) => (
+        <div className="space-y-5">
+          {groupedSlots.map(([date, dateSlots]) => (
             <div key={date}>
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                {date}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {
-                dateSlots.length > MAX_SLOTS_TO_SHOW && (
-                  <div className="col-span-full text-sm text-muted-foreground">
-                    Showing first {MAX_SLOTS_TO_SHOW} of {dateSlots.length} slots
-                  </div>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <h3 className="flex items-center gap-2 font-semibold">
+                  <Calendar className="h-4 w-4" />
+                  {date}
+                </h3>
+                {dateSlots.length > MAX_SLOTS_PER_DAY && (
+                  <p className="text-xs text-muted-foreground">
+                    Showing first {MAX_SLOTS_PER_DAY} of {dateSlots.length}
+                  </p>
                 )}
-                {dateSlots.slice(0, MAX_SLOTS_TO_SHOW).map((slot) => {
-                  const isPastSlot = isSlotInPast(slot.endTime);
-                  const startTime = new Date(slot.startTime).toLocaleTimeString(
-                    "en-US",
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  );
-                  const endTime = new Date(slot.endTime).toLocaleTimeString(
-                    "en-US",
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  );
-                 if (isPastSlot) {
-                    return null;
-                 }
-                      
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {dateSlots.slice(0, MAX_SLOTS_PER_DAY).map((slot) => {
+                  const startTime = new Date(slot.startTime).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+
+                  const endTime = new Date(slot.endTime).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+
                   return (
                     <div
                       key={slot.id}
-                      className={`border rounded-lg p-4 transition-all ${
-                        isPastSlot
-                          ? "opacity-60 bg-muted/50"
-                          : selectedSlot === slot.id
-                          ? "border-primary bg-primary/5"
-                          : "hover:border-primary/50"
-                      }`}
+                      className="rounded-2xl border bg-background/70 p-4 shadow-sm transition-all hover:border-primary/40 hover:bg-background"
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="mb-3 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2 text-sm">
                           <Clock className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">
                             {startTime} - {endTime}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />
-                          <span className="font-bold">{slot.slotPrice}</span>
+                        <div className="flex items-center gap-1 text-sm">
+                          <DollarSign className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-semibold">
+                            {slot.isFree ? "Free" : slot.slotPrice}
+                          </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex gap-2 flex-wrap">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex flex-wrap gap-2">
                           {slot.isFeatured && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="rounded-full text-xs">
                               Featured
                             </Badge>
                           )}
                           {slot.isFree && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="rounded-full text-xs">
                               Free
                             </Badge>
                           )}
-                          {isPastSlot && (
-                            <Badge variant="destructive" className="text-xs">
-                              Past
-                            </Badge>
-                          )}
                         </div>
+
                         <Button
                           size="sm"
                           onClick={() => handleBookSlot(slot.id)}
-                          disabled={selectedSlot === slot.id || isPastSlot}
-                          className="shrink-0 min-w-[90px]"
+                          className="shrink-0 rounded-full min-w-24"
                         >
-                          {isPastSlot
-                            ? "Past"
-                            : selectedSlot === slot.id
-                            ? "Selected"
-                            : "Book Now"}
+                          Book Now
                         </Button>
                       </div>
                     </div>
@@ -166,10 +153,9 @@ export default function TutorSlots({ slots, tutorId }: TutorSlotsProps) {
               </div>
             </div>
           ))}
-          <Button>
-            <Link href={`/sessions?tutorId=${tutorId}`}>
-              View All Slots
-            </Link>
+
+          <Button asChild className="w-full rounded-xl">
+            <Link href={`/sessions?tutorId=${tutorId}`}>View All Slots</Link>
           </Button>
         </div>
       </CardContent>
