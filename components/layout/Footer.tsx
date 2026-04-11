@@ -1,11 +1,58 @@
 "use client"
 
+import { unsubscribeNewsletterAction } from '@/action/newsletter.action'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import React from 'react'
+import React, { useState } from 'react'
 import { socialMediaLinks } from '@/constants'
+import { toast } from 'sonner'
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function Footer() {
+  const [unsubscribeEmail, setUnsubscribeEmail] = useState('')
+  const [isUnsubscribeModalOpen, setIsUnsubscribeModalOpen] = useState(false)
+  const [isUnsubscribing, setIsUnsubscribing] = useState(false)
+
+  const handleUnsubscribe = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const normalizedEmail = unsubscribeEmail.trim().toLowerCase()
+    if (!EMAIL_REGEX.test(normalizedEmail)) {
+      toast.error('Please provide a valid email address')
+      return
+    }
+
+    setIsUnsubscribing(true)
+    const loading = toast.loading('Processing unsubscribe request...')
+
+    const { error, message } = await unsubscribeNewsletterAction({
+      email: normalizedEmail,
+    })
+
+    if (error) {
+      toast.error(message || 'Failed to unsubscribe', { id: loading })
+      setIsUnsubscribing(false)
+      return
+    }
+
+    toast.success(message || 'You are now unsubscribed', { id: loading })
+    setIsUnsubscribing(false)
+    setIsUnsubscribeModalOpen(false)
+    setUnsubscribeEmail('')
+  }
+
   return (
     <footer className="relative mt-auto overflow-hidden px-4 pb-6 pt-10 sm:px-6 lg:px-8">
       <div
@@ -152,6 +199,14 @@ export function Footer() {
                   Sign Up
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/#newsletter"
+                  className="text-muted-foreground transition-colors hover:text-primary"
+                >
+                  Newsletter
+                </Link>
+              </li>
             </ul>
             </div>
           </div>
@@ -204,7 +259,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/contact"
                   className="text-muted-foreground transition-colors hover:text-primary"
                 >
                   Contact Us
@@ -225,6 +280,49 @@ export function Footer() {
                 >
                   Terms of Service
                 </Link>
+              </li>
+              <li>
+                <Dialog
+                  open={isUnsubscribeModalOpen}
+                  onOpenChange={setIsUnsubscribeModalOpen}
+                >
+                  <DialogTrigger asChild>
+                    <button
+                      type="button"
+                      className="text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      Unsubscribe Newsletter
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Unsubscribe from Newsletter</DialogTitle>
+                      <DialogDescription>
+                        Enter your email to stop receiving newsletter updates.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <form onSubmit={handleUnsubscribe} className="space-y-4">
+                      <Input
+                        type="email"
+                        value={unsubscribeEmail}
+                        onChange={(event) => setUnsubscribeEmail(event.target.value)}
+                        placeholder="you@example.com"
+                        maxLength={160}
+                      />
+
+                      <DialogFooter>
+                        <Button
+                          type="submit"
+                          variant="destructive"
+                          disabled={isUnsubscribing}
+                        >
+                          {isUnsubscribing ? 'Submitting...' : 'Unsubscribe'}
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
               </li>
               <li>
                 <Link

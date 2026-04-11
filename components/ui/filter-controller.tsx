@@ -3,7 +3,6 @@
 import { Filter, RefreshCw, Search, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Input } from "./input";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import {
@@ -23,6 +22,7 @@ import {
   SelectValue,
 } from "./select";
 import { OSubject } from "@/types/subject.type";
+import SearchSuggestionInput from "@/components/modules/ai/SearchSuggestionInput";
 
 
 
@@ -119,18 +119,16 @@ export default function FilterController() {
       {/* Search & Filter Toggle */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search */}
-        <div className="flex gap-2 flex-1">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by subject, tutor, or category..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <Button onClick={handleSearch}>Search</Button>
-        </div>
+        <SearchSuggestionInput
+          value={search}
+          onChange={setSearch}
+          onSubmit={handleSearch}
+          context="all"
+          placeholder="Search by subject, tutor, or category..."
+          className="flex-1"
+          buttonClassName="shrink-0"
+          buttonLabel="Search"
+        />
 
         {/* Filters */}
         <div className="flex items-center gap-2">

@@ -82,3 +82,26 @@ export type ReviewSuggestionResponseData = {
   rating: number;
   suggestions: string[];
 };
+
+export type SearchSuggestionContext = "all" | "tutors" | "subjects" | "slots" | "categories";
+
+export type SearchSuggestionSource = "tutor" | "subject" | "category" | "slot" | "template";
+
+export type SearchSuggestionItem = {
+  text: string;
+  source: SearchSuggestionSource;
+  score: number;
+};
+
+export type SearchSuggestionResponseData = {
+  query: string;
+  context: SearchSuggestionContext;
+  source: "hybrid" | "fallback";
+  suggestions: string[];
+};
+
+export type SearchSuggestionRequestPayload = {
+  query: string;
+  context?: SearchSuggestionContext;
+  limit?: number;
+};

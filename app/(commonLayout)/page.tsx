@@ -7,6 +7,8 @@ import TutorPromoSection from '@/components/modules/common/TutorPromoSection';
 import WhyChooseUsSection from '@/components/modules/common/WhyChooseUsSection';
 import HomeSlotList from '@/components/modules/slot/HomeSlotList';
 import FeaturedTutorsHero from '@/components/modules/tutors/FeaturedTutorsHero';
+import ContactForm from '@/components/modules/contact/ContactForm';
+import HomeNewsletterSection from '@/components/modules/newsletter/HomeNewsletterSection';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -51,6 +53,10 @@ export default async function Home() {
     </section>
 
       <TestimonialsSection />
+
+      <ContactForm />
+
+      <HomeNewsletterSection />
 
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
