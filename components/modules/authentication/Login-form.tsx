@@ -18,19 +18,30 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { authClient } from "@/lib/auth-client";
+import { clearGuestSession, setGuestSession } from "@/helper/guest-session";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8, "At least 8 character required!!"),
 });
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const [formError, setFormError] = useState("");
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const handleGuestLogin = () => {
+    clearGuestSession();
+    setGuestSession();
+    toast.success("Guest demo mode enabled.");
+    router.push("/dashboard");
+  };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -65,6 +76,16 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
         if (error) {
           setFormError(error.message || "Unable to login. Please try again.");
+          return;
+        }
+
+        const sessionResult = await authClient.getSession();
+        const isVerified = Boolean(sessionResult?.data?.user?.emailVerified);
+
+        clearGuestSession();
+        if (!isVerified) {
+          toast.success("Login successful. Please verify your email.", { id: loading });
+          router.push(`/verify-email?email=${encodeURIComponent(value.email.toLowerCase())}`);
           return;
         }
 
@@ -178,6 +199,20 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
                 {!isGoogleLoading && <IconBrandGoogle className="inline" />}
               </Button>
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={handleGuestLogin}
+                className="mt-3 w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                Continue as Guest
+              </Button>
+              <div className="mt-4 text-sm text-muted-foreground">
+                <Link href="/forgot-password" className="underline underline-offset-4 hover:text-foreground">
+                  Forgot password?
+                </Link>
+              </div>
             </>
           )}
         </form.Subscribe>

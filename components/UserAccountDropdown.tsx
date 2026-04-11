@@ -5,6 +5,7 @@ import {
   ChevronDown,
   LayoutDashboard,
   LogOut,
+  KeyRound,
   UserCircle2,
 } from "lucide-react";
 import Link from "next/link";
@@ -128,6 +129,13 @@ export function UserAccountDropdown({
             <Link href={profileUrl} className="flex items-center gap-2">
               <UserCircle2 className="h-4 w-4" />
               Profile
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+            <Link href="/dashboard/change-password" className="flex items-center gap-2">
+              <KeyRound className="h-4 w-4" />
+              Change Password
             </Link>
           </DropdownMenuItem>
         </div>

@@ -65,5 +65,137 @@ export const userServices = {
             console.error(error);
             return {data: null, error: error.message, message: error.message};
         }
+    },
+    verifyEmailOtp: async (payload: { email: string; otp: string }) => {
+        try {
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/verify-email-otp`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const response = await res.json();
+            return {
+                data: response.data ?? null,
+                error: response.error ?? null,
+                message: response.message,
+                success: response.success,
+            };
+        } catch (error: any) {
+            return {
+                data: null,
+                error: error?.message ?? "Failed to verify OTP",
+                message: error?.message ?? "Failed to verify OTP",
+                success: false,
+            };
+        }
+    },
+    resendVerificationOtp: async (payload: { email: string }) => {
+        try {
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/resend-verification-otp`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const response = await res.json();
+            return {
+                data: response.data ?? null,
+                error: response.error ?? null,
+                message: response.message,
+                success: response.success,
+            };
+        } catch (error: any) {
+            return {
+                data: null,
+                error: error?.message ?? "Failed to resend OTP",
+                message: error?.message ?? "Failed to resend OTP",
+                success: false,
+            };
+        }
+    },
+    forgotPassword: async (payload: { email: string; redirectTo: string }) => {
+        try {
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/forgot-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const response = await res.json();
+            return {
+                data: response.data ?? null,
+                error: response.error ?? null,
+                message: response.message,
+                success: response.success,
+            };
+        } catch (error: any) {
+            return {
+                data: null,
+                error: error?.message ?? "Failed to send reset email",
+                message: error?.message ?? "Failed to send reset email",
+                success: false,
+            };
+        }
+    },
+    resetPassword: async (payload: { token: string; newPassword: string; confirmPassword: string }) => {
+        try {
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/reset-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const response = await res.json();
+            return {
+                data: response.data ?? null,
+                error: response.error ?? null,
+                message: response.message,
+                success: response.success,
+            };
+        } catch (error: any) {
+            return {
+                data: null,
+                error: error?.message ?? "Failed to reset password",
+                message: error?.message ?? "Failed to reset password",
+                success: false,
+            };
+        }
+    },
+    changePassword: async (payload: { currentPassword: string; newPassword: string; confirmPassword: string; revokeOtherSessions: boolean }) => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/users/change-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const response = await res.json();
+            return {
+                data: response.data ?? null,
+                error: response.error ?? null,
+                message: response.message,
+                success: response.success,
+            };
+        } catch (error: any) {
+            return {
+                data: null,
+                error: error?.message ?? "Failed to change password",
+                message: error?.message ?? "Failed to change password",
+                success: false,
+            };
+        }
     }
 }

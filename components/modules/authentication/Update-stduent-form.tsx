@@ -19,6 +19,7 @@ import { updateStudentProfile } from "@/services/student.service";
 import { StudentProfile } from "@/types/student.type";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -90,11 +91,19 @@ export function StudentProfileUpdateForm({profile,
   });
   return (
     <Card {...props}>
-      <CardHeader className="p-4 ">
-        <CardTitle>Student Profile</CardTitle>
-        <CardDescription>
-          Enter your information below to update your profile
-        </CardDescription>
+      <CardHeader className="p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Student Profile</CardTitle>
+            <CardDescription>
+              Enter your information below to update your profile
+            </CardDescription>
+          </div>
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <form

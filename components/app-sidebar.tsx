@@ -20,6 +20,7 @@ import { USER_ROLES } from "@/constants"
 import { SidebarRoute } from "@/types"
 import { IUser } from "@/types/user.type"
 import { adminRoutes } from "@/routes/adminRoutes"
+import { guestRoutes } from "@/routes/guestRoutes"
 import { studentRoutes } from "@/routes/studentRoutes"
 import { tutorRoutes } from "@/routes/tutorRoutes"
 
@@ -35,6 +36,10 @@ const roleMeta: Record<string, { label: string; subtitle: string }> = {
   [USER_ROLES.STUDENT]: {
     label: "Student Workspace",
     subtitle: "Learn, book, and improve outcomes",
+  },
+  [USER_ROLES.GUEST]: {
+    label: "Guest Demo",
+    subtitle: "Preview the platform with sample data",
   },
 }
 
@@ -53,6 +58,9 @@ export function AppSidebar({
       break
     case USER_ROLES.TUTOR:
       routes = tutorRoutes
+      break
+    case USER_ROLES.GUEST:
+      routes = guestRoutes
       break
     default:
       routes = []

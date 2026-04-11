@@ -35,6 +35,7 @@ import { Loading } from "@/components/common/Loading";
 import { TutorProfile, UpdateTutorPayload } from "@/types/tutor.type";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import { ChevronLeft } from "lucide-react";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -170,11 +171,19 @@ export function TutorProfileUpdateForm({
 
   return (
     <Card {...props}>
-      <CardHeader className="p-4 ">
-        <CardTitle>Tutor Profile</CardTitle>
-        <CardDescription>
-          Enter your information below to create your tutor profile
-        </CardDescription>
+      <CardHeader className="p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Tutor Profile</CardTitle>
+            <CardDescription>
+              Enter your information below to create your tutor profile
+            </CardDescription>
+          </div>
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <form

@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import * as z from "zod"
+import { clearGuestSession, setGuestSession } from "@/helper/guest-session"
 
 const formSchema = z.object({
   name: z.string().min(1,"This field is required"),
@@ -57,6 +58,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
   };
 
+  const handleGuestLogin = () => {
+    clearGuestSession();
+    setGuestSession();
+    toast.success("Guest demo mode enabled.");
+    router.push("/dashboard");
+  };
+
   const form = useForm({
     defaultValues:{
       name: "",
@@ -77,8 +85,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           setFormError(error.message || "Failed to create account. Please try again.")
           return;
         }
-        toast.success("User created successfully!!", {id: loading})
-        router.push("/");
+        clearGuestSession();
+        toast.success("User created successfully!! Verify your email to continue.", {id: loading})
+        router.push(`/verify-email?email=${encodeURIComponent(value.email.toLowerCase())}`);
        } catch (error) {
         console.error("Error during sign-up:", error);
         setFormError("An unexpected error occurred. Please try again.");
@@ -214,6 +223,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
                 {!isGoogleLoading && <IconBrandGoogle className="inline"/>}
+              </Button>
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={handleGuestLogin}
+                className="mt-3 w-full"
+                disabled={isSubmitting || isGoogleLoading}
+              >
+                Continue as Guest
               </Button>
             </>
           )}

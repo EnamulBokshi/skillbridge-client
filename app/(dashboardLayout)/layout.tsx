@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { USER_ROLES } from '@/constants';
+import { GUEST_SESSION_COOKIE, guestUserProfile } from '@/helper/guest-session';
+import { GuestAccessNotice } from '@/components/modules/dashboard/GuestAccessNotice';
 import { userServices } from '@/services/user.service';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 import React from 'react'
 
@@ -16,6 +19,8 @@ export default async function DashBoardLayout({
 }:{
     children: React.ReactNode
 }) {
+    const cookieStore = await cookies();
+    const isGuestMode = cookieStore.get(GUEST_SESSION_COOKIE)?.value === 'true';
     const {data} = await userServices.getSession();
       // const session = await authClient.getSession();
       const user = data?.user;
@@ -23,7 +28,7 @@ export default async function DashBoardLayout({
       console.log("Session in Layout:", data);
 
     // const user:IUser = data?.user;
-    if(error || !user){
+    if(error || (!user && !isGuestMode)){
         return (
             <div>
                 <h1 className='text-center text-2xl font-bold mt-10'>Access Denied</h1>
@@ -36,6 +41,40 @@ export default async function DashBoardLayout({
         )
     }
 
+
+    if (isGuestMode && !user) {
+      return (
+        <SidebarProvider>
+          <AppSidebar user={guestUserProfile as any} variant='inset'/>
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-4"
+              />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem className="hidden md:block">
+                    <BreadcrumbLink href="#">
+                      Guest
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage></BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </header>
+            <div className="flex flex-1 flex-col gap-4 p-4">
+              <GuestAccessNotice />
+              {children}
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      )
+    }
 
     
   const {data:profile,error:profileError} = await userServices.getUser(user.id)

@@ -14,10 +14,11 @@ export async function proxy(request: NextRequest) {
   const sessionToken =
     request.cookies.get("__Secure-better-auth.session_token") ??
     request.cookies.get("better-auth.session_token");
+  const guestToken = request.cookies.get("skillbridge-demo-session");
 
   //* User is not authenticated at all
 
-  if (!sessionToken) {
+  if (!sessionToken && !guestToken) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = ""; // optional: clean query

@@ -1,7 +1,8 @@
 export enum USER_ROLES {
     ADMIN = 'ADMIN',
     TUTOR = 'TUTOR',
-    STUDENT = 'STUDENT'
+    STUDENT = 'STUDENT',
+    GUEST = 'GUEST'
 }
 
 export const socialMediaLinks = {
