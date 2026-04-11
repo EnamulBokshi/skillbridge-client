@@ -1,5 +1,5 @@
 import { getCategoriesAction } from '@/action/category.action';
-import { CategoryForm } from '@/components/modules/category/CategoryForm';
+import { CategoryCreateDialog } from '@/components/modules/category/CategoryCreateDialog';
 import { CategoryTableWrapper } from '@/components/modules/category/CategoryTableWrapper';
 import { Category } from '@/types/category.type';
 import React from 'react';
@@ -18,11 +18,11 @@ export default async function CategoryPage() {
             Manage your course categories
           </p>
         </div>
+
+        <CategoryCreateDialog />
       </div>
 
       <CategoryTableWrapper categories={categories} />
-
-      <CategoryForm />
     </div>
   );
 }

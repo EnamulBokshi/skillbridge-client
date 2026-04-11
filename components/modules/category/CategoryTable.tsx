@@ -69,11 +69,11 @@ export function CategoryTable({
   }
 
   return (
-    <div className="rounded-2xl border bg-background shadow-sm">
+    <div className="rounded-xl border border-white/10 bg-background/55 p-3 shadow-sm backdrop-blur-md md:p-4">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/40">
-            <TableHead className="w-[240px]">Category</TableHead>
+            <TableHead className="w-60">Category</TableHead>
             <TableHead>Slug</TableHead>
             {/* <TableHead>Status</TableHead> */}
             <TableHead>Created At</TableHead>
@@ -95,7 +95,7 @@ export function CategoryTable({
           )}
 
           {categories.map((category) => (
-            <TableRow key={category.id} className="hover:bg-muted/40">
+            <TableRow key={category.id} className="transition-colors hover:bg-muted/30">
               <TableCell className="font-medium">
                 {category.name}
                 <div className="text-xs text-muted-foreground line-clamp-1">

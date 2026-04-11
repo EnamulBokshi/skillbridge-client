@@ -19,3 +19,8 @@ export interface IContact {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UpdateContactPayload {
+  status?: string;
+  adminReply?: string;
+}

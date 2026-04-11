@@ -23,6 +23,7 @@ import {
 } from "./select";
 import { OSubject } from "@/types/subject.type";
 import SearchSuggestionInput from "@/components/modules/ai/SearchSuggestionInput";
+import { Input } from "./input";
 
 
 

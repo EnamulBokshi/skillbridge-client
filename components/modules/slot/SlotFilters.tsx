@@ -23,6 +23,7 @@ import { useState, useCallback, useEffect } from "react";
 import { getSubjectsAction } from "@/action/subject.action";
 import { Loading } from "@/components/common/Loading";
 import SearchSuggestionInput from "@/components/modules/ai/SearchSuggestionInput";
+import { Input } from "@/components/ui/input";
 
 interface SlotFiltersProps {
   onFilterChange: (filters: SlotSearchParams) => void;
