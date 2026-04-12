@@ -8,12 +8,20 @@ import handleParams from "@/helper/handleSearchParams";
 
 const getAllUser = async (params?: UserFilterParams): Promise<PaginatedResponse<IUser>> => {
     try {
-`${env.NEXT_PUBLIC_API_URL}/admin/users`
         const cookieStore = await cookies();
 
         const url = new URL(`${env.NEXT_PUBLIC_API_URL}/admin/users`);
-        const paramUrl = handleParams(url.toString(), params)
-        const respone = await fetch(paramUrl, {
+        
+        // Manually add params for UserFilterParams type compatibility
+        if (params) {
+            if (params.page !== undefined) url.searchParams.append('page', params.page.toString());
+            if (params.limit !== undefined) url.searchParams.append('limit', params.limit.toString());
+            if (params.search) url.searchParams.append('search', params.search);
+            if (params.role) url.searchParams.append('role', params.role);
+            if (params.status) url.searchParams.append('status', params.status);
+        }
+        
+        const respone = await fetch(url.toString(), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -302,9 +310,17 @@ const getAllUsers = async (params?: UserFilterParams): Promise<PaginatedResponse
     try {
         const cookieStore = await cookies();
         const url = new URL(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/users`);
-        const paramUrl = handleParams(url.toString(), params);
         
-        const response = await fetch(paramUrl, {
+        // Manually add params for UserFilterParams type compatibility
+        if (params) {
+            if (params.page !== undefined) url.searchParams.append('page', params.page.toString());
+            if (params.limit !== undefined) url.searchParams.append('limit', params.limit.toString());
+            if (params.search) url.searchParams.append('search', params.search);
+            if (params.role) url.searchParams.append('role', params.role);
+            if (params.status) url.searchParams.append('status', params.status);
+        }
+        
+        const response = await fetch(url.toString(), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

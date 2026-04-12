@@ -50,6 +50,8 @@ export interface UpdateUserPayload {
 }
 
 export interface UserFilterParams {
+    page?: number;
+    limit?: number;
     role?: string;
     status?: string;
     search?: string;

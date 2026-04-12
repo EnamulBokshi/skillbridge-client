@@ -2,14 +2,20 @@
 "use client"
 
 import { useEffect, useState, useCallback } from 'react';
-import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAllAdminsAction, deleteAdminAction } from '@/action/admin.action';
 import { AdminUser } from '@/types/admin.type';
-import { ColumnDef } from '@tanstack/react-table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import AdminCreateModal from './AdminCreateModal';
 import AdminEditModal from './AdminEditModal';
 import AdminDeleteConfirmModal from './AdminDeleteConfirmModal';
@@ -59,7 +65,13 @@ export default function AdminManagementTable({ currentUserId }: AdminManagementT
             admin.name.toLowerCase().includes(debouncedSearch.toLowerCase())
           );
         }
-        setAdmins(filtered);
+        // Transform dates to strings to match AdminUser type
+        const transformedAdmins: AdminUser[] = filtered.map(admin => ({
+          ...admin,
+          createdAt: typeof admin.createdAt === 'string' ? admin.createdAt : admin.createdAt.toISOString(),
+          updatedAt: typeof admin.updatedAt === 'string' ? admin.updatedAt : admin.updatedAt.toISOString(),
+        }));
+        setAdmins(transformedAdmins);
         setTotalPages(response.data.pagination?.totalPages || 1);
       }
     } catch (error) {
@@ -104,80 +116,6 @@ export default function AdminManagementTable({ currentUserId }: AdminManagementT
     }
   };
 
-  const columns: ColumnDef<AdminUser>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
-      cell: ({ row }) => (
-        <span className="capitalize px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-          {row.getValue("role")}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
-        return (
-          <span className={`capitalize px-2 py-1 rounded text-sm ${
-            status === 'active' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {status}
-          </span>
-        );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created",
-      cell: ({ row }) => new Date(row.getValue("createdAt") as string).toLocaleDateString(),
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const admin = row.original;
-        const isCurrentUser = admin.id === currentUserId;
-        
-        return (
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleEdit(admin)}
-              className="gap-1"
-            >
-              <Pencil className="w-4 h-4" />
-              Edit
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleDeleteClick(admin)}
-              disabled={isCurrentUser}
-              className="gap-1"
-              title={isCurrentUser ? "Cannot delete yourself" : ""}
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
   return (
     <div className="space-y-4">
       {/* Glassmorphism Header with Search and Create Button */}
@@ -203,11 +141,75 @@ export default function AdminManagementTable({ currentUserId }: AdminManagementT
 
       {/* Glassmorphism Table Container */}
       <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-lg shadow-lg overflow-hidden">
-        <DataTable 
-          columns={columns} 
-          data={admins} 
-          isLoading={loading}
-        />
+        {loading ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-500">Loading admins...</p>
+          </div>
+        ) : admins.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-500">No admins found</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {admins.map((admin) => (
+                <TableRow key={admin.id}>
+                  <TableCell>{admin.name}</TableCell>
+                  <TableCell>{admin.email}</TableCell>
+                  <TableCell>
+                    <span className="capitalize px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                      {admin.role}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`capitalize px-2 py-1 rounded text-sm ${
+                      admin.status === 'active' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {admin.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>{new Date(admin.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(admin)}
+                        className="gap-1"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteClick(admin)}
+                        disabled={admin.id === currentUserId}
+                        className="gap-1"
+                        title={admin.id === currentUserId ? "Cannot delete yourself" : ""}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
       {/* Modals */}

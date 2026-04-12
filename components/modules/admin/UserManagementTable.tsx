@@ -2,7 +2,6 @@
 "use client"
 
 import { useEffect, useState, useCallback } from 'react';
-import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Trash2, Ban, CheckCircle } from 'lucide-react';
@@ -14,7 +13,14 @@ import {
   unbanUserAction 
 } from '@/action/admin.action';
 import { IUser } from '@/types/user.type';
-import { ColumnDef } from '@tanstack/react-table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import UserDeleteConfirmModal from './UserDeleteConfirmModal';
 
 interface UserManagementTableProps {
@@ -131,90 +137,6 @@ export default function UserManagementTable({ currentUserId }: UserManagementTab
     }
   };
 
-  const columns: ColumnDef<IUser>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
-      cell: ({ row }) => (
-        <span className="capitalize px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-          {row.getValue("role")}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
-        return (
-          <span className={`capitalize px-2 py-1 rounded text-sm ${
-            status === 'active' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {status}
-          </span>
-        );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created",
-      cell: ({ row }) => new Date(row.getValue("createdAt") as string).toLocaleDateString(),
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const user = row.original;
-        const isBanned = user.status === 'banned';
-        
-        return (
-          <div className="flex gap-2 flex-wrap">
-            {isBanned ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleUnban(user)}
-                className="gap-1"
-              >
-                <CheckCircle className="w-4 h-4" />
-                Unban
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleBan(user)}
-                className="gap-1 text-orange-600 hover:text-orange-700"
-              >
-                <Ban className="w-4 h-4" />
-                Ban
-              </Button>
-            )}
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleDeleteClick(user)}
-              className="gap-1"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
   return (
     <div className="space-y-4">
       {/* Glassmorphism Header with Search and Filters */}
@@ -252,9 +174,9 @@ export default function UserManagementTable({ currentUserId }: UserManagementTab
               className="px-3 py-2 rounded-md border border-white/30 bg-white/50 backdrop-blur-sm text-sm"
             >
               <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="banned">Banned</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="BANNED">Banned</option>
             </select>
           </div>
         </div>
@@ -262,11 +184,85 @@ export default function UserManagementTable({ currentUserId }: UserManagementTab
 
       {/* Glassmorphism Table Container */}
       <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-lg shadow-lg overflow-hidden">
-        <DataTable 
-          columns={columns} 
-          data={users} 
-          isLoading={loading}
-        />
+        {loading ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-500">Loading users...</p>
+          </div>
+        ) : users.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-500">No users found</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <span className="capitalize px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                      {user.role}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`capitalize px-2 py-1 rounded text-sm ${
+                      user.status === 'ACTIVE' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {user.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2 flex-wrap">
+                      {user.status === 'BANNED' ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleUnban(user)}
+                          className="gap-1"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Unban
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleBan(user)}
+                          className="gap-1 text-orange-600 hover:text-orange-700"
+                        >
+                          <Ban className="w-4 h-4" />
+                          Ban
+                        </Button>
+                      )}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteClick(user)}
+                        className="gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}
