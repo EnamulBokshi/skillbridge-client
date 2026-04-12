@@ -4,8 +4,6 @@ import {
   AiChatRequestPayload,
   AiChatResponseData,
   AiModelsResponseData,
-  ReviewSuggestionRequestPayload,
-  ReviewSuggestionResponseData,
   TutorBioWriterRequestPayload,
   TutorBioWriterResponseData,
   TutorRecommendationRequestPayload,
@@ -187,47 +185,5 @@ export const aiService = {
       };
     }
   },
-
-  getReviewSuggestions: async (
-    payload: ReviewSuggestionRequestPayload,
-  ): Promise<TResponse<ReviewSuggestionResponseData>> => {
-    try {
-      const cookieStore = await cookies();
-      const response = await fetch(`${apiBaseUrl}/ai/write/review-suggestions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const message = await parseErrorMessage(response);
-        return {
-          data: null,
-          error: { message },
-          success: false,
-          message,
-        };
-      }
-
-      const json = await response.json();
-      console.log("Review suggestions response:", json);
-      return {
-        data: json?.data,
-        error: null,
-        success: true,
-        message: json?.message,
-      };
-    } catch (error: any) {
-      return {
-        data: null,
-        error: { message: error?.message || "Failed to generate review suggestions" },
-        success: false,
-      };
-    }
-  },
-
 
 };

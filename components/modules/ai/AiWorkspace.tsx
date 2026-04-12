@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import {
   chatWithAiAction,
   getAiModelsAction,
-  getReviewSuggestionsAiAction,
   getTutorRecommendationsAiAction,
   writeTutorBioAiAction,
 } from "@/action/ai.action";
@@ -24,7 +23,6 @@ import AiMarkdownMessage from "./AiMarkdownMessage";
 import {
   AiChatHistoryItem,
   AiModelsResponseData,
-  ReviewSuggestionResponseData,
   TutorBioWriterRequestPayload,
   TutorRecommendationItem,
   TutorRecommendationRequestPayload,
@@ -46,7 +44,7 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
   const [isChatPending, startChatTransition] = useTransition();
   const [isRecoPending, startRecoTransition] = useTransition();
   const [isBioPending, startBioTransition] = useTransition();
-  const [isReviewSuggestionPending, startReviewSuggestionTransition] = useTransition();
+  const showWritingTools = roleHint !== "student";
 
   const [prompt, setPrompt] = useState("");
   const [context, setContext] = useState("");
@@ -88,11 +86,20 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
   const [generatedBio, setGeneratedBio] = useState<string>("");
   const [bioUsedData, setBioUsedData] = useState<TutorBioWriterRequestPayload | null>(null);
 
-  const [reviewSuggestionForm, setReviewSuggestionForm] = useState({
-    rating: "5",
-    count: "3",
-  });
-  const [reviewSuggestionResult, setReviewSuggestionResult] = useState<ReviewSuggestionResponseData | null>(null);
+  const extractCategories = (payload: unknown): Category[] => {
+    if (Array.isArray(payload)) return payload as Category[];
+
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "data" in payload &&
+      Array.isArray((payload as { data?: unknown }).data)
+    ) {
+      return (payload as { data: Category[] }).data;
+    }
+
+    return [];
+  };
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -101,8 +108,11 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
         getAiModelsAction(),
       ]);
 
-      if (categoryResult?.data && Array.isArray(categoryResult.data)) {
-        setCategories(categoryResult.data);
+      const fetchedCategories = extractCategories(categoryResult?.data);
+      if (fetchedCategories.length) {
+        setCategories(fetchedCategories);
+      } else if (categoryResult?.error) {
+        toast.error(categoryResult.error.message || "Failed to fetch categories.");
       }
 
       if (modelResult?.data?.models) {
@@ -263,34 +273,6 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
     });
   };
 
-  const handleGenerateReviewSuggestions = () => {
-    const rating = Number(reviewSuggestionForm.rating);
-    const count = Number(reviewSuggestionForm.count);
-
-    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
-      toast.error("Rating must be between 1 and 5.");
-      return;
-    }
-
-    if (!Number.isInteger(count) || count < 1 || count > 5) {
-      toast.error("Count must be an integer between 1 and 5.");
-      return;
-    }
-
-    startReviewSuggestionTransition(async () => {
-      const result = await getReviewSuggestionsAiAction({ rating, count });
-
-      if (result.error || !result.data) {
-        toast.error(
-          result.error?.message || result.message || "Failed to generate review suggestions.",
-        );
-        return;
-      }
-
-      setReviewSuggestionResult(result.data);
-    });
-  };
-
   return (
     <div className="space-y-6">
       <Card>
@@ -300,7 +282,9 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
             SkillBridge AI Workspace
           </CardTitle>
           <CardDescription>
-            Use AI for chat support, tutor recommendations, and writing tools. Current model: {selectedModel}
+            {showWritingTools
+              ? `Use AI for chat support, tutor recommendations, and tutor writing tools. Current model: ${selectedModel}`
+              : `Use AI for chat support and tutor recommendations. Current model: ${selectedModel}`}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -315,10 +299,12 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
             <Sparkles className="h-4 w-4" />
             Tutor Recommendations
           </TabsTrigger>
-          <TabsTrigger value="writing" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            Writing Tools
-          </TabsTrigger>
+          {showWritingTools && (
+            <TabsTrigger value="writing" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              Writing Tools
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="chat" className="space-y-4">
@@ -619,217 +605,150 @@ export default function AiWorkspace({ roleHint = "student" }: AiWorkspaceProps) 
           </Card>
         </TabsContent>
 
-        <TabsContent value="writing" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Tutor Bio Writer</CardTitle>
-              <CardDescription>
-                Fill available tutor profile data and generate a concise professional bio.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="bio-first-name">First Name</Label>
-                  <Input
-                    id="bio-first-name"
-                    value={bioWriterForm.firstName}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, firstName: e.target.value }))
-                    }
-                    placeholder="Md."
-                  />
+        {showWritingTools && (
+          <TabsContent value="writing" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Tutor Bio Writer</CardTitle>
+                <CardDescription>
+                  Fill available tutor profile data and generate a concise professional bio.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-first-name">First Name</Label>
+                    <Input
+                      id="bio-first-name"
+                      value={bioWriterForm.firstName}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, firstName: e.target.value }))
+                      }
+                      placeholder="Md."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-last-name">Last Name</Label>
+                    <Input
+                      id="bio-last-name"
+                      value={bioWriterForm.lastName}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, lastName: e.target.value }))
+                      }
+                      placeholder="Haque"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-completed-sessions">Completed Sessions</Label>
+                    <Input
+                      id="bio-completed-sessions"
+                      type="number"
+                      min={0}
+                      value={bioWriterForm.completedSessions}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, completedSessions: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-exp-years">Experience Years</Label>
+                    <Input
+                      id="bio-exp-years"
+                      type="number"
+                      min={0}
+                      value={bioWriterForm.experienceYears}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, experienceYears: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-avg-rating">Average Rating</Label>
+                    <Input
+                      id="bio-avg-rating"
+                      type="number"
+                      min={0}
+                      max={5}
+                      step="0.1"
+                      value={bioWriterForm.avgRating}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, avgRating: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio-total-reviews">Total Reviews</Label>
+                    <Input
+                      id="bio-total-reviews"
+                      type="number"
+                      min={0}
+                      value={bioWriterForm.totalReviews}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, totalReviews: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="bio-expertise">Expertise Areas (comma-separated)</Label>
+                    <Input
+                      id="bio-expertise"
+                      value={bioWriterForm.expertiseAreas}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, expertiseAreas: e.target.value }))
+                      }
+                      placeholder="Mathematics, Algebra, Geometry"
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="bio-categories">Categories (comma-separated)</Label>
+                    <Input
+                      id="bio-categories"
+                      value={bioWriterForm.categories}
+                      onChange={(e) =>
+                        setBioWriterForm((prev) => ({ ...prev, categories: e.target.value }))
+                      }
+                      placeholder="Academic, Language, Exam Prep"
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="bio-last-name">Last Name</Label>
-                  <Input
-                    id="bio-last-name"
-                    value={bioWriterForm.lastName}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, lastName: e.target.value }))
-                    }
-                    placeholder="Haque"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bio-completed-sessions">Completed Sessions</Label>
-                  <Input
-                    id="bio-completed-sessions"
-                    type="number"
-                    min={0}
-                    value={bioWriterForm.completedSessions}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, completedSessions: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bio-exp-years">Experience Years</Label>
-                  <Input
-                    id="bio-exp-years"
-                    type="number"
-                    min={0}
-                    value={bioWriterForm.experienceYears}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, experienceYears: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bio-avg-rating">Average Rating</Label>
-                  <Input
-                    id="bio-avg-rating"
-                    type="number"
-                    min={0}
-                    max={5}
-                    step="0.1"
-                    value={bioWriterForm.avgRating}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, avgRating: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bio-total-reviews">Total Reviews</Label>
-                  <Input
-                    id="bio-total-reviews"
-                    type="number"
-                    min={0}
-                    value={bioWriterForm.totalReviews}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, totalReviews: e.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="bio-expertise">Expertise Areas (comma-separated)</Label>
-                  <Input
-                    id="bio-expertise"
-                    value={bioWriterForm.expertiseAreas}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, expertiseAreas: e.target.value }))
-                    }
-                    placeholder="Mathematics, Algebra, Geometry"
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="bio-categories">Categories (comma-separated)</Label>
-                  <Input
-                    id="bio-categories"
-                    value={bioWriterForm.categories}
-                    onChange={(e) =>
-                      setBioWriterForm((prev) => ({ ...prev, categories: e.target.value }))
-                    }
-                    placeholder="Academic, Language, Exam Prep"
-                  />
-                </div>
-              </div>
-
-              <Button onClick={handleGenerateTutorBio} disabled={isBioPending}>
-                {isBioPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generating Bio...
-                  </>
-                ) : (
-                  "Generate Tutor Bio"
-                )}
-              </Button>
-
-              {!!generatedBio && (
-                <div className="space-y-3 rounded-lg border border-border bg-card p-4">
-                  <p className="text-sm font-medium">Generated Bio</p>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{generatedBio}</p>
-
-                  {bioUsedData && (
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground">Used fields</p>
-                      <pre className="rounded-md bg-muted p-3 text-xs overflow-x-auto">
-                        {JSON.stringify(bioUsedData, null, 2)}
-                      </pre>
-                    </div>
+                <Button onClick={handleGenerateTutorBio} disabled={isBioPending}>
+                  {isBioPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating Bio...
+                    </>
+                  ) : (
+                    "Generate Tutor Bio"
                   )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                </Button>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Review Suggestion Generator</CardTitle>
-              <CardDescription>
-                Generate ready-to-use student review suggestions based on rating and desired count.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="review-rating">Rating (1-5)</Label>
-                  <Input
-                    id="review-rating"
-                    type="number"
-                    min={1}
-                    max={5}
-                    step="1"
-                    value={reviewSuggestionForm.rating}
-                    onChange={(e) =>
-                      setReviewSuggestionForm((prev) => ({ ...prev, rating: e.target.value }))
-                    }
-                  />
-                </div>
+                {!!generatedBio && (
+                  <div className="space-y-3 rounded-lg border border-border bg-card p-4">
+                    <p className="text-sm font-medium">Generated Bio</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{generatedBio}</p>
 
-                <div className="space-y-2">
-                  <Label htmlFor="review-count">Suggestion Count (1-5)</Label>
-                  <Input
-                    id="review-count"
-                    type="number"
-                    min={1}
-                    max={5}
-                    step="1"
-                    value={reviewSuggestionForm.count}
-                    onChange={(e) =>
-                      setReviewSuggestionForm((prev) => ({ ...prev, count: e.target.value }))
-                    }
-                  />
-                </div>
-              </div>
-
-              <Button
-                onClick={handleGenerateReviewSuggestions}
-                disabled={isReviewSuggestionPending}
-              >
-                {isReviewSuggestionPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generating Suggestions...
-                  </>
-                ) : (
-                  "Generate Review Suggestions"
+                    {bioUsedData && (
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground">Used fields</p>
+                        <pre className="rounded-md bg-muted p-3 text-xs overflow-x-auto">
+                          {JSON.stringify(bioUsedData, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
                 )}
-              </Button>
-
-              {!!reviewSuggestionResult?.suggestions?.length && (
-                <div className="space-y-3 rounded-lg border border-border bg-card p-4">
-                  <p className="text-sm font-medium">
-                    Suggestions for rating {reviewSuggestionResult.rating}/5
-                  </p>
-                  <ol className="list-decimal ml-5 space-y-2 text-sm text-muted-foreground">
-                    {reviewSuggestionResult.suggestions.map((suggestion, idx) => (
-                      <li key={`${idx}-${suggestion}`}>{suggestion}</li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

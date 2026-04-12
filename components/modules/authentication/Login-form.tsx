@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 
 import { authClient } from "@/lib/auth-client";
 import { clearGuestSession, setGuestSession } from "@/helper/guest-session";
+import { resendVerificationOtpAction } from "@/action/user.action";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,8 @@ const formSchema = z.object({
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const [formError, setFormError] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleGuestLogin = () => {
@@ -46,16 +49,46 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     setFormError("");
+    setUnverifiedEmail("");
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "https://skillbridge-client-dusky.vercel.app/dashboard",
+        callbackURL: `${window.location.origin}/dashboard`,
       });
     } catch (error) {
       console.error("Google login error:", error);
       setFormError("Google login failed. Please try again.");
     } finally {
       setIsGoogleLoading(false);
+    }
+  };
+
+  const handleVerifyEmailClick = async () => {
+    if (!unverifiedEmail) return;
+
+    const loading = toast.loading("Sending a fresh OTP to your email...");
+    setIsResendingOtp(true);
+
+    try {
+      const result = await resendVerificationOtpAction({ email: unverifiedEmail });
+
+      if (result?.error) {
+        toast.error(result?.message || result?.error?.message || "Failed to send OTP.", {
+          id: loading,
+        });
+        return;
+      }
+
+      toast.success(result?.message || "A new OTP has been sent to your email.", {
+        id: loading,
+      });
+      router.push(`/verify-email?email=${encodeURIComponent(unverifiedEmail)}`);
+    } catch (error) {
+      console.error("Resend verification OTP from login failed:", error);
+      toast.error("Failed to send OTP. Please try again.", { id: loading });
+    } finally {
+      toast.dismiss(loading);
+      setIsResendingOtp(false);
     }
   };
 
@@ -70,12 +103,21 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       const loading = toast.loading("Please wait, signing in...");
       setFormError("");
+      setUnverifiedEmail("");
 
       try {
         const { error } = await authClient.signIn.email(value);
 
         if (error) {
-          setFormError(error.message || "Unable to login. Please try again.");
+          const normalizedEmail = value.email.trim().toLowerCase();
+          const errorMessage = error.message || "Unable to login. Please try again.";
+          if (/email\s+not\s+verified/i.test(errorMessage)) {
+            setFormError("Your email is not verified. Verify your email to continue.");
+            setUnverifiedEmail(normalizedEmail);
+            return;
+          }
+
+          setFormError(errorMessage);
           return;
         }
 
@@ -136,6 +178,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                       value={field.state.value}
                       onChange={(e) => {
                         if (formError) setFormError("");
+                        if (unverifiedEmail) setUnverifiedEmail("");
                         field.handleChange(e.target.value);
                       }}
                       placeholder="Email Address"
@@ -181,11 +224,27 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
             <>
+              {!!unverifiedEmail && (
+                <div className="mb-3 space-y-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleVerifyEmailClick}
+                    disabled={isSubmitting || isGoogleLoading || isResendingOtp}
+                  >
+                    {isResendingOtp ? "Sending OTP..." : "Verify Email"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    We will send a fresh OTP first, then take you to email verification.
+                  </p>
+                </div>
+              )}
               <Button
                 type="submit"
                 form="login-form"
                 className="w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || isResendingOtp}
               >
                 {isSubmitting ? "Signing in..." : "Login"}
               </Button>
@@ -194,7 +253,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="button"
                 onClick={() => handleGoogleLogin()}
                 className="mt-3 w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || isResendingOtp}
               >
                 {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
                 {!isGoogleLoading && <IconBrandGoogle className="inline" />}
@@ -204,7 +263,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="button"
                 onClick={handleGuestLogin}
                 className="mt-3 w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || isResendingOtp}
               >
                 Continue as Guest
               </Button>

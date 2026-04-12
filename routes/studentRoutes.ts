@@ -19,7 +19,7 @@ export const studentRoutes = [
         icon: SquareTerminal,
       },
       {
-        title: "Booking History",
+        title: "All Sessions",
         url: "/dashboard/student/bookings/all",
         icon: FileBarChartIcon,
       },

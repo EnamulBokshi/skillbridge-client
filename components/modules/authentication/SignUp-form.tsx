@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { env } from "@/env"
 import { authClient } from "@/lib/auth-client"
 import { IconBrandGoogle } from "@tabler/icons-react"
 import {useForm} from "@tanstack/react-form"
@@ -38,7 +37,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     try {
       const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: env.NEXT_PUBLIC_APP_URL
+      callbackURL: window.location.origin
     });
     
     if(data) {

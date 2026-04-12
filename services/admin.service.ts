@@ -168,11 +168,275 @@ const getBookings = async(params?:BookingSearchParams):Promise<PaginatedResponse
       };
     }
 }
+// ============ SUPER_ADMIN SERVICES ============
+
+const getAllAdmins = async (page: number = 1, limit: number = 10) => {
+    try {
+        const cookieStore = await cookies();
+        const url = new URL(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/admins`);
+        url.searchParams.append("page", page.toString());
+        url.searchParams.append("limit", limit.toString());
+        
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        return (await response.json()) as PaginatedResponse<IUser>;
+    } catch (error: any) {
+        console.error("Error fetching admins:", error);
+        throw new Error(error.message || "An error occurred while fetching admins.");
+    }
+};
+
+const createAdmin = async (payload: { email: string; name: string; password: string }) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/admins`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to create admin",
+                message: data.message || "Failed to create admin",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "Admin created successfully",
+        };
+    } catch (error: any) {
+        console.error("Error creating admin:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while creating admin",
+            message: error.message || "An error occurred while creating admin",
+        };
+    }
+};
+
+const updateAdmin = async (adminId: string, payload: { email?: string; name?: string; status?: string }) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/admins/${adminId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to update admin",
+                message: data.message || "Failed to update admin",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "Admin updated successfully",
+        };
+    } catch (error: any) {
+        console.error("Error updating admin:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while updating admin",
+            message: error.message || "An error occurred while updating admin",
+        };
+    }
+};
+
+const deleteAdmin = async (adminId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/admins/${adminId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to delete admin",
+                message: data.message || "Failed to delete admin",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "Admin deleted successfully",
+        };
+    } catch (error: any) {
+        console.error("Error deleting admin:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while deleting admin",
+            message: error.message || "An error occurred while deleting admin",
+        };
+    }
+};
+
+const getAllUsers = async (params?: UserFilterParams): Promise<PaginatedResponse<IUser>> => {
+    try {
+        const cookieStore = await cookies();
+        const url = new URL(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/users`);
+        const paramUrl = handleParams(url.toString(), params);
+        
+        const response = await fetch(paramUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        return (await response.json()) as PaginatedResponse<IUser>;
+    } catch (error: any) {
+        console.error("Error fetching users:", error);
+        throw new Error(error.message || "An error occurred while fetching users.");
+    }
+};
+
+const deleteUser = async (userId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/users/${userId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to delete user",
+                message: data.message || "Failed to delete user",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "User deleted successfully",
+        };
+    } catch (error: any) {
+        console.error("Error deleting user:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while deleting user",
+            message: error.message || "An error occurred while deleting user",
+        };
+    }
+};
+
+const banUser = async (userId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/users/${userId}/ban`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to ban user",
+                message: data.message || "Failed to ban user",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "User banned successfully",
+        };
+    } catch (error: any) {
+        console.error("Error banning user:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while banning user",
+            message: error.message || "An error occurred while banning user",
+        };
+    }
+};
+
+const unbanUser = async (userId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/admin/super/users/${userId}/unban`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString(),
+            },
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            return {
+                data: null,
+                error: data.message || "Failed to unban user",
+                message: data.message || "Failed to unban user",
+            };
+        }
+        
+        return {
+            data: data.data,
+            error: null,
+            message: data.message || "User unbanned successfully",
+        };
+    } catch (error: any) {
+        console.error("Error unbanning user:", error);
+        return {
+            data: null,
+            error: error.message || "An error occurred while unbanning user",
+            message: error.message || "An error occurred while unbanning user",
+        };
+    }
+};
+
 export const adminService = {
     getAllUser,
     cancelBooking,
     confirmBooking,
     getDashboardStats,
     updateUser,
-    getBookings
+    getBookings,
+    // Super Admin Services
+    getAllAdmins,
+    createAdmin,
+    updateAdmin,
+    deleteAdmin,
+    getAllUsers,
+    deleteUser,
+    banUser,
+    unbanUser,
 }

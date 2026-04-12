@@ -12,6 +12,7 @@ import {
   StretchHorizontal,
   Tags,
   UserCog,
+  Shield,
 } from "lucide-react";
 
 export const adminRoutes: SidebarRoute[] = [
@@ -51,6 +52,11 @@ export const adminRoutes: SidebarRoute[] = [
         title: "Bookings",
         url: "/dashboard/admin/bookings",
         icon: BookA,
+      },
+      {
+        title: "Admin Management",
+        url: "/dashboard/admin/management",
+        icon: Shield,
       },
     ],
   },

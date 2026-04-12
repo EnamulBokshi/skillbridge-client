@@ -36,6 +36,7 @@ import { TutorProfile, UpdateTutorPayload } from "@/types/tutor.type";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { ChevronLeft } from "lucide-react";
+import { writeTutorBioAiAction } from "@/action/ai.action";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -78,6 +79,7 @@ export function TutorProfileUpdateForm({
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expertiseInput, setExpertiseInput] = useState("");
+  const [isBioPending, setIsBioPending] = useState(false);
       const router = useRouter();
     
   useEffect(() => {
@@ -99,6 +101,45 @@ export function TutorProfileUpdateForm({
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGenerateBio = async () => {
+    const values = form.state.values;
+    const firstName = values.firstName.trim();
+    const lastName = values.lastName.trim();
+    const category = categories.find((item) => item.id === values.categoryId);
+
+    if (!firstName || !lastName || !values.categoryId || !values.expertiseAreas.length) {
+      toast.error(
+        "Fill the name, expertise area, and category fields above before generating a bio.",
+      );
+      return;
+    }
+
+    const loading = toast.loading("Generating tutor bio...");
+    setIsBioPending(true);
+
+    try {
+      const { data, error, message } = await writeTutorBioAiAction({
+        firstName,
+        lastName,
+        experienceYears: values.experienceYears,
+        expertiseAreas: values.expertiseAreas,
+        categories: category ? [category.name] : undefined,
+      });
+
+      if (error || !data) {
+        toast.error(error?.message || message || "Failed to generate tutor bio.", {
+          id: loading,
+        });
+        return;
+      }
+
+      form.setFieldValue("bio", data.bio || "");
+      toast.success("Tutor bio generated successfully.", { id: loading });
+    } finally {
+      setIsBioPending(false);
     }
   };
 
@@ -156,6 +197,12 @@ export function TutorProfileUpdateForm({
       
     },
   });
+  const canGenerateBio = Boolean(
+    form.state.values.firstName.trim() &&
+      form.state.values.lastName.trim() &&
+      form.state.values.categoryId &&
+      form.state.values.expertiseAreas.length,
+  );
   if (isLoading) {
     return (
       <Loading
@@ -255,30 +302,6 @@ export function TutorProfileUpdateForm({
                 />
               </div>
 
-              <form.Field
-                name="bio"
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-
-                  return (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Bio *</FieldLabel>
-                      <Textarea
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Tell us about yourself, your teaching philosophy, and experience..."
-                        rows={4}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              />
             </div>
 
             {/* User & Category Information Section */}
@@ -602,6 +625,50 @@ export function TutorProfileUpdateForm({
                   );
                 }}
               />
+
+              <div className="space-y-3 rounded-lg border border-dashed border-border/70 bg-muted/20 p-4">
+                <div className="space-y-1">
+                  <h4 className="text-base font-semibold">AI Bio Assistant</h4>
+                  <p className="text-sm text-muted-foreground">
+                    After filling the fields above, generate a tutor bio draft and place it in the bio field.
+                  </p>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleGenerateBio}
+                  disabled={isBioPending || !canGenerateBio}
+                  title={!canGenerateBio ? "Fill the required fields above first." : undefined}
+                >
+                  {isBioPending ? "Writing bio..." : "Write bio using AI"}
+                </Button>
+
+                <form.Field
+                  name="bio"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+
+                    return (
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>Bio *</FieldLabel>
+                        <Textarea
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="Tell us about yourself, your teaching philosophy, and experience..."
+                          rows={4}
+                        />
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
+                />
+              </div>
               {isAdmin && (
                <form.Field
                 name="isFeatured"

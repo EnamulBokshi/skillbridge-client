@@ -73,16 +73,6 @@ export type TutorBioWriterResponseData = {
   usedData: TutorBioWriterRequestPayload;
 };
 
-export type ReviewSuggestionRequestPayload = {
-  rating: number;
-  count?: number;
-};
-
-export type ReviewSuggestionResponseData = {
-  rating: number;
-  suggestions: string[];
-};
-
 export type SearchSuggestionContext = "all" | "tutors" | "subjects" | "slots" | "categories";
 
 export type SearchSuggestionSource = "tutor" | "subject" | "category" | "slot" | "template";

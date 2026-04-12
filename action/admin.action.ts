@@ -34,3 +34,37 @@ export const getTutorReviewsAction = async (tutorId: string) => {
 export const getBookingsAction = async(params?: BookingSearchParams): Promise<PaginatedResponse<Bookings>> => {
      return await adminService.getBookings(params);
 }
+
+// ============ SUPER_ADMIN ACTIONS ============
+
+export const getAllAdminsAction = async (page: number = 1, limit: number = 10) => {
+    return await adminService.getAllAdmins(page, limit);
+}
+
+export const createAdminAction = async (payload: { email: string; name: string; password: string }) => {
+    return await adminService.createAdmin(payload);
+}
+
+export const updateAdminAction = async (adminId: string, payload: { email?: string; name?: string; status?: string }) => {
+    return await adminService.updateAdmin(adminId, payload);
+}
+
+export const deleteAdminAction = async (adminId: string) => {
+    return await adminService.deleteAdmin(adminId);
+}
+
+export const getAllUsersAction = async (params?: UserFilterParams): Promise<PaginatedResponse<IUser>> => {
+    return await adminService.getAllUsers(params);
+}
+
+export const deleteUserAction = async (userId: string) => {
+    return await adminService.deleteUser(userId);
+}
+
+export const banUserAction = async (userId: string) => {
+    return await adminService.banUser(userId);
+}
+
+export const unbanUserAction = async (userId: string) => {
+    return await adminService.unbanUser(userId);
+}

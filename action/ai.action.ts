@@ -5,8 +5,6 @@ import {
   AiChatRequestPayload,
   AiChatResponseData,
   AiModelsResponseData,
-  ReviewSuggestionRequestPayload,
-  ReviewSuggestionResponseData,
   TutorBioWriterRequestPayload,
   TutorBioWriterResponseData,
   TutorRecommendationRequestPayload,
@@ -34,10 +32,4 @@ export const writeTutorBioAiAction = async (
   payload: TutorBioWriterRequestPayload,
 ): Promise<TResponse<TutorBioWriterResponseData>> => {
   return aiService.writeTutorBio(payload);
-};
-
-export const getReviewSuggestionsAiAction = async (
-  payload: ReviewSuggestionRequestPayload,
-): Promise<TResponse<ReviewSuggestionResponseData>> => {
-  return aiService.getReviewSuggestions(payload);
 };
