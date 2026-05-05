@@ -17,8 +17,9 @@ export default async function UserPage({searchParams}:UserPageProps) {
   // console.log("All users data:", data, error);
   return (
     <div>
-      <h1 className='text-2xl font-bold mb-4'>All Users</h1>
       <div className='w-full  rounded-lg shadow-md p-6'>
+      <h1 className='text-2xl font-bold mb-4'>All Users</h1>
+
         <UserFilterController />
         {data && <UserList users={data.data} />}
         {!data && <p className='text-muted-foreground'>No users found.</p>}

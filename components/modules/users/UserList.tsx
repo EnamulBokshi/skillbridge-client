@@ -62,7 +62,7 @@ export default function UserList({ users }: { users: IUser[] }) {
     <div>
       <h2 className="text-xl font-semibold mb-4">User List</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {users.map((user) => (
           <UserCard
             key={user.id}
