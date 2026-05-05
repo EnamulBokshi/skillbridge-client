@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "@/components/modules/common/ConfirmDialog";
+import { UserProvider } from "@/providers/UserProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,9 +38,11 @@ export default function RootLayout({
         disableTransitionOnChange
         >
           <ConfirmDialogProvider>
-        {children}
-        <Toaster richColors />
-        </ConfirmDialogProvider>
+            <UserProvider>
+              {children}
+              <Toaster richColors />
+            </UserProvider>
+          </ConfirmDialogProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -15,7 +15,7 @@ export default async function LoginPage({
   const resetExpired = resolvedSearchParams.resetStatus === "expired";
   const resetMissing = resolvedSearchParams.resetStatus === "missing";
   return (
-    <section className="min-h-screen bg-base-200">
+    <section className="min-h-screen bg-base-200 ">
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         <div className="relative hidden lg:block">
           <Image

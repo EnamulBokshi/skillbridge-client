@@ -5,6 +5,7 @@ import { ISlotResponse, SlotSearchParams } from "@/types/slot.type";
 import { getSlotsAction } from "@/action/slot.action";
 import { useEffect, useState, useCallback } from "react";
 import { Loading } from "@/components/common/Loading";
+import { useUserProfile } from "@/providers/UserProvider";
 
 interface TutorSlotListProps {
   initialData?: {
@@ -21,8 +22,8 @@ interface TutorSlotListProps {
 export function TutorSlotList({ initialData }: TutorSlotListProps) {
   const [data, setData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
-  const tutor = localStorage.getItem('tutor');
-  const tutorId = tutor ? JSON.parse(tutor).id : null;
+  const { tutorProfile } = useUserProfile();
+  const tutorId = tutorProfile?.id || undefined;
 
   const fetchSlots = useCallback(async (filters?: SlotSearchParams) => {
     setIsLoading(true);

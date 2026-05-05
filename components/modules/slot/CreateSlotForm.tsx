@@ -30,6 +30,7 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { Loading } from "@/components/common/Loading";
 import { createSlotAction } from "@/action/slot.action";
+import { useUserProfile } from "@/providers/UserProvider";
 
 // --------------------
 // Schema
@@ -68,6 +69,7 @@ type Subject = {
 export function CreateSlotForm() {
   const [subjects, setSubjects] = React.useState<Subject[] | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { tutorProfile } = useUserProfile();
 
   // Fetch subjects for the select dropdown
   useEffect(() => {
@@ -100,15 +102,12 @@ export function CreateSlotForm() {
     onSubmit: async ({ value }) => {
         const loadingToast = toast.loading("Creating slot...");
       try {
-        const tutorData = localStorage.getItem("tutor");
-        if (!tutorData) {
-          toast.error("Tutor information not found. Please log in again.", {id: loadingToast});
+        if (!tutorProfile) {
+          toast.error("Tutor profile not found. Please log in again.", {id: loadingToast});
           return;
         }
-        // console.log("tutorData", tutorData);
-        const tutor = JSON.parse(tutorData);
         const payload = {
-          tutorId: tutor.id,
+          tutorId: tutorProfile.id,
           subjectId: value.subjectId,
           date: value.date,
           startTime: value.startTime,
@@ -149,7 +148,7 @@ export function CreateSlotForm() {
   }
 
   return (
-    <Card className="max-w-2xl mx-auto shadow-lg">
+    <Card className=" w-full mx-auto bg-background border-0">
       <CardHeader>
         <CardTitle className="text-2xl">Create Slot</CardTitle>
         <CardDescription>

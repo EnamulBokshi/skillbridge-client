@@ -110,7 +110,7 @@ export function SlotCard({
               variant={slot.isBooked || isPastSlot ? "outline" : "default"}
               className="rounded-full"
             >
-              {statusLabel}
+              {slot.isBooked? "Booked" : isPastSlot ? "Expired" : "Available"}
             </Badge>
           </div>
         </div>
@@ -163,12 +163,13 @@ export function SlotCard({
         </div>
       </CardContent>
 
-      {editable ? (
+      {editable && slot.isBooked ? (
         <CardFooter className="gap-2 border-t pt-3">
           <Button
             variant="outline"
             size="sm"
             className="flex-1"
+
             onClick={() => onEdit?.(slot)}
           >
             <Edit className="mr-2 h-4 w-4" />
@@ -189,7 +190,7 @@ export function SlotCard({
           <Button
             className="w-full rounded-full"
             onClick={() => handleBookSlot(slot.id)}
-            disabled={!isBookable}
+            disabled={!isBookable || slot.isBooked}
           >
             {isPastSlot ? "Session Ended" : slot.isBooked ? "Already Booked" : "Book Session"}
           </Button>

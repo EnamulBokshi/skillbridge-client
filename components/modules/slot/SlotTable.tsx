@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useConfirm } from "../common/ConfirmDialog";
 import { deleteTutorSlotAction } from "@/action/tutor.action";
 import EmptyState from "@/components/ui/EmptyState";
+import { CreateSlotForm } from "./CreateSlotForm";
 
 export default function SlotTable({
   slots,
@@ -41,8 +42,10 @@ export default function SlotTable({
   const [editingSlot, setEditingSlot] =
     React.useState<IUpdateSlotPayload | null>(null);
   const [slotId, setSlotId] = React.useState<string | null>(null);
+  const [showAddForm, setShowForm] = React.useState(false)
   const router = useRouter();
   const { confirm } = useConfirm();
+  
   const handleDelete = async (id: string) => {
     const ok = await confirm({
       title: "Delete Slot",
@@ -107,6 +110,9 @@ export default function SlotTable({
             </p>
           </div>
         )}
+        <Button variant="outline" className="m-4" onClick={() => setShowForm(true)}>
+          Create Slot
+        </Button>
         {/* slots */}
         <div className="p-4">
           <SlotFilters
@@ -147,7 +153,7 @@ export default function SlotTable({
           )}
         </div>
       </div>
-
+        
       {/* Edit Slot Dialog */}
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent className="sm:max-w-lg">
@@ -171,6 +177,27 @@ export default function SlotTable({
 
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showAddForm} onOpenChange={setShowForm}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle></DialogTitle>
+            <DialogDescription>
+              {/* Set up a new teaching slot to start receiving bookings from students. */}
+            </DialogDescription>
+          </DialogHeader>
+
+          {showAddForm && (
+           <CreateSlotForm />
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowForm(false)}>
               Cancel
             </Button>
           </DialogFooter>

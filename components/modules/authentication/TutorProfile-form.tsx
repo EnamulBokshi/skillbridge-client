@@ -34,6 +34,7 @@ import { Category } from "@/types/category.type";
 import { getCategoriesAction } from "@/action/category.action";
 import { redirect } from "next/navigation";
 import { Loading } from "@/components/common/Loading";
+import { useUserProfile } from "@/providers/UserProvider";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First Name is required!"),
@@ -73,6 +74,7 @@ export function TutorProfileForm({
   const [isLoading, setIsLoading] = useState(true);
   const [expertiseInput, setExpertiseInput] = useState("");
   const [isBioPending, setIsBioPending] = useState(false);
+  const { refreshUserProfile } = useUserProfile();
 
   useEffect(() => {
     fetchCategories();
@@ -169,7 +171,7 @@ export function TutorProfileForm({
 
         if (data) {
           toast.success("Profile created successfully!!", { id: loading });
-          localStorage.setItem("tutor",JSON.stringify(data))
+          await refreshUserProfile();
           redirect("/dashboard");
           
         }

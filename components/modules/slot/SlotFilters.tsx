@@ -95,7 +95,7 @@ useEffect(() => {
 
 
   return (
-    <div className="space-y-4 my-1 p-2">
+    <div className="space-y-4 mb-3">
       {/* Search and Filter Toggle */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search Input */}

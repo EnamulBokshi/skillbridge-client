@@ -8,6 +8,8 @@ export default async function TutorDashboardLayout({ children }: { children: Rea
     if (error || !data?.user || data.user.role != USER_ROLES.TUTOR) {
         redirect('/login')
     }
+    // localStorage.set("tutor", JSON.stringify(data.user.tutorProfile));
+
   return (
     <div>Tutor {children}</div>
   )

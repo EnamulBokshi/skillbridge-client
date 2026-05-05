@@ -1,7 +1,6 @@
 
 import { getTutorSlotsAction } from "@/action/tutor.action";
 import { getUserSession } from "@/action/user.action";
-import { CreateSlotForm } from "@/components/modules/slot/CreateSlotForm";
 import SlotTable from "@/components/modules/slot/SlotTable";
 import { PaginationController } from "@/components/ui/pagination-controller";
 import { userServices } from "@/services/user.service";
@@ -26,6 +25,7 @@ export default async function Slots({ searchParams }: {
   if (!userDetails.data || !userDetails.data.tutorProfile) {
     return <div>You must have a tutor profile to manage slots.</div>;
   }
+  console.log("User Details:", userDetails);
   const {
     data: slotsResponse,
     error: slotError,
@@ -41,9 +41,8 @@ export default async function Slots({ searchParams }: {
     isFree,
   });
 
-  // console.log("Tutor Slots:", slotsResponse);
-  // console.log("Slot Fetch Error:", slotError);
-  // console.log("Slot Fetch Message:", message);
+  // Note: User profile is now managed by UserProvider context on the client side
+  // No need to set localStorage here
 
   const slots = slotsResponse ? slotsResponse?.data : [];
   const pagination = slotsResponse ? slotsResponse?.pagination : {
@@ -66,7 +65,7 @@ export default async function Slots({ searchParams }: {
 
         <PaginationController pagination={pagination} />
       </div>
-      <CreateSlotForm />
+      {/* <CreateSlotForm /> */}
       <div className="py-3"></div>
       {/* <TutorSlotList /> */}
     </div>
