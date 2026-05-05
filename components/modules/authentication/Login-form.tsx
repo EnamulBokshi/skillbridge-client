@@ -35,7 +35,7 @@ const DEMO_ROLE_CREDENTIALS = {
   },
   student: {
     email: "enamulbokshi@gmail.com",
-    password: "student1234",
+    password: "enamulbokshi",
   },
   tutor: {
     email: "haque22205101946@diu.edu.bd",
