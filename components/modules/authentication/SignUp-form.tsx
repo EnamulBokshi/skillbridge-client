@@ -20,6 +20,23 @@ import { toast } from "sonner"
 import * as z from "zod"
 import { clearGuestSession, setGuestSession } from "@/helper/guest-session"
 
+const DEMO_ROLE_CREDENTIALS = {
+  admin: {
+    email: "enam.admin@skillbridge.com",
+    password: "admin1234",
+  },
+  student: {
+    email: "enamulbokshi@gmail.com",
+    password: "student1234",
+  },
+  tutor: {
+    email: "haque22205101946@diu.edu.bd",
+    password: "haque22205101946",
+  },
+} as const
+
+type DemoRole = keyof typeof DEMO_ROLE_CREDENTIALS
+
 const formSchema = z.object({
   name: z.string().min(1,"This field is required"),
   email: z.email(),
@@ -29,6 +46,35 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const [formError, setFormError] = useState("")
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [roleLoginLoading, setRoleLoginLoading] = useState<DemoRole | null>(null)
+
+  const handleDemoRoleLogin = async (role: DemoRole) => {
+    const credentials = DEMO_ROLE_CREDENTIALS[role]
+    const loading = toast.loading(`Signing in as ${role}...`)
+
+    setRoleLoginLoading(role)
+    setFormError("")
+
+    try {
+      const { error } = await authClient.signIn.email(credentials)
+
+      if (error) {
+        setFormError(error.message || `Unable to login as ${role}.`)
+        return
+      }
+
+      clearGuestSession()
+      toast.success(`Logged in as ${role}.`, { id: loading })
+      window.location.href = "/"
+    } catch (error) {
+      console.error(`Demo ${role} login error:`, error)
+      setFormError(`Failed to login as ${role}. Please try again.`)
+    } finally {
+      toast.dismiss(loading)
+      setRoleLoginLoading(null)
+    }
+  }
+
   const handleGoogleLogin = async ()=> {
     console.log("Initiating Google sign-up...");
     setIsGoogleLoading(true)
@@ -209,7 +255,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="submit"
                 form="signup-form"
                 className="w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
               >
                 {isSubmitting ? "Creating account..." : "Register"}
               </Button>
@@ -218,17 +264,46 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="button"
                 onClick={()=> handleGoogleLogin()}
                 className="mt-3 w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
               >
                 {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
                 {!isGoogleLoading && <IconBrandGoogle className="inline"/>}
               </Button>
+              <div className="mt-3 space-y-2">
+                <p className="text-xs text-muted-foreground">Quick demo role login</p>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleDemoRoleLogin("admin")}
+                    disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
+                  >
+                    {roleLoginLoading === "admin" ? "Signing in..." : "Login as Admin"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleDemoRoleLogin("tutor")}
+                    disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
+                  >
+                    {roleLoginLoading === "tutor" ? "Signing in..." : "Login as Tutor"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleDemoRoleLogin("student")}
+                    disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
+                  >
+                    {roleLoginLoading === "student" ? "Signing in..." : "Login as Student"}
+                  </Button>
+                </div>
+              </div>
               <Button
                 variant="secondary"
                 type="button"
                 onClick={handleGuestLogin}
                 className="mt-3 w-full"
-                disabled={isSubmitting || isGoogleLoading}
+                disabled={isSubmitting || isGoogleLoading || !!roleLoginLoading}
               >
                 Continue as Guest
               </Button>
